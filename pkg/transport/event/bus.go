@@ -14,11 +14,51 @@ import (
 // busMetrics 是 event Bus 模块的埋点句柄（进程级单例）。
 var busMetrics = metrics.ForModule(metrics.ModuleEvent)
 
+// maxPublishMetricKinds 指标 label 的**基数上限**：事件类型最多记这么多种。
+const maxPublishMetricKinds = 256
+
+// metricKindOther 超出基数上限后的归并 label 值。
+const metricKindOther = "other"
+
+var (
+	publishKindsMu   sync.Mutex
+	publishKinds     = make(map[string]struct{})
+	publishKindsFull bool
+)
+
 // metricPublish 本地事件发布计数（按事件类型）。
-// eventType 直接作为 label 值 —— 调用方（NewEvent 的 typ）必须来自有限枚举，
-// 禁止动态值；总线侧不做拦截，约束见 NewEvent 与 metrics/naming.go 的基数纪律。
+//
+// eventType 直接作为 label 值。调用方（NewEvent 的 typ）本应只用有限枚举（见 NewEvent 说明），
+// 但**只靠约定不够**：一旦有人把 playerID / uid / connID 这类动态值拼进事件名，
+// 时间序列与指标注册表会无界膨胀（metrics 基数纪律见 metrics/naming.go）。
+// 因此总线侧自己做**基数护栏**：已知类型最多登记 maxPublishMetricKinds 种，
+// 超出的统一归入 "other"，并只在该护栏首次生效时告警一次。
 func metricPublish(eventType string) {
-	busMetrics.Count("publish_total", metrics.LabelKind, eventType)
+	busMetrics.Count("publish_total", metrics.LabelKind, boundedEventKind(eventType))
+}
+
+// boundedEventKind 返回用于 metrics label 的事件类型：超出基数上限时返回 "other"。
+func boundedEventKind(eventType string) string {
+	publishKindsMu.Lock()
+	if _, known := publishKinds[eventType]; known {
+		publishKindsMu.Unlock()
+		return eventType
+	}
+	if len(publishKinds) < maxPublishMetricKinds {
+		publishKinds[eventType] = struct{}{}
+		publishKindsMu.Unlock()
+		return eventType
+	}
+	firstFold := !publishKindsFull
+	publishKindsFull = true
+	registered := len(publishKinds)
+	publishKindsMu.Unlock()
+	if firstFold {
+		logger.Warnf("event: publish metric label cardinality reached %d, folding further event types into %q — "+
+			"事件类型必须是有限枚举（见 NewEvent 与 metrics/naming.go 的基数纪律）",
+			registered, metricKindOther)
+	}
+	return metricKindOther
 }
 
 // BusHandler 事件处理器。返回 error 仅用于记录，不影响同一类型下的其它订阅者。

@@ -62,7 +62,7 @@ grid.Leave(player)
 |------|------|
 | `SetObserver(fn Observer)` | 设置视野事件回调（`EnterView` / `LeaveView` / `LeaveAll`） |
 | `SetPermChecker(fn)` | 设置权限校验器：返回 false 的目标不进入视野 |
-| `SetRefreshRate(d)` | 限制视野刷新频率；0 = 不限 |
+| ~~`SetRefreshRate(d)`~~ | **已删除**：实现侧从未接线（`shouldRefresh` 无调用点），设了也不生效、刷新频率实际不受限。暴露静默失效的限流开关比没有更糟；将来做节流需带 enter/leave 补偿语义 |
 | `Enter(id, pos)` / `Move(id, pos)` / `Leave(id)` | 实体进入 / 移动 / 离开（自动刷新视野增量） |
 | `Watch(id, radius)` | 登记为观察者并设定视野半径，返回初始可见集合；`radius<=0` 等价 `Unwatch` |
 | `Unwatch(id)` | 取消观察者身份（保留位置） |

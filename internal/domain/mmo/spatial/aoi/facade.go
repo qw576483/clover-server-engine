@@ -14,8 +14,6 @@
 package aoi
 
 import (
-	"time"
-
 	"github.com/qw576483/clover-server-engine/internal/domain/object"
 	pkaoi "github.com/qw576483/clover-server-engine/pkg/domain/mmo/aoi"
 )
@@ -41,7 +39,6 @@ func (w *gridFacade) SetPermChecker(check func(watcher, target object.ObjectID) 
 	w.inner.SetPermChecker(check)
 }
 
-func (w *gridFacade) SetRefreshRate(d time.Duration)             { w.inner.SetRefreshRate(d) }
 func (w *gridFacade) Stop()                                      { w.inner.Stop() }
 func (w *gridFacade) RemoveAll() []object.ObjectID               { return w.inner.RemoveAll() }
 func (w *gridFacade) CellSize() float64                          { return w.inner.CellSize() }

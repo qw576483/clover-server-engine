@@ -53,22 +53,14 @@ var ErrSceneNodeUnknown = errors.New("cluster: scene node value not an integer")
 // 跨图后直接从楼上或空中掉下来。
 // Version 为迁移版本号，用于断连后续传时对端校验幂等/乱序；
 // SrcNode 标识源节点，便于对端校验与日志追踪。
+
+// Body 为可选的物理体快照：带上它，跨机迁移才与同机迁移（Scene.TransferTo 会整份
+// 拷贝 Body 并 AddBody）语义一致。
 //
-// ⚠️ **已知限制（有意不修）**：本载荷**不含物理体（mmo.Body）载体** ——
-// Mass / Radius / Velocity / Force / Static 不跨机搬运。
-//
-//   - 同机迁移（Scene.TransferTo）会把物理体整份拷贝过去并 AddBody；跨机只重建「成员」
-//     （AOI / instance 归属 / 三维落点），不重建物理体 ⇒ **跨机迁移后物理属性全部丢失**。
-//   - 为什么不直接补一个字段：本载荷是**跨节点线格式**（EncodeRemoteTransfer/DecodeRemoteTransfer
-//   - 定向 NATS subject），本轮改动约束明确「不改线格式」；加字段会让新旧节点对
-//     「载荷长什么样」产生分歧（旧节点忽略新字段 ⇒ 目标端 Body 静默为 nil 的混合状态）。
-//     补齐需要与两端版本协商一起做（新 subject / 版本号协商 / 灰度），不属于"顺手加个字段"。
-//   - 因此本轮采取**明确标注 + 发送端留痕**：发送端检测到被迁对象确实挂了物理体时会打
-//     Warn（见 SceneManager.TransferRemote），让「物理属性丢了」这件事在日志里可见，
-//     而不是静默变成"跨图后手感变了"。
-//
-// 需要跨机保留物理体时的正确做法（给业务/后续版本）：在共享 data.Store 里带 TTL 落一份
-// 物理体快照，接收端 HandleRemoteTransfer 应用成功后按 objID 取回并 AddBody。
+// 此前本载荷**不含 Body**，跨机只重建「成员」（AOI / instance 归属 / 三维落点），
+// 导致 Mass / Radius / Velocity / Force / Static 全部丢失 —— 现象是"跨图后手感变了、
+// 击退不再生效"。现补齐为**可选字段**（omitempty）：没挂物理体的对象不增加任何字节；
+// 旧版本节点读到该字段会被 JSON 解码忽略（不会报错），只是仍然不重建 Body。
 type RemoteTransfer struct {
 	DstScene  uint64         `json:"dst_scene"`
 	ObjID     uint64         `json:"obj_id"`
@@ -79,6 +71,22 @@ type RemoteTransfer struct {
 	Instance  uint32         `json:"instance"`
 	Version   uint64         `json:"version,omitempty"`
 	SrcNode   string         `json:"src_node,omitempty"`
+	// Body 可选物理体快照；nil 表示源对象没有物理体（或源端为不支持该字段的旧版本）。
+	Body *RemoteBody `json:"body,omitempty"`
+}
+
+// RemoteBody 是跨机迁移携带的物理体快照。
+//
+// 为什么不直接复用 mmo.Body：本包刻意不引用 internal/domain/mmo（避免循环依赖，见包注释），
+// 因此这里定义一份字段一一对应的线格式结构体，由 mmo 侧在发送前填充、接收后转回 mmo.Body。
+// 字段与 mmo.Body 保持一致：Mass / Radius / Position / Velocity / Force / Static。
+type RemoteBody struct {
+	Mass     float64    `json:"mass,omitempty"`
+	Radius   float64    `json:"radius,omitempty"`
+	Position [3]float64 `json:"pos"`
+	Velocity [3]float64 `json:"vel,omitempty"`
+	Force    [3]float64 `json:"force,omitempty"`
+	Static   bool       `json:"static,omitempty"`
 }
 
 // RouteStore 管理 scene->node 路由表，基于 gstore 全局 KV（跨进程/跨机共享）。

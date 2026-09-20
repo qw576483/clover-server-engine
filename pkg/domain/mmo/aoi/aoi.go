@@ -22,8 +22,6 @@
 package aoi
 
 import (
-	"time"
-
 	"github.com/qw576483/clover-server-engine/pkg/domain/object"
 	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
@@ -64,7 +62,9 @@ type Quota int
 type Grid interface {
 	SetObserver(o Observer)
 	SetPermChecker(check func(watcher, target object.ObjectID) bool)
-	SetRefreshRate(d time.Duration)
+	// 说明：原 SetRefreshRate(d time.Duration) 已删除。它是一组从未接线的"预留 API"
+	//（实现侧 shouldRefresh 全仓无调用点），设了也不生效、刷新频率实际不受限 ——
+	// 对外暴露一个静默失效的限流开关比没有更糟。将来做节流需带 enter/leave 补偿语义。
 	Stop()
 	RemoveAll() []object.ObjectID
 	CellSize() float64

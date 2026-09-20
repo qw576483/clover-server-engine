@@ -13,6 +13,13 @@ import (
 	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
+// maxTakeoverStateFieldBytes 接管状态单个字段（State / Recovery）的大小上限。
+//
+// 这两个字段来自网络（单帧上限可达 10MiB），而 master 会把它们**原样留在内存里**
+// 直到被目标节点认领。若不加限制，对海量不同 roomID 反复写入即可把 master 内存撑爆，
+// 因此这里显式设限：超限直接拒绝，不入表。
+const maxTakeoverStateFieldBytes = 1 << 20 // 1 MiB
+
 // MasterHandlerGame 是 master 侧房间 handler 挂载所需的接口。
 // app.MasterGame 自动实现此接口，业务层无需额外操作。
 type MasterHandlerGame interface {
@@ -89,6 +96,20 @@ func onRoomOwnerUnregister(mg MasterHandlerGame, c *event.Ctx) error {
 				req.RoomID, req.NodeAddr)
 		}
 		mg.Reply(c, OwnerResp{OK: ok, RoomID: req.RoomID})
+		return nil
+	}
+	// 入表前先卡大小：master 会把这两个包留在内存里直到被认领，
+	// 不设限就等于把「网络单帧上限」当成了 master 的内存上限。
+	if n := len(req.State); n > maxTakeoverStateFieldBytes {
+		logger.Warnf("room: takeover state too large: room=%s state=%dB limit=%dB — rejected",
+			req.RoomID, n, maxTakeoverStateFieldBytes)
+		mg.Reply(c, OwnerResp{OK: false, RoomID: req.RoomID})
+		return nil
+	}
+	if n := len(req.Recovery); n > maxTakeoverStateFieldBytes {
+		logger.Warnf("room: takeover recovery too large: room=%s recovery=%dB limit=%dB — rejected",
+			req.RoomID, n, maxTakeoverStateFieldBytes)
+		mg.Reply(c, OwnerResp{OK: false, RoomID: req.RoomID})
 		return nil
 	}
 	// 先保存接管状态，再执行 Reassign，确保状态先于所有权变更持久化，

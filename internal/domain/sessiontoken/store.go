@@ -29,22 +29,32 @@ type localTokenEntry struct {
 	CreatedAt time.Time
 }
 
-// NewStore 创建 session store。
+// DefaultTTL 本地 token 的默认有效期，与 master 侧 master_session_token.ttl 的默认值一致。
+const DefaultTTL = 24 * time.Hour
+
+// NewStore 创建 session store（本地回退 TTL 取 DefaultTTL）。
 //
 //	mc 为 nil 时仅使用本地存储（适用于单机/测试场景）。
 func NewStore(mc *masterclient.Client) *Store {
+	return NewStoreWithTTL(mc, DefaultTTL)
+}
+
+// NewStoreWithTTL 创建 session store，并显式指定**本地回退 TTL**。
+//
+// 为什么必须能配：本地 TTL 是 master 不可达时唯一的有效性判据。若它与 master 侧
+// master_session_token.ttl 不一致，就会「接受 master 已过期的 token」或
+// 「拒绝 master 仍有效的 token」——两边各写死一个 24h 只是碰巧相等，改任一边即失衡。
+// 调用方应传 master 配置里 session token TTL 的实际值；ttl <= 0 回落 DefaultTTL。
+func NewStoreWithTTL(mc *masterclient.Client, ttl time.Duration) *Store {
 	var sc *masterclient.SessionClient
 	if mc != nil {
 		sc = masterclient.NewSessionClient(mc)
 	}
-	s := &Store{sc: sc, ttl: 24 * time.Hour}
-	// 滑动续期节流默认取 TTL 的一半，保证活跃连接在过期前被续上。
-	if s.ttl > 0 {
-		s.refreshInterval = s.ttl / 2
-	} else {
-		s.refreshInterval = 12 * time.Hour
+	if ttl <= 0 {
+		ttl = DefaultTTL
 	}
-	return s
+	// 滑动续期节流取 TTL 的一半，保证活跃连接在过期前被续上。
+	return &Store{sc: sc, ttl: ttl, refreshInterval: ttl / 2}
 }
 
 // New 生成新的 session token 并记录（远程 + 本地缓存）。

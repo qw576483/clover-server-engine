@@ -361,7 +361,11 @@ func (g *Game) setupNATSBackends(nc *nats.Client, cfg *Config, store *data.Store
 	}
 
 	// 领域子模块初始化（依赖 NATS / crossNodeBus 就绪后）
-	g.sessionStore = sessiontoken.NewStore(g.MasterClient())
+	//
+	// 本地回退 TTL 取 master 侧 `master_session_token.ttl` 的实际值：本地 TTL 是
+	// master 不可达时唯一的有效性判据，与远端不一致会「接受 master 已过期的 token」
+	// 或「拒绝 master 仍有效的 token」。不再各写死一个 24h 靠巧合对齐。
+	g.sessionStore = sessiontoken.NewStoreWithTTL(g.MasterClient(), cfg.MasterSessionToken.Normalize().TTL)
 	g.fullSyncer = NewFullSyncer(FullSyncOptions{
 		EntityAcc:     g.entityAcc,
 		PlayerStore:   g.playerStore,

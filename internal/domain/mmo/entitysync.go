@@ -214,17 +214,13 @@ func (es *EntitySync) onViewChange(_ string, payload []byte) {
 		}
 		// 索引更新后立刻下发：客户端靠这条事件创建/销毁视野内实体。
 		//
-		// ⚠️ 已知限制（明确标注，不是漏写）：这里**丢弃了 vp.SnapshotBin**。
-		// 该字段是 Scene 侧进视野时经 RPC 拉取并序列化的实体初始快照（map[kind]二进制，
-		// 见 view_sync.go / accessor.SnapshotClientBinary），经 viewproto 一路传到本处，
-		// 而本函数下发的 body 只带 entity_id。补齐它需要把快照塞进 EPushDataSync 的 body：
-		//   - 快照值是 object.Bag 的**二进制**编码，客户端 WorldSync 的 enter 处理器读的是
-		//     JSON 对象（attrs/properties），直接塞进去对端解不开；
-		//   - 即"要让客户端能读"，必须改客户端可见的 payload 形状 / 新增二进制快照载体
-		//     —— 属于**线格式变更**，与本轮「不改线格式」的约束冲突。
-		// 因此本轮只做标注（保持现状：客户端进视野后由常规数据同步补齐实体属性）。
-		// 若要补齐：与客户端一起做，把快照以 attrs 可解析的形状（或二进制字段 + 客户端解析）下发。
-		es.pushViewEvent(vp.Watcher, vp.Event, vp.Object, vp.DeliveryMode)
+		// 快照（vp.SnapshotBin）随事件一起下发：它是 Scene 侧进视野时经 RPC 拉取并序列化的
+		// 实体初始快照（map[kind]二进制，见 view_sync.go / accessor.SnapshotClientBinary）。
+		// 此前这里把它**丢掉**，等于白做一次 RPC + 序列化 + NATS 传输，客户端还得等常规
+		// 数据同步补齐属性；现在改为放进 body 的 `snapshot` 字段（值走 base64）。
+		// 该字段是**新增的可选字段**：客户端当前只读 entity_id，未知字段会被忽略，
+		// 因此对端无需同步改动即可保持兼容。
+		es.pushViewEvent(vp.Watcher, vp.Event, vp.Object, vp.DeliveryMode, vp.SnapshotBin)
 	}
 }
 
@@ -235,12 +231,20 @@ func (es *EntitySync) onViewChange(_ string, payload []byte) {
 //   - 消息号必须是 EPushDataSync(4003) —— 客户端只在 4001/4003 上分派实体事件；
 //   - body 的**外层 key 必须是事件名**（enter/leave），内层携带 entity_id；
 //     外层 key 不是事件名时客户端会静默丢弃，因此这里不能改成 {event:..., data:...} 之类的形状。
-func (es *EntitySync) pushViewEvent(watcherID uint64, event string, objID uint64, mode proto.DeliveryMode) {
+//
+// snapshot 为可选的实体初始快照（map[kind]二进制），随事件一起下发到 `snapshot` 字段
+// （[]byte 由 encoding/json 自动编成 base64 字符串）。它是**新增可选字段**，
+// 不改变既有字段语义，客户端不读也不受影响 —— 但不该再像以前那样把它丢掉白算一场。
+func (es *EntitySync) pushViewEvent(watcherID uint64, event string, objID uint64, mode proto.DeliveryMode, snapshot map[string][]byte) {
 	if es.pub == nil || watcherID == 0 || objID == 0 {
 		return
 	}
-	body, err := json.Marshal(map[string]map[string]uint64{
-		event: {"entity_id": objID},
+	inner := map[string]any{"entity_id": objID}
+	if len(snapshot) > 0 {
+		inner["snapshot"] = snapshot
+	}
+	body, err := json.Marshal(map[string]any{
+		event: inner,
 	})
 	if err != nil {
 		viewPushFailf("mmo: marshal view event failed (event=%s watcher=%d object=%d): %v", event, watcherID, objID, err)

@@ -359,6 +359,22 @@ func (s *Service) resolveChannelAccount(ctx context.Context, channel, channelAcc
 	return account, nil
 }
 
+// ErrChannelAccountConflict 渠道账号名落在一个**非渠道占位**账号上时返回。
+//
+// 账号名 = {channel}_{channelAccount}_{sha256 前 8 字节}，完全由客户端可控的输入决定，
+// 可被预测/复现，因此「Load 到同名账号」**不能**推出「这个账号属于本次渠道登录」：
+// 若那个账号是玩家自注册的普通账号、或另一个渠道建的，直接复用会把本次渠道登录
+// **绑定到他人账号**上（渠道登录即他人身份）。只有确认对方是渠道占位账号才允许复用。
+var ErrChannelAccountConflict = errors.New("auth: channel account name conflicts with an existing non-channel account")
+
+// channelPlaceholderPrefix 渠道自动建号所用占位密码的前缀（见 randomPlaceholderPassword）。
+const channelPlaceholderPrefix = "!ch_"
+
+// isChannelPlaceholderPassword 判断密码是否为渠道自动建号的占位密码。
+func isChannelPlaceholderPassword(pw string) bool {
+	return strings.HasPrefix(pw, channelPlaceholderPrefix)
+}
+
 // ensureAccountExists 确保账号存在（不存在则建号）。
 //
 // 渠道账号没有可用密码——它只能通过渠道登录进入，因此用随机串占位：
@@ -366,8 +382,13 @@ func (s *Service) resolveChannelAccount(ctx context.Context, channel, channelAcc
 func (s *Service) ensureAccountExists(ctx context.Context, account string) error {
 	// 用 Load 判存在：AccountStore 刻意只暴露 Register / Load 两个方法（便于替换实现），
 	// 为判存在再引入一个 Exists 只会让接口与替身无谓变宽。
-	if _, err := s.account.Load(ctx, account); err == nil {
-		return nil // 账号已存在
+	if acc, err := s.account.Load(ctx, account); err == nil {
+		// 复用前必须确认它是渠道占位账号：否则就是「名字撞上了别人的账号」，
+		// 继续绑定等于把渠道会话交给对方（见 ErrChannelAccountConflict）。
+		if acc == nil || !isChannelPlaceholderPassword(acc.Password) {
+			return fmt.Errorf("%w (account=%s)", ErrChannelAccountConflict, account)
+		}
+		return nil // 账号已存在，且确为渠道占位账号
 	} else if !errors.Is(err, idataaccount.ErrAccountNotFound) {
 		return err
 	}
@@ -394,7 +415,7 @@ func randomPlaceholderPassword() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return "!ch_" + s, nil
+	return channelPlaceholderPrefix + s, nil
 }
 
 // channelAccountName 由渠道标识生成主账号名：{channel}_{channelAccount}_{短哈希}。

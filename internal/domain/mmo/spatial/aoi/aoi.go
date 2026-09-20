@@ -204,11 +204,6 @@ type Grid struct {
 	stopCh   chan struct{}
 	stopOnce sync.Once
 
-	// 刷新频率控制
-	refreshRate time.Duration
-	lastRefresh time.Time
-	refreshMu   sync.Mutex
-
 	// 批量刷新模式：BeginBatch 后 Enter/Move/Leave/Watch/Unwatch 只做坐标/状态更新，
 	// 并收集受影响的观察者；EndBatch 时统一刷新这些观察者并派发事件。
 	// 用于把一帧内的多次移动合并为一次视野重算，把 O(moves × watchers) 降到 O(watchers)。
@@ -287,34 +282,12 @@ func (g *Grid) getPermChecker() PermChecker {
 	return c
 }
 
-// SetRefreshRate 设置全局刷新频率上限，限制 refreshWatcher 的调用间隔。
-// 设为0表示不限频率。默认不限。
-//
-// ⚠️ 当前为**预留 API（未接线）**：refreshWatcher 路径尚未调用 shouldRefresh()，
-// 因此设置后在现版本不生效、刷新频率实际不受限（shouldRefresh 亦带 U1000 预留标记）。
-// 接线前不要依赖本方法做限流；如需启用，先确认节流语义（跳过的刷新会漏 enter/leave）。
-func (g *Grid) SetRefreshRate(d time.Duration) {
-	g.refreshMu.Lock()
-	g.refreshRate = d
-	g.lastRefresh = time.Now()
-	g.refreshMu.Unlock()
-}
-
-// shouldRefresh 检查是否达到刷新间隔，返回 true 表示允许本次刷新。
-//
-//lint:ignore U1000 预留：AOI 刷新节流检查
-func (g *Grid) shouldRefresh() bool {
-	if g.refreshRate <= 0 {
-		return true
-	}
-	g.refreshMu.Lock()
-	allow := time.Since(g.lastRefresh) >= g.refreshRate
-	if allow {
-		g.lastRefresh = time.Now()
-	}
-	g.refreshMu.Unlock()
-	return allow
-}
+// 说明：原 `SetRefreshRate` / `shouldRefresh`（含 refreshRate / lastRefresh / refreshMu 字段）
+// 已**整体删除**。它们是一组从未接线的"预留 API"：全仓唯一出现位置就是定义处，
+// refreshWatcher 路径从不调用 shouldRefresh，因此 SetRefreshRate 设了也不生效、
+// 刷新频率实际不受限 —— 对外暴露一个静默失效的限流开关比没有更糟（调用方会以为限住了）。
+// 将来若真要做刷新节流，必须实现成「节流 + 漏掉的 enter/leave 补偿」的完整语义，
+// 而不是只加一个守卫（跳过刷新会让视野变化事件丢失）。
 
 // startCleanup 启动定期清理协程，清除空分片与残留数据。
 func (g *Grid) startCleanup() {

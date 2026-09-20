@@ -1,17 +1,21 @@
 package wt
 
 import (
+	"encoding/binary"
+	"errors"
 	"fmt"
+	"io"
+	"net"
 	"net/http"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/quic-go/quic-go/http3"
+	iwt "github.com/quic-go/webtransport-go"
 	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
-	"github.com/quic-go/quic-go/http3"
-	iwt "github.com/quic-go/webtransport-go"
 )
 
 // Handler WebTransport 流回调。data 为消息体拷贝。
@@ -26,10 +30,15 @@ type Server struct {
 	// pending 正在 Upgrade / AcceptStream 中、尚未登记的连接数。
 	// MaxConns 的额度必须把「在途」也算进去：检查与登记之间隔着网络往返，
 	// 只数 conns 会让并发升级一起挤进来把上限顶穿（见 handleWebTransport）。
-	pending  int
-	handler  Handler
-	server   *iwt.Server
+	pending int
+	handler Handler
+	server  *iwt.Server
+	// h3Server / pc / addr 由 mu 保护。pc 是**自行绑定**的 UDP 监听：不让库内部
+	// ListenAndServe 隐式绑定，才能在 ListenAddr 带 ":0" 时回报真实端口，
+	// 并在 Stop 时确实把监听关掉。
 	h3Server *http3.Server
+	pc       net.PacketConn
+	addr     string
 	closed   atomic.Bool
 	// started Start 重入保护：重复启动会覆盖 s.h3Server/s.server，
 	// 旧监听与 cleanLoop 随之泄漏。
@@ -69,6 +78,16 @@ func (s *Server) Start() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/wt", s.handleWebTransport)
 
+	// 自己先绑定 UDP：库内部 ListenAndServe 会把监听句柄藏起来，导致
+	// Addr() 在 ListenAddr 为 ":0" 时只能回报 ":0"（拿不到 OS 实际分配的端口），
+	// Stop 也无从确认监听已被关掉。绑定后交给 s.server.Serve(pc)，
+	// 与 ListenAndServe 等价（同样 quicConf.EnableDatagrams=true + 注册 sessionManager）。
+	pc, err := net.ListenPacket("udp", s.cfg.ListenAddr)
+	if err != nil {
+		s.started.Store(false) // 绑定失败不算「已启动」，允许修正后重试
+		return fmt.Errorf("webtransport server: listen %s: %w", s.cfg.ListenAddr, err)
+	}
+
 	s.h3Server = &http3.Server{
 		Addr:      s.cfg.ListenAddr,
 		Handler:   mux,
@@ -84,17 +103,23 @@ func (s *Server) Start() error {
 		s.server.CheckOrigin = s.cfg.CheckOrigin
 	}
 
-	logger.Infof("webtransport server listening on %s", s.cfg.ListenAddr)
+	s.mu.Lock()
+	s.pc = pc
+	s.addr = pc.LocalAddr().String()
+	boundAddr := s.addr
+	s.mu.Unlock()
+
+	logger.Infof("webtransport server listening on %s (configured %q)", boundAddr, s.cfg.ListenAddr)
 	safe.GoSafe(s.cleanLoop)
 
-	// 通过 webtransport.Server.ListenAndServe 启动（而非直接 h3Server.ListenAndServe）：
+	// 通过 webtransport.Server.Serve 启动（而非直接 h3Server.ListenAndServe）：
 	// 库内部会 quicConf.EnableDatagrams=true 并在 ServeQUICConn 里注册 sessionManager，
 	// Upgrade 才能找到会话并把不可靠推送走 Datagram 下发；直接裸起 http3.Server 会
 	// 缺这两者导致所有 WebTransport 升级失败。
 	s.wg.Add(1)
 	safe.GoSafe(func() {
 		defer s.wg.Done()
-		if err := s.server.ListenAndServe(); err != nil && !s.closed.Load() {
+		if err := s.server.Serve(pc); err != nil && !s.closed.Load() {
 			logger.Errorf("webtransport http3 server: %v", err)
 		}
 	})
@@ -168,20 +193,45 @@ func (s *Server) release() {
 	s.mu.Unlock()
 }
 
+// readLoop 按 [4B 大端长度][body] 拆帧读取可靠流。
+//
+// QUIC 流是**字节流**：单次 Read 可能只返回半个帧，也可能一次返回多个帧拼接。
+// 原实现把每次 Read 的返回当成「一条完整消息」，帧一被拆/粘就会把半个帧或
+// 两条消息的拼接体交给 handleClient，DecodeClientFrame 要么解码失败、要么读到错误 msgID。
+// 因此这里必须用长度前缀显式切帧（与 quic / ws / tcp 一致），并校验上限防止
+// 对端用一个超大长度前缀把本端内存拖爆。
 func (s *Server) readLoop(c *Conn) {
-	buf := make([]byte, 65536) // 64KB 缓冲区
+	var header [wtFrameLenSize]byte
 	for {
-		n, err := c.stream.Read(buf)
-		if err != nil {
-			if s.closed.Load() {
+		if _, err := io.ReadFull(c.stream, header[:]); err != nil {
+			if s.closed.Load() || errors.Is(err, io.EOF) || errors.Is(err, net.ErrClosed) {
+				_ = c.Close()
 				return
 			}
-			logger.Errorf("webtransport read: %v", err)
+			logger.Errorf("webtransport read header: %v", err)
 			_ = c.Close()
 			return
 		}
+		size := binary.BigEndian.Uint32(header[:])
+		if size > maxWTFrameSize {
+			// 长度前缀超限即流已错位，继续读只会读到垃圾：直接断开。
+			logger.Errorf("webtransport frame too large: %d > %d, closing %s", size, maxWTFrameSize, c.ConnID())
+			_ = c.Close()
+			return
+		}
+		data := make([]byte, size)
+		if size > 0 {
+			if _, err := io.ReadFull(c.stream, data); err != nil {
+				if s.closed.Load() || errors.Is(err, io.EOF) || errors.Is(err, net.ErrClosed) {
+					_ = c.Close()
+					return
+				}
+				logger.Errorf("webtransport read body: %v", err)
+				_ = c.Close()
+				return
+			}
+		}
 		c.touch()
-		data := append([]byte(nil), buf[:n]...)
 		if s.handler != nil {
 			d := data
 			safe.SafeRun(func() { s.handler(c, d) })
@@ -212,13 +262,14 @@ func (s *Server) cleanLoop() {
 	}.Run()
 }
 
-// Addr 返回配置的监听地址（未解析系统实际分配的端口）。
+// Addr 返回**实际**监听地址：ListenAddr 带 ":0" 时返回 OS 实际分配的端口。
+// 未启动时退回配置值。
 func (s *Server) Addr() string {
 	s.mu.Lock()
-	h3Server := s.h3Server
+	addr := s.addr
 	s.mu.Unlock()
-	if h3Server != nil {
-		return s.cfg.ListenAddr
+	if addr != "" {
+		return addr
 	}
 	return s.cfg.ListenAddr
 }
@@ -234,12 +285,18 @@ func (s *Server) Stop() error {
 	s.doneOnce.Do(func() { close(s.doneCh) })
 	s.mu.Lock()
 	server := s.server
+	pc := s.pc
 	s.mu.Unlock()
 	if server != nil {
 		// iwt.Server.Close 会关闭其 H3 http3.Server 并关闭全部已建立的 QUIC 连接。
 		_ = server.Close()
 	}
-	// 等待 ListenAndServe goroutine 退出（server.Close 后即返回）。
+	// pc 是本模块自行绑定的监听：库只借它 Serve，不一定负责关闭，
+	// 这里显式关掉（重复关闭仅返回错误，可忽略）。
+	if pc != nil {
+		_ = pc.Close()
+	}
+	// 等待 Serve goroutine 退出（server.Close 后即返回）。
 	s.wg.Wait()
 	s.mgr.CloseAll()
 	return nil

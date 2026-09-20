@@ -33,17 +33,11 @@ type TLSConfig struct {
 // JetStreamConfig JetStream 持久化配置。
 type JetStreamConfig struct {
 	Enable bool `yaml:"enable" mapstructure:"enable"` // 游戏必须开启持久化，防止消息丢失
-	// StorageType 流存储类型（memory / file）。
-	//
-	// ⚠️ 当前**无任何读取点、配了不生效**：本字段只服务于「引擎预建流」，
-	// 而预建流的入口 CreateStream / CreateConsumer 已按死代码删除
-	//（见 jetstream.go 顶部说明）——流改由部署侧预建，配置也随之失去了引擎侧读者。
-	// 保留字段是为了不破坏既有 yaml（配了不报错），但**不要指望它生效**。
-	StorageType string `yaml:"storage_type" mapstructure:"storage_type"`
-	// MaxMsgAge 消息保留时长。
-	//
-	// ⚠️ 与 StorageType 同一情况：唯一读者是已删除的 CreateStream → 当前不生效。
-	MaxMsgAge time.Duration `yaml:"max_msg_age" mapstructure:"max_msg_age"`
+	// 说明：本结构体原有 StorageType / MaxMsgAge 两个字段，它们只服务于「引擎预建流」，
+	// 而预建流的入口 CreateStream / CreateConsumer 已按死代码删除（见 jetstream.go 顶部说明）
+	// —— 流改由部署侧预建，这两个字段因此在引擎内**没有任何读取点、配了不生效**，
+	// 属"静默失效的配置项"，已一并删除。yaml 里若仍写着 storage_type / max_msg_age，
+	// 会被 mapstructure 静默忽略（不再报错），但不会有任何效果。
 }
 
 // defaultMaxReconnect 是「未设置 max_reconnect」时的默认值：-1 = 无限重连，仅 Close() 才断开。
@@ -62,9 +56,7 @@ func DefaultConfig() NatsConfig {
 		DialTimeout:    2 * time.Second,
 		MsgTimeout:     500 * time.Millisecond,
 		JetStream: JetStreamConfig{
-			Enable:      true,
-			StorageType: "file",
-			MaxMsgAge:   72 * time.Hour,
+			Enable: true,
 		},
 	}
 }

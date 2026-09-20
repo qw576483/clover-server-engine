@@ -4,10 +4,20 @@ import (
 	"crypto/tls"
 	"net/http"
 	"time"
+
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 )
 
 // defaultIdleTimeout 默认空闲超时。
 const defaultIdleTimeout = 30 * time.Second
+
+// wtFrameLenSize 可靠流帧长前缀字节数（4 字节大端）。与 quic / ws / tcp 的线格式一致：
+// 长度前缀让对端能按帧切分流，而不是把每次 Read 当成一条完整消息。
+const wtFrameLenSize = 4
+
+// maxWTFrameSize 单帧 body 上限，取自 session.MaxFrameSize（服务端帧上限的唯一来源，
+// 与 tcp / ws / quic 传输层、网关配置默认值、会话加密密文上限同值）。
+const maxWTFrameSize = session.MaxFrameSize
 
 // ServerConfig WebTransport 服务器配置。
 type ServerConfig struct {

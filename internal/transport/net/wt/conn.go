@@ -1,12 +1,14 @@
 package wt
 
 import (
+	"encoding/binary"
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 	iwt "github.com/quic-go/webtransport-go"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 )
 
 // Conn WebTransport 连接，实现 session.Session。
@@ -62,12 +64,37 @@ func (c *Conn) Send(data []byte) error {
 	if c.stream == nil {
 		return session.ErrClosed
 	}
-	if _, err := c.stream.Write(data); err != nil {
+	if err := writeStreamFrame(c.stream, data); err != nil {
 		return err
 	}
 	// 发送成功也是活跃信号：不更新会让「仅被推送」的连接被 IdleScanner 误杀。
 	c.touchWrite()
 	return nil
+}
+
+// streamWriter 是 WT 可靠流的写接口（*iwt.Stream 满足），便于帧编解码复用与单测。
+type streamWriter interface {
+	Write(p []byte) (int, error)
+}
+
+// writeStreamFrame 按 [4B 大端长度][body] 帧格式写一条可靠消息。
+// 与 quic / ws 的线格式一致：长度前缀让对端能按帧切分流，
+// 而不是把每次 Read 的返回当成一条完整消息（后者在 TCP 语义下会被任意拆分/合并）。
+func writeStreamFrame(w streamWriter, data []byte) error {
+	if len(data) > maxWTFrameSize {
+		return fmt.Errorf("wt: frame too large: %d", len(data))
+	}
+	var header [wtFrameLenSize]byte
+	// #nosec G115 -- 转换前已判 len(data) <= maxWTFrameSize（10MiB），远小于 uint32 范围。
+	binary.BigEndian.PutUint32(header[:], uint32(len(data)))
+	if _, err := w.Write(header[:]); err != nil {
+		return err
+	}
+	if len(data) == 0 {
+		return nil
+	}
+	_, err := w.Write(data)
+	return err
 }
 
 // SendUnreliable 向对端发送不可靠数据（通过 WT Datagram）。
@@ -84,11 +111,11 @@ func (c *Conn) SendUnreliable(data []byte) error {
 	// 尝试通过 WT Datagram 发送
 	err := c.session.SendDatagram(data)
 	if err != nil {
-		// Datagram 不支持或发送失败，降级为 Stream（可靠传输）
+		// Datagram 不支持或发送失败，降级为 Stream（可靠传输，同样带长度前缀）。
 		if c.stream == nil {
 			return session.ErrClosed
 		}
-		if _, werr := c.stream.Write(data); werr != nil {
+		if werr := writeStreamFrame(c.stream, data); werr != nil {
 			return werr
 		}
 	}

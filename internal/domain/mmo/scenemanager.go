@@ -3,7 +3,6 @@ package mmo
 import (
 	"context"
 	"sync"
-	"sync/atomic"
 	"time"
 
 	"github.com/qw576483/clover-server-engine/internal/domain/data"
@@ -185,13 +184,18 @@ func (sm *SceneManager) TransferRemote(dstSceneID, objID uint64, pos Vec3) error
 		Version: sm.nextXferVersion(),
 		SrcNode: conv.FormatUint(sm.opts.nodeID),
 	}
-	// ⚠️ 已知限制（明确标注，未擅自扩线格式）：Body 不随跨机指令搬运，
-	// 同机 TransferTo 会 AddBody、跨机不会 ⇒ 物理属性（Mass/Radius/Velocity/Force/Static）丢失。
-	// 必须留痕：否则现象只是"跨图后手感变了 / 击退不再生效"，现场无从判断是否发生过。
-	// 详见 transport.RemoteTransfer 的说明与 HandleRemoteTransfer 的注释。
+	// 物理体随指令一起搬运：同机 TransferTo 会把 Body 整份拷贝过去并 AddBody，
+	// 跨机若不带 Body，Mass / Radius / Velocity / Force / Static 就会静默丢失
+	//（现象是"跨图后手感变了、击退不再生效"，现场极难定位）。
 	if b := src.Body(objID); b != nil {
-		xferBodyDropWarnf("mmo: 跨机迁移不搬运物理体 obj=%d -> scene=%d (Mass=%v Radius=%v Static=%t)：Body 不在迁移指令载荷内",
-			objID, dstSceneID, b.Mass, b.Radius, b.Static)
+		rt.Body = &transport.RemoteBody{
+			Mass:     b.Mass,
+			Radius:   b.Radius,
+			Position: [3]float64{b.Position.X, b.Position.Y, b.Position.Z},
+			Velocity: [3]float64{b.Velocity.X, b.Velocity.Y, b.Velocity.Z},
+			Force:    [3]float64{b.Force.X, b.Force.Y, b.Force.Z},
+			Static:   b.Static,
+		}
 	}
 	// 发布同样必须有界：JetStream 发布带重试/退避，用 Background 时调用方超时后它还在重试。
 	pubCtx, pubCancel := sceneRouteCtx()
@@ -201,17 +205,6 @@ func (sm *SceneManager) TransferRemote(dstSceneID, objID uint64, pos Vec3) error
 	}
 	src.Leave(objID)
 	return nil
-}
-
-// xferBodyDropWarnf 跨机迁移丢失物理体的降频日志（首次必打 + 之后每 100 次一条）。
-// 迁移是低频操作，但集群里可能持续发生（如大量怪/召唤物跨图），逐条打印没有意义。
-var xferBodyDropCount atomic.Uint64
-
-func xferBodyDropWarnf(format string, args ...any) {
-	n := xferBodyDropCount.Add(1)
-	if n == 1 || n%100 == 0 {
-		logger.Warnf(format+" (累计 %d 次)", append(args, n)...)
-	}
 }
 
 // findSceneOf 经 objID→Scene 索引查找，O(1)。
@@ -338,10 +331,20 @@ func (sm *SceneManager) HandleRemoteTransfer(rt transport.RemoteTransfer) error 
 		sm.rollbackXferVersion(rt.ObjID, rt.Version)
 		return err
 	}
-	// ⚠️ 此处**不重建物理体**：迁移指令（transport.RemoteTransfer）里没有 Body 载体，
-	// 且本轮约束不允许改跨节点线格式 ⇒ 跨机迁移后 Mass/Radius/Velocity/Force/Static 丢失。
-	// 这是**已标注的已知限制**（不是漏写）：发送端会在对象确实挂了物理体时打 Warn
-	//（见 TransferRemote 的 xferBodyDropWarnf），因此这件事在日志里可见。
+	// 物理体按快照重建：与同机 TransferTo 完全一致 —— 那边是「整份拷贝后 AddBody」，
+	// 且**位置以本次迁移落点为准**（cp.Position = pos），而不是沿用源场景里的旧坐标。
+	// 不做这一步，跨机迁移后 Mass/Radius/Velocity/Force/Static 会静默丢失。
+	if rt.Body != nil {
+		r.AddBody(rt.ObjID, &Body{
+			Mass:   rt.Body.Mass,
+			Radius: rt.Body.Radius,
+			// 落点用本次迁移的坐标：源侧 Body.Position 是离开前的旧位置。
+			Position: Vec3{X: rt.X, Y: rt.Y, Z: rt.Z},
+			Velocity: Vec3{X: rt.Body.Velocity[0], Y: rt.Body.Velocity[1], Z: rt.Body.Velocity[2]},
+			Force:    Vec3{X: rt.Body.Force[0], Y: rt.Body.Force[1], Z: rt.Body.Force[2]},
+			Static:   rt.Body.Static,
+		})
+	}
 	return nil
 }
 

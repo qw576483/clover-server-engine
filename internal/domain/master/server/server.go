@@ -7,14 +7,32 @@ import (
 	"context"
 	"crypto/subtle"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
 	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
 	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/app/types"
 	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
+
+// ErrNonLoopbackWithoutToken master 内部 RPC 绑到了非回环地址却没配共享密钥。
+//
+// 这条通道上挂着 MsgSessionNew / MsgSessionValidate / MsgPlayerRegister / MsgRank* 等
+// **无调用方身份校验**的写接口：无 token + 非回环 = 任何能连上该端口的人都能替任意
+// playerID 签发 session token（绕过登录做会话恢复）、篡改玩家定位与排行榜。
+// 因此这是**启动期硬错误**；不做「静默降级成回环」——那会让运维以为已按配置绑到内网。
+var ErrNonLoopbackWithoutToken = errors.New("master/tcp: listen_addr is not loopback but master token is empty")
+
+// validateAuth 校验「非回环绑定必须配共享密钥」这条安全边界（与 admin 控制面同一判据）。
+func validateAuth(addr, token string) error {
+	if token != "" || types.IsLoopbackAddr(addr) {
+		return nil
+	}
+	return fmt.Errorf("%w (addr=%q)", ErrNonLoopbackWithoutToken, addr)
+}
 
 // masterRPCTimeout 单次 master RPC 中后端 IO（Redis）的预算：
 // 所有 handler 共享的 context.Background() 不可取消，后端抖动时 handler 会被
@@ -28,6 +46,10 @@ func Serve(addr string, st *state.State, token string) (*tcpmsg.Server, error) {
 	if st == nil {
 		// 与同包 RegisterHealth 的显式判空一致：nil state 时首个请求即空指针 panic。
 		return nil, fmt.Errorf("master/tcp: state must not be nil")
+	}
+	// 安全边界先于监听：无密钥的非回环绑定一旦真的 listen，就在暴露写接口。
+	if err := validateAuth(addr, token); err != nil {
+		return nil, err
 	}
 	srv := tcpmsg.NewServer(addr)
 	installConnAuth(srv, token)
@@ -48,6 +70,10 @@ func Serve(addr string, st *state.State, token string) (*tcpmsg.Server, error) {
 func Create(addr string, st *state.State, token string) *tcpmsg.Server {
 	if st == nil {
 		panic("master/server: state must not be nil")
+	}
+	// 与 Serve 同一判据：非回环 + 无密钥 = 暴露无鉴权的 session 写接口，启动期就直接失败。
+	if err := validateAuth(addr, token); err != nil {
+		panic(err.Error())
 	}
 	srv := tcpmsg.NewServer(addr)
 	installConnAuth(srv, token)

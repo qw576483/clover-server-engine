@@ -52,6 +52,12 @@ const (
 	// maxCrossNodeEventTypeLen 跨节点事件名长度上限（字节）。
 	// 事件名是代码里写死的有限枚举，正常远小于该值；超长只可能来自伪造载荷。
 	maxCrossNodeEventTypeLen = 256
+
+	// maxCrossNodeBodyLen 跨节点事件 body 长度上限（字节）。
+	// body 是业务载荷，正常远小于该值。不设限等于把「NATS 单条消息上限」当成了
+	// 本节点的解码/内存开销上限 —— 一端拼一个超大 body 就能让订阅该 subject 的
+	// 每个节点都白解一遍，属于可被放大的资源消耗。
+	maxCrossNodeBodyLen = 1 << 20 // 1 MiB
 )
 
 // ctxKeyCrossNodeEvent 是 context 中"处于同步事件 handler"标记的键类型。
@@ -61,6 +67,10 @@ const crossNodeEventKey ctxKeyCrossNodeEvent = 0
 
 // ErrNestedCrossNodeEvent 同步事件 handler 内再发跨节点同步事件时返回。
 var ErrNestedCrossNodeEvent = errors.New("crossnode: 同步事件 handler 内禁止再发跨节点同步事件")
+
+// crossNoMsgIDLogCount 统计「远端事件未携带 MsgID」的出现次数，用于降频留痕
+// （幂等去重依赖 MsgID，缺失时重投会被重复处理）。
+var crossNoMsgIDLogCount atomic.Uint64
 
 // withCrossNodeEventInProgress 标记 ctx 处于同步事件 handler 执行期。
 func withCrossNodeEventInProgress(ctx context.Context) context.Context {
@@ -914,6 +924,23 @@ func (b *CrossNodeEventBus) onRemoteEvent(msg *nats.Msg) {
 		metricCrossRejected()
 		b.respondAck(msg, Ack{MsgID: evt.MsgID, Status: AckRejected, Node: b.nodeID, Error: "非法事件类型"})
 		return
+	}
+	// body 大小上限：超限直接拒绝，不让一条超大载荷把每个接收节点都拖进解码。
+	if len(evt.Body) > maxCrossNodeBodyLen {
+		logger.Errorf("crossnode: reject remote event with oversized body (type=%s source=%s len=%d limit=%d)",
+			evt.EventType, evt.Source, len(evt.Body), maxCrossNodeBodyLen)
+		metricCrossRejected()
+		b.respondAck(msg, Ack{MsgID: evt.MsgID, Status: AckRejected, Node: b.nodeID, Error: "事件体过大"})
+		return
+	}
+	// MsgID 为空 = 下面的幂等去重整段被跳过，发送方重投会造成同一事件被重复处理。
+	// 引擎有少数内部事件本就不带 MsgID，因此不能拒绝；但必须让它可见，
+	// 否则「重复处理」在现场会表现为无从解释的业务重放。
+	if evt.MsgID == "" {
+		if n := crossNoMsgIDLogCount.Add(1); n == 1 || n%1000 == 0 {
+			logger.Warnf("crossnode: remote event without MsgID (type=%s source=%s): 幂等去重被跳过，重投会重复处理",
+				evt.EventType, evt.Source)
+		}
 	}
 
 	// 幂等去重：同一 MsgID 重复到达（发送方重投 / NATS 重复投递）且此前已成功

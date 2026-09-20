@@ -47,40 +47,43 @@ const (
 
 // Envelope 通用事件信封。所有事件统一以此为载体。
 //
-// ⚠️ 本类型是**进程内**载体，不可整体 JSON 往返：Ctx 是运行时上下文（序列化后为 null）、
-// Payload 是 any（json 往返退化为 map[string]any，具体类型丢失）、字段本身无 json tag
-// （编码后字段名是 Go 原名）。需要跨进程传输请走专门载荷（如 crossnode 的 CrossNodePayload），
-// 需要打日志请用专用 DTO —— 不要对 Envelope 直接 json.Marshal 后指望能还原。
+// ⚠️ 本类型是**进程内**载体，不可整体 JSON 往返：Ctx 是运行时上下文（标了 json:"-"，不参与序列化）、
+// Payload 是 any（json 往返退化为 map[string]any，具体类型丢失）。字段已带小写下划线 json tag，
+// 因此往返后**字段名可保持稳定**，但类型信息与 Ctx 仍无法还原。
+// 需要跨进程传输请走专门载荷（如 crossnode 的 CrossNodePayload），
+// 需要打日志请用专用 DTO —— 不要对 Envelope 直接 json.Marshal 后指望能还原成原类型。
 type Envelope struct {
-	ID        string          // 事件唯一 ID
-	Type      string          // 事件类型，见 Event* 常量
-	MsgID     uint32          // 消息号 / opcode：标记事件种类的协议号
-	Source    string          // 来源标识：gateway / logic / data
-	UID       string          // 关联玩家 UID（可选）
-	ConnID    string          // 关联连接 ID（可选）
-	TraceID   string          // 全链路追踪 ID（可选）
-	Timestamp time.Time       // 产生时间
-	Payload   any             // 类型化载荷（*ClientRequestPayload / *ServerNotifyPayload / *InternalServerPayload）
-	Ctx       context.Context // 原始请求上下文（含超时/trace/Owner），bus handler 通过它感知链路信息
+	ID        string    `json:"id"`        // 事件唯一 ID
+	Type      string    `json:"type"`      // 事件类型，见 Event* 常量
+	MsgID     uint32    `json:"msg_id"`    // 消息号 / opcode：标记事件种类的协议号
+	Source    string    `json:"source"`    // 来源标识：gateway / logic / data
+	UID       string    `json:"uid"`       // 关联玩家 UID（可选）
+	ConnID    string    `json:"conn_id"`   // 关联连接 ID（可选）
+	TraceID   string    `json:"trace_id"`  // 全链路追踪 ID（可选）
+	Timestamp time.Time `json:"timestamp"` // 产生时间
+	// Payload 类型化载荷（*ClientRequestPayload / *ServerNotifyPayload / *InternalServerPayload）。
+	// tag 只保证字段名；具体类型经 JSON 往返会退化为 map[string]any。
+	Payload any             `json:"payload"`
+	Ctx     context.Context `json:"-"` // 原始请求上下文（含超时/trace/Owner），bus handler 通过它感知链路信息；非线协议字段，不参与序列化
 }
 
 // ClientRequestPayload 客户端上行请求载荷。
 type ClientRequestPayload struct {
-	Body []byte // 原始请求体（协议层按 MsgID 解码前的字节流）
+	Body []byte `json:"body"` // 原始请求体（协议层按 MsgID 解码前的字节流）
 }
 
 // ServerNotifyPayload 服务器→客户端下行通知载荷。
 type ServerNotifyPayload struct {
-	Target   TargetKind // 投递目标：player / group / gate
-	TargetID string     // 目标 ID：玩家 UID / 组 ID / 网关 ID（gate 可空=全部网关）
-	Body     []byte     // 下行编码体
+	Target   TargetKind `json:"target"`    // 投递目标：player / group / gate
+	TargetID string     `json:"target_id"` // 目标 ID：玩家 UID / 组 ID / 网关 ID（gate 可空=全部网关）
+	Body     []byte     `json:"body"`      // 下行编码体
 }
 
 // InternalServerPayload 服务器→服务器内部事件载荷。
 type InternalServerPayload struct {
-	PlayerUID string // 关联玩家 UID（可选，跨服定位用）
-	Object    any    // MMO 对象事件载体（实体快照/变更等）；无对象语义时可空
-	Body      []byte // 内部协议体
+	PlayerUID string `json:"player_uid"` // 关联玩家 UID（可选，跨服定位用）
+	Object    any    `json:"object"`     // MMO 对象事件载体（实体快照/变更等）；无对象语义时可空
+	Body      []byte `json:"body"`       // 内部协议体
 }
 
 // EventOption 信封可选修饰（设置 TraceID / Source / ConnID / MsgID / UID 等）。
