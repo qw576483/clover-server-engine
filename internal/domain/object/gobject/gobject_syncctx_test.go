@@ -5,8 +5,8 @@ import (
 	"sync"
 	"testing"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 )
 
 // ============================================================================

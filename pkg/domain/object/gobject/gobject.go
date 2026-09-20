@@ -11,7 +11,7 @@
 package gobject
 
 import (
-	igobject "clover-server-engine/internal/domain/object/gobject"
+	igobject "github.com/qw576483/clover-server-engine/internal/domain/object/gobject"
 )
 
 // Component 是 GameObject 可挂载的运行时组件（运行时装配、迁移时 Dump/Import）。

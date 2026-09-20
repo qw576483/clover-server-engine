@@ -9,7 +9,7 @@
 package combat
 
 import (
-	object "clover-server-engine/pkg/domain/object"
+	object "github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // Result 单次 Apply 的结果快照。

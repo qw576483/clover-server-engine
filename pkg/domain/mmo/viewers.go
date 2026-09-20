@@ -1,6 +1,6 @@
 package mmo
 
-import "clover-server-engine/internal/domain/mmo"
+import "github.com/qw576483/clover-server-engine/internal/domain/mmo"
 
 // 本文件提供「先算观看者、再推送」这套 AOI 推送纪律的**唯一入口**。
 // 为什么必须有（每个 AOI 项目都要写一遍，且写错是静默的）：

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
 )
 
 // AuthorityClient 节点权威远程客户端。

@@ -17,9 +17,9 @@ import (
 	"context"
 	"fmt"
 
-	"clover-server-engine/internal/transport/etcd"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/transport/etcd"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // nodeKeyRoot 节点目录的 etcd 根前缀。

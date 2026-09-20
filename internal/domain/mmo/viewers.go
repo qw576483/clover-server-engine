@@ -3,8 +3,8 @@ package mmo
 import (
 	"strconv"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/pkg/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/shared/proto"
 )
 
 // 本文件提供「先算观看者、再推送」这套 AOI 推送纪律的**唯一实现**。

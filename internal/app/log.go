@@ -7,14 +7,14 @@ import (
 	"net/http"
 	"sync"
 
-	"clover-server-engine/internal/domain/log/server"
-	"clover-server-engine/internal/domain/log/state"
-	"clover-server-engine/internal/shared/config"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/internal/transport/tcpmsg"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/foundation/logstore"
-	"clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/server"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/state"
+	"github.com/qw576483/clover-server-engine/internal/shared/config"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logstore"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // LogGame log 服内核：headless *Core（消息派发 / 事件 / 定时器 / 数据）+ 日志专属逻辑（落盘）。

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"clover-server-engine/internal/shared/retry"
-	ilog "clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/retry"
+	ilog "github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 )

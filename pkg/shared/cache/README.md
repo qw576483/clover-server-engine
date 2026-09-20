@@ -216,5 +216,5 @@ if errors.Is(err, cache.ErrReentrantLoad) {
 ## 依赖关系
 
 - **标准库**：`container/list`（LRU/FIFO 链表）、`context`、`fmt`、`runtime`（goID）、`sync`、`sync/atomic`、`time`。
-- **引擎内部**：`clover-server-engine/pkg/shared/util`（`Fnv32` 用于分片路由）。
+- **引擎内部**：`pkg/shared/util`（`Fnv32` 用于分片路由）。
 - 无第三方依赖，可纯内存单测；上层通常垫在 `data.Store` 之前。

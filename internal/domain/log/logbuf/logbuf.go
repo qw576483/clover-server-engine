@@ -22,11 +22,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/log/client"
-	"clover-server-engine/internal/domain/log/state"
-	plogbuf "clover-server-engine/pkg/foundation/logbuf"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/ringbuf"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/client"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/state"
+	plogbuf "github.com/qw576483/clover-server-engine/pkg/foundation/logbuf"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/ringbuf"
 )
 
 // LogEntry 单条业务日志，真身定义在 pkg/foundation/logbuf。

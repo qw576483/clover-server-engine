@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // ProcessStarters 各角色进程的启动函数集合，由调用方按自己的支持范围填充。

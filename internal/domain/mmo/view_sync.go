@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	internalaoi "clover-server-engine/internal/domain/mmo/spatial/aoi"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	internalaoi "github.com/qw576483/clover-server-engine/internal/domain/mmo/spatial/aoi"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // snapshotIOTimeout 进视野快照拉取的兜底超时。

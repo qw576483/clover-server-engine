@@ -5,7 +5,7 @@ import (
 	"hash/fnv"
 	"math/bits"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 	"github.com/cespare/xxhash/v2"
 )
 

@@ -13,9 +13,9 @@
 package skill
 
 import (
-	buffpkg "clover-server-engine/pkg/domain/mmo/buff"
-	combatpkg "clover-server-engine/pkg/domain/mmo/combat"
-	object "clover-server-engine/pkg/domain/object"
+	buffpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/buff"
+	combatpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/combat"
+	object "github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // TargetType 技能目标类型。

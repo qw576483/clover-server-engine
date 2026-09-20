@@ -9,8 +9,8 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"clover-server-engine/internal/shared/config"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/config"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 错误变量

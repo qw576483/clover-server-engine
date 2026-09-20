@@ -2,7 +2,7 @@
 //
 // 业务 / 框架层统一从本包引用对象仓储能力：
 //
-//	import "clover-server-engine/pkg/domain/object/objstore"
+//	import "github.com/qw576483/clover-server-engine/pkg/domain/object/objstore"
 //	repo := objstore.NewRepository(store,
 //	    objstore.WithGenerator(idgen.NewStoreGenerator(store, 0, 0)),
 //	    objstore.WithManager(manager),
@@ -25,8 +25,8 @@
 package objstore
 
 import (
-	igobject "clover-server-engine/internal/domain/object/gobject"
-	iobjstore "clover-server-engine/internal/domain/object/objstore"
+	igobject "github.com/qw576483/clover-server-engine/internal/domain/object/gobject"
+	iobjstore "github.com/qw576483/clover-server-engine/internal/domain/object/objstore"
 )
 
 // Option 仓储构造选项：接收门面层 Repository 接口，按需注入可选组件。

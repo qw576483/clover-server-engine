@@ -11,7 +11,7 @@ package memrank
 import (
 	"encoding/json"
 
-	"clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
 )
 
 // RangeOpts 按分数区间查询的可选项。

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	pdata "clover-server-engine/pkg/domain/data"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/timeutil"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	pdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // MySQL 持久层

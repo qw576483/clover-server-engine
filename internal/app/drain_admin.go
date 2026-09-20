@@ -28,8 +28,8 @@ import (
 	"strconv"
 	"time"
 
-	"clover-server-engine/internal/foundation/ophttp"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/foundation/ophttp"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // drainRequest POST /admin/drain 的请求体。全部字段可选，缺省回落默认值。

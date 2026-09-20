@@ -6,7 +6,7 @@
 
 ## 规则与约束
 
-1. **必须为本包或标准库 `encoding/json` 起别名**：包名 `json` 与标准库同名，同时使用两者的文件必须采用引擎约定的 `ujson "clover-server-engine/pkg/shared/json"`。
+1. **必须为本包或标准库 `encoding/json` 起别名**：包名 `json` 与标准库同名，同时使用两者的文件必须采用引擎约定的 `ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"`。
 2. **本包仅统一 `Marshal` / `Unmarshal` 两个入口**：`MarshalIndent`、`Encoder` / `Decoder`、`Valid`、`Compact`、`RawMessage` 等仍需直接引用 `encoding/json`。
 3. **高频大对象序列化的优化由调用方负责**：本包不做缓冲池复用与预分配，每次 `Marshal` 都会新分配字节切片。
 4. **必须遵守 `encoding/json` 的行为约定**：map 键按字典序排序输出；`[]byte` 序列化为 base64 字符串；nil slice 输出 `null` 而空 slice 输出 `[]`；JSON 中缺失的字段保留目标变量原值；字段名匹配大小写不敏感；目标为 `any` 时数字解析为 `float64`；未导出字段不参与编解码；HTML 特殊字符默认转义。

@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/shared/timeutil"
-	"clover-server-engine/pkg/shared/traceid"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/pkg/shared/traceid"
 )
 
 // ErrClockBackward 系统时钟回拨幅度超过 uidClockWaitLimit、仍未追平上次时间戳时返回。

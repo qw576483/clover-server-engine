@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"clover-server-engine/internal/domain/master/state"
-	"clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
 )
 
 // RankClient 排行榜远程客户端，通过 master TCP 连接访问排行榜服务。

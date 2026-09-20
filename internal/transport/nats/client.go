@@ -10,12 +10,12 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	"clover-server-engine/internal/shared/config"
-	"clover-server-engine/internal/shared/tlsutil"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
-	"clover-server-engine/pkg/shared/id"
-	"clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/internal/shared/config"
+	"github.com/qw576483/clover-server-engine/internal/shared/tlsutil"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/pkg/shared/id"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // 错误变量

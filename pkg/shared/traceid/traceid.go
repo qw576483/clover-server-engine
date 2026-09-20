@@ -40,7 +40,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/foundation/trace"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/trace"
 )
 
 // Span 轻量 Span，零外部依赖。

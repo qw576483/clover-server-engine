@@ -20,7 +20,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // 事件方向/类型常量。

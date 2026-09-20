@@ -6,9 +6,9 @@ package push
 import (
 	"errors"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/shared/proto"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // EAlertNotify 弹窗提示内容（= proto.EAlertNotify）。

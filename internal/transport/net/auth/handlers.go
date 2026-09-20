@@ -2,10 +2,10 @@
 package auth
 
 import (
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // ValidateSessionFunc 校验 session token（Game.ValidateSessionToken）。

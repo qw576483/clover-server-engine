@@ -18,7 +18,7 @@ import (
 	"context"
 	"errors"
 
-	obj "clover-server-engine/pkg/domain/object"
+	obj "github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // 数据存储抽象（Store 接口）

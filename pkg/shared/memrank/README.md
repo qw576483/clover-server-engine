@@ -4,8 +4,8 @@
 
 `memrank` 提供**通用有序榜（排行榜）引擎原语**。核心抽象是 `SortedSet` 接口，把「有序集合」的能力（设分、增分、查排名、取 TopN、按区间查询）标准化，默认给出线程安全的内存实现 `MemSortedSet`；若需要 Redis ZSET 后端，实现同一接口注入即可，业务代码零改动。在此之上提供 `Manager` 多榜注册表（按名字管理多个榜单）与**段位门槛（`master.Thresholds`）**机制——支持「排名区间需达到某最低分才能占位」的常见玩法规则，不满足门槛的名次会被跳空。包内还提供了一组包级便捷函数（`rank.Add` / `rank.Top` 等）直接操作默认 Manager。
 
-> 示例别名说明：本文示例中的 `rank.` 指本包（`import rank "clover-server-engine/pkg/shared/memrank"`，实际包名为 `memrank`）；
-> `master.` 指 `clover-server-engine/pkg/domain/master`（`RankMember` / `Threshold` / `Thresholds` 类型真身所在，本包直接复用）。
+> 示例别名说明：本文示例中的 `rank.` 指本包（`import rank "github.com/qw576483/clover-server-engine/pkg/shared/memrank"`，实际包名为 `memrank`）；
+> `master.` 指 `pkg/domain/master`（`RankMember` / `Threshold` / `Thresholds` 类型真身所在，本包直接复用）。
 
 ## 规则与约束
 

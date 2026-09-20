@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"clover-server-engine/pkg/domain/data"
-	"clover-server-engine/pkg/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/shared/proto"
 )
 
 // viewersStubScene 只实现本文件用到的两个方法（其余靠嵌入接口占位）。

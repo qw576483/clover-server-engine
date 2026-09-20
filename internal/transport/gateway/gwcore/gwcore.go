@@ -22,19 +22,19 @@ import (
 	"sync/atomic"
 	"time"
 
-	iconn "clover-server-engine/internal/transport/gateway/conn"
-	"clover-server-engine/internal/transport/nats"
-	"clover-server-engine/internal/transport/net/demux"
-	"clover-server-engine/internal/transport/net/quic"
-	"clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/internal/transport/net/udp"
-	"clover-server-engine/internal/transport/net/ws"
-	"clover-server-engine/internal/transport/net/wt"
-	ratelimt "clover-server-engine/pkg/runtime/ratelimit"
+	iconn "github.com/qw576483/clover-server-engine/internal/transport/gateway/conn"
+	"github.com/qw576483/clover-server-engine/internal/transport/nats"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/demux"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/quic"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/udp"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/ws"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/wt"
+	ratelimt "github.com/qw576483/clover-server-engine/pkg/runtime/ratelimit"
 
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // heartbeat 心跳间隔（网关 ↔ 客户端、网关 ↔ 逻辑服共用），**服务端主动探测**语义。

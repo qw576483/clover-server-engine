@@ -34,10 +34,10 @@ import (
 	"fmt"
 	"reflect"
 
-	iframe "clover-server-engine/internal/domain/room/frame"
-	proom "clover-server-engine/pkg/domain/room"
-	pframe "clover-server-engine/pkg/domain/room/frame"
-	"clover-server-engine/pkg/foundation/logger"
+	iframe "github.com/qw576483/clover-server-engine/internal/domain/room/frame"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	pframe "github.com/qw576483/clover-server-engine/pkg/domain/room/frame"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // isNilInterface 判断接口值是否为 nil 或「typed-nil」（非空接口里装了 nil 指针/映射/切片等）。

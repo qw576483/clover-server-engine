@@ -21,7 +21,7 @@
 package app
 
 import (
-	iauth "clover-server-engine/internal/domain/auth"
+	iauth "github.com/qw576483/clover-server-engine/internal/domain/auth"
 )
 
 // ChannelVerifier 渠道票据校验器：将第三方票据换成「渠道内唯一账号标识」（如微信 openid）。

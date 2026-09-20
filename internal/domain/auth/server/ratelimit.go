@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/domain/auth/state"
-	"clover-server-engine/internal/foundation/ophttp"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/runtime/ratelimit"
+	"github.com/qw576483/clover-server-engine/internal/domain/auth/state"
+	"github.com/qw576483/clover-server-engine/internal/foundation/ophttp"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/ratelimit"
 )
 
 // rateLimitedResp 限流的统一回包（429）。文案与状态码都不区分「哪个账号/哪一步」，

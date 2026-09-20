@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	netpkg "clover-server-engine/internal/transport/net/tcp"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
 )
 
 // 测试用的握手消息号与共享密钥（真实取值由领域层给出，见 master state.MsgAuth）。

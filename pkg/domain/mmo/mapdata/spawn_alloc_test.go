@@ -3,7 +3,7 @@ package mapdata
 import (
 	"testing"
 
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // 造一张 1×5（宽 5、深 1）的可走位图：bit0=(0,0) bit2=(2,0) bit3=(3,0) 可走，1 与 4 格阻挡。

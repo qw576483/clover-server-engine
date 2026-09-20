@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	masterclient "clover-server-engine/internal/domain/master/client"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/id"
+	masterclient "github.com/qw576483/clover-server-engine/internal/domain/master/client"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/id"
 )
 
 // Store 管理 session token 的生命周期：

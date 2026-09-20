@@ -2,7 +2,7 @@
 // 实现位于 pkg/domain/mmo/mmo.go，委托给 internal 的寻路引擎。
 package pathfinding
 
-import "clover-server-engine/pkg/domain/mmo/ai/btree"
+import "github.com/qw576483/clover-server-engine/pkg/domain/mmo/ai/btree"
 
 // Point 二维整数坐标。
 type Point struct{ X, Z int32 }

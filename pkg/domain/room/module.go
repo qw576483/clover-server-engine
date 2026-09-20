@@ -8,8 +8,8 @@
 package room
 
 import (
-	"clover-server-engine/pkg/domain/room/frame"
-	"clover-server-engine/pkg/transport/event"
+	"github.com/qw576483/clover-server-engine/pkg/domain/room/frame"
+	"github.com/qw576483/clover-server-engine/pkg/transport/event"
 )
 
 // MasterCaller 描述 room 对游戏服节点能力的最小需求：调用 master + 切换上游。

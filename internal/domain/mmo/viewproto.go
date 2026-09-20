@@ -32,8 +32,8 @@ import (
 	"math"
 	"sync"
 
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 const (

@@ -5,8 +5,8 @@ import (
 	"sort"
 	"sync"
 
-	"clover-server-engine/internal/domain/auth/state"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/auth/state"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // ChannelRouter 把「按渠道名分发」收进引擎：业务注册多家，只向引擎注册一次。

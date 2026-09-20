@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"math"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Type 值类型标签（uint8）：标识属性列 / Bag 字段 / Record 的数据类型。

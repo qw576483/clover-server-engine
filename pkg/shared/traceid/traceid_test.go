@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"clover-server-engine/pkg/foundation/trace"
-	"clover-server-engine/pkg/shared/traceid"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/trace"
+	"github.com/qw576483/clover-server-engine/pkg/shared/traceid"
 )
 
 // TestSpanContextKeyShared_TraceidToTrace 钉住「两包共用同一个 context key」：

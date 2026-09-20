@@ -1,4 +1,4 @@
-module clover-server-engine
+module github.com/qw576483/clover-server-engine
 
 go 1.25.0
 

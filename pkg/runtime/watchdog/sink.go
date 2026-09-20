@@ -4,7 +4,7 @@ import (
 	"runtime/debug"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Alert 一条告警（投给 Sink 的载荷，也是 /watchdog 快照之外的对外载体）。

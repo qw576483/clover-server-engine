@@ -21,7 +21,7 @@
 // 逐字节规范见本包 README.md：
 //
 //	clover-client-unity-engine/Editor/MapBake/      读场景烘焙 + 编码（Unity Editor）
-//	clover-server-engine/pkg/domain/mmo/mapdata/     本包：服务端加载（碰撞 / 寻路 / 出生点）
+//	pkg/domain/mmo/mapdata/     本包：服务端加载（碰撞 / 寻路 / 出生点）
 //	clover-client-unity-engine/Runtime/Presentation/Map.cs  客户端本地预测（读同一份字节）
 package mapdata
 
@@ -30,8 +30,8 @@ import (
 	"fmt"
 	"math"
 
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // CloverMap 二进制格式 v1（小端）：

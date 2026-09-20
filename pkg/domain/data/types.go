@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"clover-server-engine/pkg/domain/object"
+	"github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // StorageTier 数据存储等级——由每个 StructSchema / RecordSchema 独立声明，

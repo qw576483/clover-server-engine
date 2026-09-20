@@ -2,7 +2,7 @@
 //
 // 业务 / 框架层统一从本包引用 MMO 能力：
 //
-//	import "clover-server-engine/pkg/domain/mmo"
+//	import "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
 //
 //	sm := mmo.NewSceneManager(mmo.WithTickRate(50*time.Millisecond), mmo.WithPublisher(pub))
 //	r := mmo.CreateScene(sm, 1, "map-1")
@@ -28,19 +28,19 @@
 package mmo
 
 import (
-	im "clover-server-engine/internal/domain/mmo"
-	ibuff "clover-server-engine/internal/domain/mmo/gameplay/buff"
-	imob "clover-server-engine/internal/domain/mmo/gameplay/mob"
-	iskill "clover-server-engine/internal/domain/mmo/gameplay/skill"
-	ispataoi "clover-server-engine/internal/domain/mmo/spatial/aoi"
-	ispf "clover-server-engine/internal/domain/mmo/spatial/pathfinding"
-	isync "clover-server-engine/internal/domain/mmo/sync/core"
-	buffpkg "clover-server-engine/pkg/domain/mmo/buff"
-	pkgcollide "clover-server-engine/pkg/domain/mmo/collide"
-	combatpkg "clover-server-engine/pkg/domain/mmo/combat"
-	mobpkg "clover-server-engine/pkg/domain/mmo/mob"
-	movpkg "clover-server-engine/pkg/domain/mmo/mover"
-	skillpkg "clover-server-engine/pkg/domain/mmo/skill"
+	im "github.com/qw576483/clover-server-engine/internal/domain/mmo"
+	ibuff "github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/buff"
+	imob "github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/mob"
+	iskill "github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/skill"
+	ispataoi "github.com/qw576483/clover-server-engine/internal/domain/mmo/spatial/aoi"
+	ispf "github.com/qw576483/clover-server-engine/internal/domain/mmo/spatial/pathfinding"
+	isync "github.com/qw576483/clover-server-engine/internal/domain/mmo/sync/core"
+	buffpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/buff"
+	pkgcollide "github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	combatpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/combat"
+	mobpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mob"
+	movpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mover"
+	skillpkg "github.com/qw576483/clover-server-engine/pkg/domain/mmo/skill"
 )
 
 // 错误透传。

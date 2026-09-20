@@ -3,8 +3,8 @@ package tcp
 import (
 	"net"
 
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Dial 拨号建立出站 TCP 连接（长度头协议 + 心跳）。

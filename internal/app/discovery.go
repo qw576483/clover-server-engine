@@ -33,9 +33,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/transport/etcd"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/internal/transport/etcd"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // 服务角色名（同时是 etcd 前缀的路径段）。

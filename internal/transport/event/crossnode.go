@@ -20,13 +20,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	ujson "clover-server-engine/pkg/shared/json"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 
-	"clover-server-engine/internal/domain/master/client"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/nats"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/foundation/trace"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/client"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/nats"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/trace"
 )
 
 // NATS subject 常量。

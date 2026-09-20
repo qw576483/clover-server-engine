@@ -5,11 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	irroom "clover-server-engine/internal/domain/room"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/tcpmsg"
-	proom "clover-server-engine/pkg/domain/room"
-	pevent "clover-server-engine/pkg/transport/event"
+	irroom "github.com/qw576483/clover-server-engine/internal/domain/room"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	pevent "github.com/qw576483/clover-server-engine/pkg/transport/event"
 )
 
 // TestMasterRoomHandlersRegisterInternalIDs 复现缺陷 S2（引擎内建房间消息号被业务号守卫拒绝）。

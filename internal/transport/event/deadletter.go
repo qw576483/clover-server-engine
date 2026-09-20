@@ -8,9 +8,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // // 跨服事件死信队列

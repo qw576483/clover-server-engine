@@ -19,7 +19,7 @@
 ## API
 
 ```go
-import "clover-server-engine/pkg/shared/graph"
+import "github.com/qw576483/clover-server-engine/pkg/shared/graph"
 
 // 1) 描述你的图
 type myGraph struct{ /* ... */ }

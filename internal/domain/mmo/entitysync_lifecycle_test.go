@@ -7,8 +7,8 @@ import (
 	"sync"
 	"testing"
 
-	idata "clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/transport"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/transport"
 )
 
 // ============================================================================

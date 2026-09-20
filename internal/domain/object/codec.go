@@ -7,7 +7,7 @@ import (
 	"math"
 	"strconv"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // int64 可精确表示的浮点边界（float64 下界 = -2^63，上界开区间 = 2^63）。

@@ -17,10 +17,10 @@ import (
 	"strconv"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/runtime/globalstore"
-	"clover-server-engine/internal/transport/pubsub"
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/runtime/globalstore"
+	"github.com/qw576483/clover-server-engine/internal/transport/pubsub"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // RemoteTransferSubject 是跨机对象迁移指令的 subject 前缀。

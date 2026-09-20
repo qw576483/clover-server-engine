@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	idata "clover-server-engine/internal/domain/data"
-	pkgmob "clover-server-engine/pkg/domain/mmo/mob"
-	"clover-server-engine/pkg/shared/geom"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
+	pkgmob "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mob"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // aggroScene 在 stubScene 基础上让 Neighbors 可配置（索敌用例要用）。

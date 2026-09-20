@@ -17,7 +17,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // ErrCapacityOverflow 当请求容量超出可表示的 2 的幂上限时返回。

@@ -5,10 +5,10 @@ import (
 	"runtime"
 	"time"
 
-	"clover-server-engine/internal/foundation/ophttp"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/foundation/metrics"
-	"clover-server-engine/pkg/runtime/watchdog"
+	"github.com/qw576483/clover-server-engine/internal/foundation/ophttp"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/watchdog"
 )
 
 // 内置巡检规则：进程 CPU 饱和。

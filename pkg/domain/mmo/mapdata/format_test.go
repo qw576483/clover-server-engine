@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"clover-server-engine/pkg/domain/mmo"
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // TestDecode_WalkableAndNav 验证导出产物的解码、可走性判定与导航网格构建。

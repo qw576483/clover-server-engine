@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"clover-server-engine/internal/domain/auth/state"
+	"github.com/qw576483/clover-server-engine/internal/domain/auth/state"
 )
 
 // TestIPLimiterGuardIsPerSource 限流必须按来源维度生效，且拒绝时回统一错误码 429。

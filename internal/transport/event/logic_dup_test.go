@@ -3,7 +3,7 @@ package event
 import (
 	"testing"
 
-	"clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
 )
 
 // 固化「收包路径不做框架级去重」这条边界。

@@ -23,12 +23,12 @@ import (
 	"sync"
 	"time"
 
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	iredis "clover-server-engine/internal/domain/data/store/redis"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	iredis "github.com/qw576483/clover-server-engine/internal/domain/data/store/redis"
 
-	pdata "clover-server-engine/pkg/domain/data"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/validate"
+	pdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/validate"
 )
 
 // P3 注册：将工厂函数注册到 pkg/domain/data 门面

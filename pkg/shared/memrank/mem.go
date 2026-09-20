@@ -6,8 +6,8 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"clover-server-engine/pkg/domain/master"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 单个榜单的成员数上限（0 表示不限）。

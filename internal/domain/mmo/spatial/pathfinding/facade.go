@@ -11,11 +11,11 @@
 package pathfinding
 
 import (
-	ibtree "clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
-	pkgbtree "clover-server-engine/pkg/domain/mmo/ai/btree"
-	pkgcollide "clover-server-engine/pkg/domain/mmo/collide"
-	pkgpf "clover-server-engine/pkg/domain/mmo/pathfinding"
-	"clover-server-engine/pkg/foundation/logger"
+	ibtree "github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
+	pkgbtree "github.com/qw576483/clover-server-engine/pkg/domain/mmo/ai/btree"
+	pkgcollide "github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	pkgpf "github.com/qw576483/clover-server-engine/pkg/domain/mmo/pathfinding"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // walkActionAdapter 把 internal 的 *WalkAction 适配成门面 pathfinding.WalkAction。

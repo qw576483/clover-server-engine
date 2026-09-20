@@ -6,9 +6,9 @@ package mob
 import (
 	"time"
 
-	"clover-server-engine/pkg/domain/data"
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // MobScene 是 mob 管理所需的最小场景接口。

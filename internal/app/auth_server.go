@@ -35,13 +35,13 @@ import (
 	"strings"
 	"sync"
 
-	authserver "clover-server-engine/internal/domain/auth/server"
-	authstate "clover-server-engine/internal/domain/auth/state"
-	idataorder "clover-server-engine/internal/domain/data/order"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/internal/transport/tcpmsg"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/timeutil"
+	authserver "github.com/qw576483/clover-server-engine/internal/domain/auth/server"
+	authstate "github.com/qw576483/clover-server-engine/internal/domain/auth/state"
+	idataorder "github.com/qw576483/clover-server-engine/internal/domain/data/order"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // AuthGame 账号服内核：headless *Core（派发 / 数据 / 定时器 / HTTP）+ 账号域能力。

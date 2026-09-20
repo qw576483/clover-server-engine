@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 var (

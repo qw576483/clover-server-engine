@@ -6,10 +6,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	netpkg "clover-server-engine/internal/transport/net/tcp"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // logThrottleEvery 逐帧错误日志的降频步长：首次 + 每 logThrottleEvery 次输出一条。

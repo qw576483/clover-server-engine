@@ -7,8 +7,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/master/state"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // defaultHeartbeatInterval 心跳上报默认周期，取自协议定义（state）——

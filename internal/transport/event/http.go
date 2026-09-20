@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	ujson "clover-server-engine/pkg/shared/json"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // maxHTTPBodySize 控制面请求体字节上限：每个用 Bind 的业务 handler 都能被灌爆内存，

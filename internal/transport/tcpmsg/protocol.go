@@ -1,5 +1,5 @@
 // Package tcpmsg 提供基于 TCP 的消息编码、请求响应匹配和 handler 分发。
-// 复用 clover-server-engine/internal/transport/net/tcp 的帧格式（[1B type][4B len][payload]），
+// 复用 internal/transport/net/tcp 的帧格式（[1B type][4B len][payload]），
 // 上叠 [4B requestID][4B msgID][JSON body] 实现路由与请求-响应匹配。
 package tcpmsg
 
@@ -11,7 +11,7 @@ import (
 	"io"
 	"math"
 
-	pproto "clover-server-engine/internal/shared/proto"
+	pproto "github.com/qw576483/clover-server-engine/internal/shared/proto"
 )
 
 // hdrSize 帧头长度 requestID(4) + msgID(4)。

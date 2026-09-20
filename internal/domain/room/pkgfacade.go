@@ -3,13 +3,13 @@ package room
 import (
 	"fmt"
 
-	iframe "clover-server-engine/internal/domain/room/frame"
-	iproto "clover-server-engine/internal/shared/proto"
-	ievent "clover-server-engine/internal/transport/event"
-	proom "clover-server-engine/pkg/domain/room"
-	pframe "clover-server-engine/pkg/domain/room/frame"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/transport/event"
+	iframe "github.com/qw576483/clover-server-engine/internal/domain/room/frame"
+	iproto "github.com/qw576483/clover-server-engine/internal/shared/proto"
+	ievent "github.com/qw576483/clover-server-engine/internal/transport/event"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	pframe "github.com/qw576483/clover-server-engine/pkg/domain/room/frame"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/transport/event"
 )
 
 // pkgfacade.go 实现 pkg/domain/room 的 P3 注册钩子：

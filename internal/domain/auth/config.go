@@ -17,8 +17,8 @@ import (
 	"fmt"
 	"time"
 
-	"clover-server-engine/internal/shared/config"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/config"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 默认值：全部可通过配置覆盖，零值自动回落到这里。

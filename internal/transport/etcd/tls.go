@@ -3,7 +3,7 @@ package etcd
 import (
 	"crypto/tls"
 
-	"clover-server-engine/internal/shared/tlsutil"
+	"github.com/qw576483/clover-server-engine/internal/shared/tlsutil"
 )
 
 // buildTLSConfig 根据 TLSConfig 构建 *tls.Config。

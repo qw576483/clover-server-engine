@@ -15,7 +15,7 @@ import (
 	"container/list"
 	"sync"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Priority 任务优先级。

@@ -26,8 +26,8 @@ import (
 	"runtime/debug"
 	"sync/atomic"
 
-	"clover-server-engine/internal/transport/gateway/gwcore"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/transport/gateway/gwcore"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // safeBootstrap 与 safeMount 对称：bootstrap 回调 panic 时转为 error 返回，

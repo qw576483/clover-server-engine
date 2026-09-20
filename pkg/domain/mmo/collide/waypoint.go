@@ -3,7 +3,7 @@ package collide
 import (
 	"math"
 
-	"clover-server-engine/pkg/shared/graph"
+	"github.com/qw576483/clover-server-engine/pkg/shared/graph"
 )
 
 // Waypoint 是路点图中的一个节点。

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	pkgbtree "clover-server-engine/pkg/domain/mmo/ai/btree"
+	pkgbtree "github.com/qw576483/clover-server-engine/pkg/domain/mmo/ai/btree"
 )
 
 // countingLeaf 是一个计数叶子：每被 tick 一次 +1，恒成功。

@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	isession "clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/shared/safe"
+	isession "github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // queuePositionRefreshInterval 排队位置刷新的固定间隔。

@@ -17,12 +17,12 @@ import (
 	"errors"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/data/accessor"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/internal/transport/pubsub"
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/accessor"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/transport/pubsub"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // 错误定义。

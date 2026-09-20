@@ -25,10 +25,10 @@
 
 ```go
 import (
-    "clover-server-engine/pkg/domain/data"   // data.OwnerPlayer 等常量
-    "clover-server-engine/pkg/domain/mmo"
-    "clover-server-engine/pkg/domain/mmo/mapdata"
-    "clover-server-engine/pkg/shared/geom"   // geom.Vec3
+    "github.com/qw576483/clover-server-engine/pkg/domain/data"   // data.OwnerPlayer 等常量
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mapdata"
+    "github.com/qw576483/clover-server-engine/pkg/shared/geom"   // geom.Vec3
 )
 
 m, err := mapdata.Load("Assets/MapData/map-city.bytes")
@@ -154,5 +154,5 @@ iz = floor((z - origin.z) / cell_size)
 | Go 解析层 | `format_test.go` | 魔数 / 版本 / flags / 尺寸 / 截断各条校验 |
 | Go 出生点 | `spawn_test.go` | 贴墙出生点是否被挪到净空格心 |
 | 跨端（自造字节） | `fixture_test.go`（原计划的 `crosslang_test.go` 未落地） | 按布局逐字节自造数据、与 C# 编码器互为独立实现对照（不依赖 Unity） |
-| 客户端字节层 | `clover-client-unity-engine/Tests/Editor` | 偏移、字节序、位图方向、补位、截断、负坐标 floor 口径 |
+| 客户端字节层 | [`clover-client-unity-engine/Tests/Editor`](https://github.com/qw576483/clover-client-unity-engine/blob/main/Tests/Editor.md) | 偏移、字节序、位图方向、补位、截断、负坐标 floor 口径 |
 | 端到端（真产物） | 业务工程自己的 golden 用例 | Unity 真导出的文件 → 服务端加载 → 碰撞/寻路生效 |

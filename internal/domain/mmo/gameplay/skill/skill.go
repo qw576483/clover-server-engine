@@ -16,12 +16,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"clover-server-engine/internal/domain/mmo/gameplay/combat"
-	"clover-server-engine/internal/domain/object"
-	pkgbuff "clover-server-engine/pkg/domain/mmo/buff"
-	pkgcombat "clover-server-engine/pkg/domain/mmo/combat"
-	pkgskill "clover-server-engine/pkg/domain/mmo/skill"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/combat"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkgbuff "github.com/qw576483/clover-server-engine/pkg/domain/mmo/buff"
+	pkgcombat "github.com/qw576483/clover-server-engine/pkg/domain/mmo/combat"
+	pkgskill "github.com/qw576483/clover-server-engine/pkg/domain/mmo/skill"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 var ErrSilenced = errors.New("skill: caster silenced")

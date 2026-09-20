@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	iredis "clover-server-engine/internal/domain/data/store/redis"
-	pdata "clover-server-engine/pkg/domain/data"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	iredis "github.com/qw576483/clover-server-engine/internal/domain/data/store/redis"
+	pdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
 )
 
 // StorageTier 数据存储等级（本体定义在 pkg/domain/data）。

@@ -20,7 +20,7 @@ import (
 	"math"
 	"time"
 
-	"clover-server-engine/pkg/shared/rand"
+	"github.com/qw576483/clover-server-engine/pkg/shared/rand"
 )
 
 // Policy 重试策略。

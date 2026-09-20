@@ -4,7 +4,7 @@ package object
 // 使同包内的 game_object / bag / codec / sync_entity 等文件无需修改引用。
 
 import (
-	pobj "clover-server-engine/pkg/domain/object"
+	pobj "github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // 类型重导出（pkg 本体）

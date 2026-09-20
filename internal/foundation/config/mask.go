@@ -7,8 +7,8 @@ import (
 	"strings"
 	"sync"
 
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/util"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // 配置敏感信息脱敏

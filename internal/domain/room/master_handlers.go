@@ -8,9 +8,9 @@ package room
 import (
 	"fmt"
 
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // MasterHandlerGame 是 master 侧房间 handler 挂载所需的接口。

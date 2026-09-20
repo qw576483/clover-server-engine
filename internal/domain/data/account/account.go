@@ -21,11 +21,11 @@ import (
 	"regexp"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	paccount "clover-server-engine/pkg/domain/data/account"
-	"clover-server-engine/pkg/shared/id"
-	"clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	paccount "github.com/qw576483/clover-server-engine/pkg/domain/data/account"
+	"github.com/qw576483/clover-server-engine/pkg/shared/id"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // 业务错误：指向 pkg 层本体（确保与 pkg.ErrAccountExists 等是同一个 error 值）。

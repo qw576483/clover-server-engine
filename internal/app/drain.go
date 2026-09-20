@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/domain/master/state"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // ErrDraining 灰度下线期间新连接被拒绝时返回给客户端。

@@ -19,8 +19,8 @@ package async
 import (
 	"sync"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // Backpressure 背压策略枚举。

@@ -26,8 +26,8 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 )
 
 // GameObject 统一游戏对象（活体：线上对象加载后常驻内存，业务直接读写 Props/Records；

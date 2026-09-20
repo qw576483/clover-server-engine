@@ -5,7 +5,7 @@
 package buff
 
 import (
-	object "clover-server-engine/pkg/domain/object"
+	object "github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // Flag 状态标志位（可叠加 OR）。

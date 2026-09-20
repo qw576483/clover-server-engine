@@ -16,8 +16,8 @@ clover 引擎的应用启动门面。业务项目只需 `app.Run(configPath)` �
 package main
 
 import (
-    "clover-server-engine/pkg/app"
-    "clover-server-engine/pkg/transport/event"
+    "github.com/qw576483/clover-server-engine/pkg/app"
+    "github.com/qw576483/clover-server-engine/pkg/transport/event"
 )
 
 func main() {

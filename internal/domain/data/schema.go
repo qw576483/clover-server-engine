@@ -1,6 +1,6 @@
 package data
 
-import pdata "clover-server-engine/pkg/domain/data"
+import pdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
 
 // TypeSchema 统一 StructSchema / RecordSchema 的 Kind+Type 提取接口（本体在 pkg/domain/data）。
 type TypeSchema = pdata.TypeSchema

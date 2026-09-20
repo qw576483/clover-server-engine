@@ -8,9 +8,9 @@ import (
 	"math/bits"
 	"os"
 
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // navLayerHeight 单层导航网格的厚度（米）：从 origin.Y 起算。

@@ -3,9 +3,9 @@ package skill
 import (
 	"testing"
 
-	"clover-server-engine/internal/domain/mmo/gameplay/combat"
-	object "clover-server-engine/internal/domain/object"
-	pkgskill "clover-server-engine/pkg/domain/mmo/skill"
+	"github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/combat"
+	object "github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkgskill "github.com/qw576483/clover-server-engine/pkg/domain/mmo/skill"
 )
 
 // mkAttr 用「属性 → 值」构造 AttrSet：**未列出的属性不定义**（Has=false）。

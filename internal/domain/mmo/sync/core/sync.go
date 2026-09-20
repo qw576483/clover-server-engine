@@ -1,8 +1,8 @@
 package sync
 
 import (
-	pkgsync "clover-server-engine/pkg/domain/mmo/sync"
-	"clover-server-engine/pkg/foundation/logger"
+	pkgsync "github.com/qw576483/clover-server-engine/pkg/domain/mmo/sync"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 type State = pkgsync.State

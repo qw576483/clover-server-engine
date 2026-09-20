@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	iconn "clover-server-engine/internal/transport/gateway/conn"
+	iconn "github.com/qw576483/clover-server-engine/internal/transport/gateway/conn"
 )
 
 // TestCleanupFiresOnDisconnectWithSingleIndexedSession 复现缺陷 S1（清理切片越界 panic ⇒ 断线回调永不触发）。

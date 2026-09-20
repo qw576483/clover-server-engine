@@ -8,12 +8,12 @@ package mmo
 import (
 	"fmt"
 
-	"clover-server-engine/internal/domain/data"
-	iaccessor "clover-server-engine/internal/domain/data/accessor"
-	"clover-server-engine/internal/transport/event"
-	engine "clover-server-engine/internal/transport/event/engine"
-	"clover-server-engine/internal/transport/nats"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	iaccessor "github.com/qw576483/clover-server-engine/internal/domain/data/accessor"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	engine "github.com/qw576483/clover-server-engine/internal/transport/event/engine"
+	"github.com/qw576483/clover-server-engine/internal/transport/nats"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Module 封装 MMO SceneManager 及其关联的同步管线。

@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	idata "clover-server-engine/internal/domain/data"
-	pkgcollide "clover-server-engine/pkg/domain/mmo/collide"
-	pkgmob "clover-server-engine/pkg/domain/mmo/mob"
-	"clover-server-engine/pkg/shared/geom"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
+	pkgcollide "github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	pkgmob "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mob"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // stubScene 只维护位置表：本用例要守的是 Mob 的锁，不是 AOI 语义。

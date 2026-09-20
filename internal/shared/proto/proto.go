@@ -52,7 +52,7 @@ import (
 	"fmt"
 	"io"
 
-	pproto "clover-server-engine/pkg/shared/proto"
+	pproto "github.com/qw576483/clover-server-engine/pkg/shared/proto"
 )
 
 // 以下符号是「业务可见协议契约」，真身已上移到 pkg/shared/proto。

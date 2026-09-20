@@ -57,8 +57,8 @@
 
 ```go
 import (
-    "clover-server-engine/pkg/domain/mmo/collide"
-    "clover-server-engine/pkg/shared/geom"
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+    "github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 b := collide.AABB3{Min: geom.Vec3{X: -1, Y: 0, Z: -1}, Max: geom.Vec3{X: 1, Y: 3, Z: 1}}
@@ -119,7 +119,7 @@ path := n.FindPath3(from, to) // []geom.Vec3，含分层高度；跨层必须走
 ## 快速开始
 
 ```go
-import "clover-server-engine/pkg/domain/mmo/collide"
+import "github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
 
 c1 := collide.Circle{Center: collide.Vec2{X: 0, Y: 0}, Radius: 5}
 c2 := collide.Circle{Center: collide.Vec2{X: 3, Y: 4}, Radius: 5}

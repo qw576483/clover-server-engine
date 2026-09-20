@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/domain/master"
-	"clover-server-engine/internal/domain/master/metrics"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Health 是节点的健康状态。

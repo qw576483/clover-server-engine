@@ -31,9 +31,9 @@
 
 ```go
 import (
-    "clover-server-engine/pkg/domain/mmo"
-    "clover-server-engine/pkg/domain/mmo/aoi"
-    "clover-server-engine/pkg/domain/object"
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo/aoi"
+    "github.com/qw576483/clover-server-engine/pkg/domain/object"
 )
 
 // 注意：构造入口在 mmo 包（本包只提供接口与类型，不含实现）。

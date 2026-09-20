@@ -7,9 +7,9 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // slowMsgThreshold 消息消费耗时超过该阈值打印 Warn 日志。

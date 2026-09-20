@@ -27,7 +27,7 @@
 ## 1. 目录总览
 
 ```
-clover-server-engine/
+
 ├── internal/       # 引擎实现（不对外）
 │   ├── app/        # 进程编排、挂载、路由与生命周期
 │   ├── foundation/ # 真基础底座（现存 config/ophttp；logger/metrics/trace 在 pkg/foundation）

@@ -13,11 +13,11 @@ import (
 	"sync"
 	"time"
 
-	redis "clover-server-engine/internal/domain/data/store/redis"
-	"clover-server-engine/internal/domain/master/metrics"
-	"clover-server-engine/pkg/domain/master"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/memrank"
+	redis "github.com/qw576483/clover-server-engine/internal/domain/data/store/redis"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/memrank"
 )
 
 // NodeType 节点类型：不同角色节点在 master 中分开调度。

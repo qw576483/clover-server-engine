@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	apptypes "clover-server-engine/pkg/app/types"
+	apptypes "github.com/qw576483/clover-server-engine/pkg/app/types"
 )
 
 // TestNewAdminServerRejectsUnsafeListenAddr 构造期必须挡住「无 token + 非回环」：

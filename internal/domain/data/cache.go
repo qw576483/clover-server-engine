@@ -7,8 +7,8 @@ import (
 
 	goredis "github.com/redis/go-redis/v9"
 
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	"clover-server-engine/pkg/foundation/logger"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 手动落库（simple / mmo 模式）

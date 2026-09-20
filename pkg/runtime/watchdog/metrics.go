@@ -3,7 +3,7 @@ package watchdog
 import (
 	"time"
 
-	"clover-server-engine/pkg/foundation/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
 )
 
 // 看门狗埋点。

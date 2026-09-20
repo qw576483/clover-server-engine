@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	redis "clover-server-engine/internal/domain/data/store/redis"
-	"clover-server-engine/pkg/foundation/logger"
+	redis "github.com/qw576483/clover-server-engine/internal/domain/data/store/redis"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // errTokenBackendUnavailable redis 后端未配置（UseRedisSessionToken(nil, ...) 或配置错误）。

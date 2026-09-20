@@ -4,11 +4,11 @@ import (
 	"math"
 	"time"
 
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // maxPhysicsStepSec 单帧物理步长的上限（秒）。

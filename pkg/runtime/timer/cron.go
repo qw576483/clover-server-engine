@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // cronSchedule 解析后的 crontab 表达式（5 字段：分 时 日 月 周）。

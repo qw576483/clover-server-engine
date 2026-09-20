@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"clover-server-engine/internal/shared/retry"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/shared/retry"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // // 读写 API（核心存二进制 []byte，JSON 为封装）

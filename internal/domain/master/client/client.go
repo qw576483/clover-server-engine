@@ -27,9 +27,9 @@ import (
 	"fmt"
 	"sync"
 
-	"clover-server-engine/internal/domain/master/state"
-	"clover-server-engine/internal/transport/tcpmsg"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // ErrClientUnavailable master 客户端不可用。

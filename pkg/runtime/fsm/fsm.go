@@ -31,7 +31,7 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // runHook 统一带 recover 执行状态机回调：panic 不传播、不影响已提交的状态，

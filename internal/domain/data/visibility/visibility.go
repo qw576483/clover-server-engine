@@ -15,7 +15,7 @@
 package visibility
 
 import (
-	"clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
 	"encoding/json"
 	"sync"
 )

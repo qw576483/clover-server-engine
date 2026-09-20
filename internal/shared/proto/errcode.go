@@ -1,6 +1,6 @@
 package proto
 
-import pproto "clover-server-engine/pkg/shared/proto"
+import pproto "github.com/qw576483/clover-server-engine/pkg/shared/proto"
 
 // 错误码与 BizError 的**真身在 pkg/shared/proto**（业务可见，业务返回带码错误时用那一份）。
 // 此处转发，供引擎内部（派发内核 / 网关）在构造 EErrorReply 时取码，避免两处各写一套常量。

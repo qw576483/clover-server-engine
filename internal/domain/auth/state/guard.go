@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/runtime/ratelimit"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/ratelimit"
 )
 
 // 撞库防护参数（行业默认实践：按「账号」与「账号 + 来源」双维度计数，连续失败指数退避）。

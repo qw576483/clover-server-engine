@@ -28,7 +28,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	cloverHash "clover-server-engine/pkg/shared/util"
+	cloverHash "github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // Policy 淘汰策略。

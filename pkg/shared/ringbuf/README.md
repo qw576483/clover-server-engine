@@ -268,7 +268,7 @@ log.Printf("cap=%d len=%d full=%v", q.Cap(), q.Len(), q.Full())
 ## 依赖关系
 
 - **标准库**：`sync`（MpmcRing 的互斥锁）、`sync/atomic`（Ring 的 `atomic.Uint64`）。
-- **引擎内部**：`clover-server-engine/pkg/shared/util`（`NextPow2` 容量归整）。
+- **引擎内部**：`pkg/shared/util`（`NextPow2` 容量归整）。
 - 无第三方依赖，可纯内存单测。
 - **设计参考**：MMO 引擎的 `MsgQueue`（环形字节区）；**语义对齐**：与 `MsgQueue` 一样是非阻塞 API。
 

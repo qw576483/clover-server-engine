@@ -9,7 +9,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 本文件实现 WebTransport 证书的「运行期间自动轮换」。

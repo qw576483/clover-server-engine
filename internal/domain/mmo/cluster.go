@@ -18,8 +18,8 @@ import (
 	"math"
 	"time"
 
-	"clover-server-engine/internal/transport"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/transport"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // ErrSceneRouteNotFound 表示路由表里查不到目标场景所在的节点：

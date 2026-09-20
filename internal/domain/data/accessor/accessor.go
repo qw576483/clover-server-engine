@@ -25,13 +25,13 @@ import (
 	"maps"
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/data/visibility"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/visibility"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // Accessor 跨实体数据访问门面。

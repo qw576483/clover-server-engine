@@ -3,9 +3,9 @@ package room
 import (
 	"encoding/json"
 
-	"clover-server-engine/internal/shared/proto"
-	proom "clover-server-engine/pkg/domain/room"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // MasterCaller 描述 room 对游戏服节点能力的最小需求：调用 master + 切换上游。

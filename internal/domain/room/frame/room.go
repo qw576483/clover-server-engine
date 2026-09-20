@@ -16,8 +16,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // roomStop 把「关闭信号通道 + 只关一次」封装为一个整体对象。

@@ -27,11 +27,11 @@ import (
 	"encoding/base64"
 	"errors"
 
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // 撞库防护（per-account 失败计数与锁定）已随「账号密码式校验」一并移出本包。

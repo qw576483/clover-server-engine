@@ -7,11 +7,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/shared/retry"
-	"clover-server-engine/internal/transport/net/demux"
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/internal/shared/retry"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/demux"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // Handler 数据报回调。data 为消息体拷贝。

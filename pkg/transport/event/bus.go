@@ -6,9 +6,9 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/foundation/metrics"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // busMetrics 是 event Bus 模块的埋点句柄（进程级单例）。

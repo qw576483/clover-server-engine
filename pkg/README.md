@@ -12,7 +12,7 @@
 `pkg/domain/mmo/<子包>`、`pkg/domain/data/**`、`pkg/domain/room/**`、`pkg/transport/event`…），
 按 §5.2 允许把类型真身与整段实现留在 `pkg`。
 
-**判据只有一句**：`grep -n "clover-server-engine/internal" <包>/*.go` —— 命中 = 门面包（只许别名 / 转发 / 极薄适配）；
+**判据只有一句**：`grep -n "github.com/qw576483/clover-server-engine/internal" <包>/*.go` —— 命中 = 门面包（只许别名 / 转发 / 极薄适配）；
 不命中 = 自包含包。
 
 ## 公开接口（stable，外部业务可依赖）

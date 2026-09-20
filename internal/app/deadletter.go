@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
 )
 
 // deadLetterDispatcher 返回懒加载分发器：

@@ -7,14 +7,14 @@ import (
 	"encoding/json"
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/data/accessor"
-	"clover-server-engine/internal/domain/data/account"
-	"clover-server-engine/internal/domain/data/player"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/pubsub"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/accessor"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/account"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/player"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/pubsub"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // accountSecretTypes 不下发给客户端的密钥类 type。

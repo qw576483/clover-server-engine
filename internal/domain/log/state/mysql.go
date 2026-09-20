@@ -8,9 +8,9 @@ import (
 	"time"
 	"unicode/utf8"
 
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/foundation/logstore"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logstore"
 )
 
 // maxInsertRows 单条多值 INSERT 的最大行数：超过则拆成多条语句执行，

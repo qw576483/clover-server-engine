@@ -5,7 +5,7 @@
 // 引擎内置 MySQL 实现（mysql.go，写 biz_log 表）作为默认值。
 package state
 
-import "clover-server-engine/pkg/foundation/logstore"
+import "github.com/qw576483/clover-server-engine/pkg/foundation/logstore"
 
 // LogService 引擎内部沿用的后端契约名，真身是 logstore.Backend。
 type LogService = logstore.Backend

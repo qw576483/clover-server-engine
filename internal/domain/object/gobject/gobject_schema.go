@@ -3,7 +3,7 @@ package gobject
 import (
 	"errors"
 
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 )
 
 // errNoSchema 在调用需要 schema 的方法但未绑定 schema 时返回。

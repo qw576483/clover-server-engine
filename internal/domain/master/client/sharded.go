@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // shardDialCooldown 建连失败后的冷却窗口：窗口内 ForKey/All 直接返回 nil，

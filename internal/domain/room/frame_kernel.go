@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	iframe "clover-server-engine/internal/domain/room/frame"
-	proom "clover-server-engine/pkg/domain/room"
-	"clover-server-engine/pkg/foundation/logger"
+	iframe "github.com/qw576483/clover-server-engine/internal/domain/room/frame"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // frameKernel 把引擎内置的帧同步服务适配成 room.Kernel。

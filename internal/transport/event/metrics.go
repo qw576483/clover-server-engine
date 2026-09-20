@@ -3,7 +3,7 @@ package event
 import (
 	"time"
 
-	"clover-server-engine/pkg/foundation/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
 )
 
 // event 层指标埋点

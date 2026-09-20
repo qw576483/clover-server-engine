@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	idataaccount "clover-server-engine/internal/domain/data/account"
+	idataaccount "github.com/qw576483/clover-server-engine/internal/domain/data/account"
 )
 
 // fakeAccounts 是 AccountStore 的测试替身（抽成接口的初衷即「让传输层可单测，不必起 MySQL」）。

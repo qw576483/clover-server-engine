@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/transport/event"
-	apptypes "clover-server-engine/pkg/app/types"
-	"clover-server-engine/pkg/runtime/timer"
-	"clover-server-engine/pkg/shared/timeutil"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	apptypes "github.com/qw576483/clover-server-engine/pkg/app/types"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/timer"
+	"github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 )
 
 // Role 进程角色：业务挂载时用它声明"这段逻辑挂在哪个角色上"。

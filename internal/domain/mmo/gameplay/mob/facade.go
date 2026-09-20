@@ -12,7 +12,7 @@
 package mob
 
 import (
-	pkgmob "clover-server-engine/pkg/domain/mmo/mob"
+	pkgmob "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mob"
 )
 
 // NewMobManagerFacade 以给定场景构造怪物/NPC 管理器，并以门面接口返回。

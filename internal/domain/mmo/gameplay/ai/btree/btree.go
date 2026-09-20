@@ -9,8 +9,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	pkgbtree "clover-server-engine/pkg/domain/mmo/ai/btree"
-	"clover-server-engine/pkg/foundation/logger"
+	pkgbtree "github.com/qw576483/clover-server-engine/pkg/domain/mmo/ai/btree"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 黑板上的公共键：由驱动方（Tree.Tick / MobManager.Update）写入，节点只读。

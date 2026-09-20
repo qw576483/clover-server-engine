@@ -26,7 +26,7 @@
 package metrics
 
 import (
-	"clover-server-engine/pkg/foundation/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
 )
 
 // m 是 master 模块的埋点句柄（进程级单例）。

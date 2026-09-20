@@ -14,8 +14,8 @@ package collide
 import (
 	"math"
 
-	"clover-server-engine/pkg/shared/geom"
-	"clover-server-engine/pkg/shared/graph"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/shared/graph"
 )
 
 // NavLayer 分层导航中的一层：高度区间 [BaseY, TopY) 与该层的平面可行走格。

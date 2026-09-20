@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"clover-server-engine/internal/foundation/ophttp"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/foundation/ophttp"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // // 死信队列人工介入 HTTP 入口

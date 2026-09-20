@@ -7,10 +7,10 @@
 package skill
 
 import (
-	object "clover-server-engine/internal/domain/object"
-	pkbuff "clover-server-engine/pkg/domain/mmo/buff"
-	pkcombat "clover-server-engine/pkg/domain/mmo/combat"
-	pkskill "clover-server-engine/pkg/domain/mmo/skill"
+	object "github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkbuff "github.com/qw576483/clover-server-engine/pkg/domain/mmo/buff"
+	pkcombat "github.com/qw576483/clover-server-engine/pkg/domain/mmo/combat"
+	pkskill "github.com/qw576483/clover-server-engine/pkg/domain/mmo/skill"
 )
 
 // 编译期断言：内部 *CooldownManager 直接满足门面接口（方法集逐字同形）。

@@ -17,9 +17,9 @@ import (
 	"reflect"
 	"sync"
 
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // LoadMode 声明加载意图。

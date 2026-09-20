@@ -6,10 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"clover-server-engine/internal/domain/log/state"
-	netpkg "clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/internal/transport/tcpmsg"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/state"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Serve 启动 log 服 TCP 服务端。返回 Server 用于 Shutdown。

@@ -6,8 +6,8 @@ import (
 	"sync"
 	"testing"
 
-	"clover-server-engine/internal/shared/proto"
-	proom "clover-server-engine/pkg/domain/room"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
 )
 
 // fakeMaster 是 CallMaster 的桩：模拟 master 侧的房间注册表 + 暂存接管状态。

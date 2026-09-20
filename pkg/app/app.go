@@ -14,7 +14,7 @@
 package app
 
 import (
-	iapp "clover-server-engine/internal/app"
+	iapp "github.com/qw576483/clover-server-engine/internal/app"
 )
 
 // ServerTypeGame 游戏服（game 服）server_type：承载玩法与玩家状态。

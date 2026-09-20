@@ -2,7 +2,7 @@
 
 package mapdata
 
-import "clover-server-engine/pkg/shared/geom"
+import "github.com/qw576483/clover-server-engine/pkg/shared/geom"
 
 // 本文件补齐出生点的**分配**能力（SpawnAt 只回答"第 i 个出生点在哪"，
 // 不回答"这个玩家该去哪个出生点"）。

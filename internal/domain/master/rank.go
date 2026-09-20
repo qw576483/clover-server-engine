@@ -14,11 +14,11 @@ import (
 	"math"
 	"sync"
 
-	"clover-server-engine/internal/domain/master/client"
-	"clover-server-engine/internal/domain/master/state"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/domain/master"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/client"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // RankGame 排行榜模块所需的 game 侧能力（内部接口）。

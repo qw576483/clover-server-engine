@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/data/visibility"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/visibility"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // 三阶段自动储存管道：Persist → Sync → Mirror

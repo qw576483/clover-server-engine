@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 	iwt "github.com/quic-go/webtransport-go"
 )
 

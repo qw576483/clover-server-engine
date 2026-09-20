@@ -14,7 +14,7 @@
 import (
     "time"
 
-    "clover-server-engine/pkg/domain/mmo"
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
 )
 
 tree := mmo.NewTree(

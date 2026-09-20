@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/internal/transport/etcd"
-	ilog "clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/internal/transport/etcd"
+	ilog "github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"go.uber.org/zap"
 )

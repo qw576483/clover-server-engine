@@ -4,8 +4,8 @@ import (
 	"container/list"
 	"sync"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // defaultShardCount 默认分片数（2 的幂）。

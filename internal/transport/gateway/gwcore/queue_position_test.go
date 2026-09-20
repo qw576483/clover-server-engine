@@ -5,8 +5,8 @@ import (
 	"sync"
 	"testing"
 
-	"clover-server-engine/internal/shared/proto"
-	isession "clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	isession "github.com/qw576483/clover-server-engine/internal/transport/net/session"
 )
 
 // 本文件守住两件事：

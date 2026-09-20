@@ -1,6 +1,6 @@
 package frame
 
-import pframe "clover-server-engine/pkg/domain/room/frame"
+import pframe "github.com/qw576483/clover-server-engine/pkg/domain/room/frame"
 
 // 类型真身已上移到 pkg/domain/room/frame（依赖方向：internal → pkg，见 结构规则.md 5.1）。
 // 本包保留同义别名，使实现代码（room.go / service.go）无需逐处加包名前缀；

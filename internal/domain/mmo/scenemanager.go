@@ -6,11 +6,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/internal/transport"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/transport"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // SceneManager 全局场景管理器：管理所有 Scene 的生命周期与跨 Scene 传输。

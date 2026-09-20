@@ -5,8 +5,8 @@ import (
 	"sort"
 	"sync"
 
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Record 强类型表：由「列名 + 列类型」定义 schema，

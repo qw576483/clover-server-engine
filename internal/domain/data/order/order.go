@@ -14,10 +14,10 @@ import (
 	"errors"
 	"fmt"
 
-	"clover-server-engine/internal/domain/data"
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	porder "clover-server-engine/pkg/domain/data/order"
-	"clover-server-engine/pkg/shared/id"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	porder "github.com/qw576483/clover-server-engine/pkg/domain/data/order"
+	"github.com/qw576483/clover-server-engine/pkg/shared/id"
 )
 
 // Status 订单状态（本体定义在 pkg/domain/data/order）。

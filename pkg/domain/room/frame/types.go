@@ -1,6 +1,6 @@
 // Package frame 定义锁步帧同步房间的**类型真身**（数据 / 配置 / 接口 / 错误）。
 //
-// 依赖方向（见 clover-server-engine/结构规则.md 5.1 铁律）：
+// 依赖方向（见 结构规则.md 5.1 铁律）：
 //   - 类型真身在本包（pkg）：struct / 接口 / 错误，F12 一跳到位；
 //   - 实现留在 internal/domain/room/frame，反向 import 本包去实现 Service / Room；
 //   - 本包**禁止** import internal。
@@ -14,7 +14,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/shared/proto"
 )
 
 // Broadcaster 向指定玩家推送一条消息。

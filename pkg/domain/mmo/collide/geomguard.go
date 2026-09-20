@@ -4,7 +4,7 @@ import (
 	"math"
 	"sync/atomic"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 本文件提供「非法几何输入」的统一防护：AABB 含 NaN/±Inf、Min>Max、

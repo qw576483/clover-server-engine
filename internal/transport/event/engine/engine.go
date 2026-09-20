@@ -13,11 +13,11 @@
 package engine
 
 import (
-	"clover-server-engine/internal/transport/event"
-	apptypes "clover-server-engine/pkg/app/types"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/geom"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	apptypes "github.com/qw576483/clover-server-engine/pkg/app/types"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // Type 事件类型（底层为 string，与 event 机制一致）。

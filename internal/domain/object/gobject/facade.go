@@ -11,10 +11,10 @@ package gobject
 import (
 	"context"
 
-	"clover-server-engine/internal/domain/data"
-	object "clover-server-engine/internal/domain/object"
-	pkgdata "clover-server-engine/pkg/domain/data"
-	"clover-server-engine/pkg/runtime/timer"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	object "github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkgdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/timer"
 )
 
 // GameObjectFacade 统一游戏对象（身份 + 版本 + 乐观并发写 + 增量同步 + 运行时组件槽）。

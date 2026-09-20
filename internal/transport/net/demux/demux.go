@@ -16,8 +16,8 @@ import (
 	"syscall"
 	"time"
 
-	"clover-server-engine/internal/shared/retry"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/retry"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // RawUDPMagic 裸 UDP 通道魔数：数据报首字节为该值时由裸 UDP 处理器消费。

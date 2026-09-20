@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"clover-server-engine/internal/domain/master/state"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
 )
 
 // SessionClient session token 远程客户端。

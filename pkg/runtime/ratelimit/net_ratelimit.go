@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // ConnRateLimiter 基于 token bucket 的连接频率限流器。

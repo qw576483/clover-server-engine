@@ -14,10 +14,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	nethttp "clover-server-engine/internal/transport/net/http"
-	apptypes "clover-server-engine/pkg/app/types"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/foundation/metrics"
+	nethttp "github.com/qw576483/clover-server-engine/internal/transport/net/http"
+	apptypes "github.com/qw576483/clover-server-engine/pkg/app/types"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
 )
 
 // 常量

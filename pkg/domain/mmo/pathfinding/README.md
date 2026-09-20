@@ -14,7 +14,7 @@
 ## 快速开始
 
 ```go
-import "clover-server-engine/pkg/domain/mmo"
+import "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
 
 result := mmo.FindPath(navGrid, mmo.Point{X: 0, Z: 0}, mmo.Point{X: 10, Z: 10})
 for _, p := range result.Points {

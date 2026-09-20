@@ -3,7 +3,7 @@ package state
 import (
 	"encoding/json"
 
-	"clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
 )
 
 // TCP 消息 ID（替代原 NATS subject）。

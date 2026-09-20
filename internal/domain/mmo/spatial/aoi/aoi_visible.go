@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 )
 
 // FilterFn 自定义可见性过滤（分组 / 阵营 / 距离二次校验等）。

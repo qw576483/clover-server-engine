@@ -10,8 +10,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	netpkg "clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/pkg/foundation/logger"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 const defaultTimeout = 10 * time.Second

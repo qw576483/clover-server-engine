@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"clover-server-engine/internal/shared/proto"
-	proom "clover-server-engine/pkg/domain/room"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 接管推送载体已收归 proto.ERoomTakeoverNotify：

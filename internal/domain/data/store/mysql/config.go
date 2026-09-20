@@ -9,8 +9,8 @@ import (
 
 	mysqlerr "github.com/go-sql-driver/mysql"
 
-	"clover-server-engine/internal/shared/config"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/shared/config"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // MySQLConfig MySQL 连接配置，对应 yaml 中 mysql 节点，

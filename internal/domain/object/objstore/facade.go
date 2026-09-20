@@ -14,12 +14,12 @@ import (
 	"context"
 	"fmt"
 
-	"clover-server-engine/internal/domain/data"
-	object "clover-server-engine/internal/domain/object"
-	igobject "clover-server-engine/internal/domain/object/gobject"
-	pkgdata "clover-server-engine/pkg/domain/data"
-	"clover-server-engine/pkg/domain/object/idgen"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	object "github.com/qw576483/clover-server-engine/internal/domain/object"
+	igobject "github.com/qw576483/clover-server-engine/internal/domain/object/gobject"
+	pkgdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/domain/object/idgen"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // OptionFacade 仓储构造选项：接收门面层 RepositoryFacade 接口，按需注入可选组件。

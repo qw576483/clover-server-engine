@@ -10,7 +10,7 @@
 //
 // 业务侧典型用法：
 //
-//	import "clover-server-engine/pkg/runtime/pool"
+//	import "github.com/qw576483/clover-server-engine/pkg/runtime/pool"
 //
 //	p := pool.New(func() *Packet { return &Packet{} }, pool.WithReset(func(p *Packet){ p.Reset() }))
 //	buf := p.Get()

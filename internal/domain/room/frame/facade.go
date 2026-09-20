@@ -1,6 +1,6 @@
 package frame
 
-import pframe "clover-server-engine/pkg/domain/room/frame"
+import pframe "github.com/qw576483/clover-server-engine/pkg/domain/room/frame"
 
 // facade.go 把 internal 的具体实现适配为 pkg/domain/room/frame 的接口。
 //

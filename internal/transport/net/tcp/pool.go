@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Pool 网关 ↔ 逻辑服直连 TCP 连接池：维护常驻连接，支持预热、上限、健康复用、自动剔除死连接。

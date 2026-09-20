@@ -7,7 +7,7 @@ import (
 	"errors"
 	"sync"
 
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 	"sync/atomic"
 	"time"
 )

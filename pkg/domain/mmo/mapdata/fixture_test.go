@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"math"
 
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // fixture 是测试用的 CloverMap 数据构造器：按 format.go 的布局逐字节产出。

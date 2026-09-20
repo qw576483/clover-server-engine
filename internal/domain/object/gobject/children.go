@@ -16,9 +16,9 @@ import (
 	"sort"
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // childIndexWire 子对象归属索引的线化结构：slot → 子对象 id（"type:seq"）列表。

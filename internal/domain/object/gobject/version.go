@@ -23,8 +23,8 @@ import (
 	"strconv"
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // verLocks 是「逐对象 id」的全局互斥锁表（每个不同 id 一把独立锁）。

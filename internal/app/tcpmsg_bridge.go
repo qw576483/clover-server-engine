@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sync"
 
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/event"
-	netpkg "clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/internal/transport/tcpmsg"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // tcpMsgBridge 把「裸 TCP 消息通道」桥接进 Core 派发管线，由 MasterGame / LogGame / AuthGame 共用。

@@ -7,12 +7,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // Scene 是 SceneManager 内的一张地图：包含多个隔离 Instance + 共享物理碰撞 + 视野同步。

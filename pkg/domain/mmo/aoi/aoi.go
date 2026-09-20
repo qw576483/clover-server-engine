@@ -5,9 +5,9 @@
 // 业务 / 框架层统一从本包引用 AOI 能力：
 //
 //	import (
-//	    "clover-server-engine/pkg/domain/mmo"
-//	    "clover-server-engine/pkg/domain/mmo/aoi"
-//	    "clover-server-engine/pkg/domain/object"
+//	    "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
+//	    "github.com/qw576483/clover-server-engine/pkg/domain/mmo/aoi"
+//	    "github.com/qw576483/clover-server-engine/pkg/domain/object"
 //	)
 //
 //	// 构造入口在 mmo 包（本包只提供接口与类型）。
@@ -24,8 +24,8 @@ package aoi
 import (
 	"time"
 
-	"clover-server-engine/pkg/domain/object"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/domain/object"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // Position 三维坐标（x=东西, y=高度, z=南北）。

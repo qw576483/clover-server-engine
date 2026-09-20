@@ -84,5 +84,5 @@ func (h *HLL) Merge(other *HLL) error
 
 ## 依赖关系
 
-- `clover-server-engine/pkg/shared/util`：`Fnv32` 哈希原语（当前实现在包内内联 FNV-1a，未直接引用）
+- `pkg/shared/util`：`Fnv32` 哈希原语（当前实现在包内内联 FNV-1a，未直接引用）
 - 纯标准库，零外部依赖

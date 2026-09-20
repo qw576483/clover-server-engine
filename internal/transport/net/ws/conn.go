@@ -8,9 +8,9 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // ErrSendTimeout 发送队列满且等待超时返回。

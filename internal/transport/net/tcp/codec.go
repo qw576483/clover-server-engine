@@ -7,7 +7,7 @@ import (
 	"io"
 	"math"
 
-	"clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 )
 
 const lengthFieldSize = 4

@@ -12,8 +12,8 @@ package buff
 import (
 	"sync"
 
-	"clover-server-engine/internal/domain/object"
-	pkgbuff "clover-server-engine/pkg/domain/mmo/buff"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkgbuff "github.com/qw576483/clover-server-engine/pkg/domain/mmo/buff"
 )
 
 // Container Buff 容器，绑定一个 object.AttrSet。

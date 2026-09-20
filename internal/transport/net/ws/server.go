@@ -11,9 +11,9 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // wsRejectLogCount 连接数超限拒绝的日志降频计数（首次 + 每 1000 次）。

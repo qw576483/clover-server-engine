@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	ujson "clover-server-engine/pkg/shared/json"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 	"github.com/nats-io/nats.go"
 )
 

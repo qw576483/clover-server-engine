@@ -11,7 +11,7 @@ import (
 	// 导入 mysql 驱动并命名，以便识别 MySQL 错误号；init 仍会注册驱动。
 	mysqlerr "github.com/go-sql-driver/mysql"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // 错误变量

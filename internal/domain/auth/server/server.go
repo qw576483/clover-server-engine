@@ -15,10 +15,10 @@ import (
 	"net/http"
 	"time"
 
-	"clover-server-engine/internal/domain/auth/state"
-	"clover-server-engine/internal/foundation/ophttp"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/auth/state"
+	"github.com/qw576483/clover-server-engine/internal/foundation/ophttp"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Registrar 把 HTTP 路由挂到角色内核的控制面（*app.AuthGame 满足该接口）。

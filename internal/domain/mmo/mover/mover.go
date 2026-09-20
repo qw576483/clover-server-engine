@@ -13,11 +13,11 @@ package mover
 import (
 	"math"
 
-	"clover-server-engine/internal/transport/event/engine"
-	"clover-server-engine/pkg/domain/mmo/collide"
-	pkgmover "clover-server-engine/pkg/domain/mmo/mover"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/internal/transport/event/engine"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	pkgmover "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mover"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // 默认物理参数与阈值。

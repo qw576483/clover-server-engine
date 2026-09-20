@@ -20,10 +20,10 @@ import (
 	"strings"
 	"time"
 
-	"clover-server-engine/internal/domain/auth/state"
-	"clover-server-engine/internal/shared/proto"
-	iauth "clover-server-engine/internal/transport/net/auth"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/auth/state"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	iauth "github.com/qw576483/clover-server-engine/internal/transport/net/auth"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 const (

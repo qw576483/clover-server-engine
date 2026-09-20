@@ -1,6 +1,6 @@
 package event
 
-import "clover-server-engine/pkg/shared/timeutil"
+import "github.com/qw576483/clover-server-engine/pkg/shared/timeutil"
 
 // // 跨服事件线格式（可靠投递版）
 

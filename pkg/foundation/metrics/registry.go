@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // Registry 指标注册表，负责指标实例的**去重复用**与**文本格式导出**。

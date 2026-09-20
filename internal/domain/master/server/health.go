@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 
-	"clover-server-engine/internal/domain/master/failover"
-	"clover-server-engine/internal/domain/master/state"
-	netpkg "clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/internal/transport/tcpmsg"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/failover"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // RegisterHealth 在已创建的 master TCP 服务端上追加节点健康相关 handler：

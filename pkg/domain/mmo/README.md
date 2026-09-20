@@ -13,7 +13,7 @@ MMO 场景的统一组合层。把 AOI 视野、场景管理、物理碰撞、�
 **自身不 import internal**，属 §5.2 的**自包含包**（类型真身 + 自包含实现留在 pkg）。
 
 ```go
-import "clover-server-engine/pkg/domain/mmo"
+import "github.com/qw576483/clover-server-engine/pkg/domain/mmo"
 ```
 
 ## 三级结构
@@ -48,8 +48,8 @@ city.Leave(playerID)
 
 ```go
 import (
-    "clover-server-engine/pkg/domain/mmo/mapdata"
-    "clover-server-engine/pkg/shared/geom"
+    "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mapdata"
+    "github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 m, err := mapdata.Load("Assets/MapData/map-city.bytes")   // 也可用 mapdata.Decode(raw) 从字节构造

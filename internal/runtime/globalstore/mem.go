@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	ilog "clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
+	ilog "github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 	"go.uber.org/zap"
 )
 

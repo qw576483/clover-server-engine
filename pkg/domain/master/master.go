@@ -20,7 +20,7 @@ import (
 	"errors"
 	"fmt"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // —— 排行榜模块 ——

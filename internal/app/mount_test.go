@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"clover-server-engine/pkg/runtime/timer"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/timer"
 )
 
 // 共享调度器必须**只建一次**。

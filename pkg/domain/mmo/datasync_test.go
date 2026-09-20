@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"clover-server-engine/pkg/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/shared/proto"
 )
 
 // 消息号必须钉死在数值 4003（= 引擎推送 EPushDataSync）：客户端 WorldSync 按字面量消费，

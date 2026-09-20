@@ -107,5 +107,5 @@ k = ceil((m/n) * ln(2))              // 哈希函数个数
 ## 依赖关系
 
 - **标准库**：`fmt`（`String` 格式化）、`math`（参数计算与假阳性率估计）。
-- **引擎内部**：`clover-server-engine/pkg/shared/util`（`Fnv32` / `Fnv32Key`，哈希原语）。
+- **引擎内部**：`pkg/shared/util`（`Fnv32` / `Fnv32Key`，哈希原语）。
 - 零第三方依赖。

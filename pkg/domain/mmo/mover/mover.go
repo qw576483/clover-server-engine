@@ -5,8 +5,8 @@
 package mover
 
 import (
-	pkgcollide "clover-server-engine/pkg/domain/mmo/collide"
-	"clover-server-engine/pkg/shared/geom"
+	pkgcollide "github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // State 运动七态（外加 Idle）。

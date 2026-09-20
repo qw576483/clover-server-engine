@@ -1,8 +1,8 @@
 package gobject
 
 import (
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/runtime/fsm"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/fsm"
 )
 
 const fsmComponentName = "fsm"

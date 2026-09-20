@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"time"
 
-	"clover-server-engine/internal/domain/master/state"
-	netpkg "clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/internal/transport/tcpmsg"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
+	netpkg "github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // masterRPCTimeout 单次 master RPC 中后端 IO（Redis）的预算：

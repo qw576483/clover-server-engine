@@ -7,11 +7,11 @@ import (
 	"reflect"
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/traceid"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/traceid"
 )
 
 // // Ctx：请求上下文——回包 + 玩家身份 + 全链路追踪

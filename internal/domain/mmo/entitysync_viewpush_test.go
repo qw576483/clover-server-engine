@@ -5,8 +5,8 @@ import (
 	"sync"
 	"testing"
 
-	idata "clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/shared/proto"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
 )
 
 // 本文件是「视野进出事件不下发客户端」这一真实缺陷的复现用例。

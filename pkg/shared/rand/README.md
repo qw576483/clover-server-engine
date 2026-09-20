@@ -8,7 +8,7 @@
 
 ## 规则与约束
 
-1. **导入本包必须起别名**：包名与标准库 `math/rand` / `crypto/rand` 冲突，建议 `urand "clover-server-engine/pkg/shared/rand"`；同一文件内还需 `crypto/rand` 时两者都必须区别命名。
+1. **导入本包必须起别名**：包名与标准库 `math/rand` / `crypto/rand` 冲突，建议 `urand "github.com/qw576483/clover-server-engine/pkg/shared/rand"`；同一文件内还需 `crypto/rand` 时两者都必须区别命名。
 2. **超高频随机判定不得使用本包**：默认随机源为 `crypto/rand`，单次抽样涉及系统调用与 `big.Int` 分配；战斗内每帧数千次的判定必须另建基于 `math/rand` 的快速路径。
 3. **高并发场景不得共享同一个 picker**：`Pick` / `PickN` 全程持锁，且随机源在锁内执行，必须为每个协程或每个战斗实例分配独立 picker，或改为「取快照 → 锁外抽样」的模式。
 4. **`PickN` 的持锁时长必须由调用方评估**：其复杂度为 O(n·m)（n 为抽取数、m 为候选数）且全程持同一把锁，单次抽取大量项会阻塞其余调用者。

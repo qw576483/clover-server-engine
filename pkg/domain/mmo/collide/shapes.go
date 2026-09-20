@@ -3,7 +3,7 @@ package collide
 import (
 	"math"
 
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // Circle 是以 (X,Y) 为圆心、R 为半径的圆。

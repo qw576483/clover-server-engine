@@ -3,7 +3,7 @@ package mapdata
 import (
 	"testing"
 
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // TestSpawnClearanceRelocates 单元验证：贴着阻挡格/边界的出生点会被挪到有净空的格心。

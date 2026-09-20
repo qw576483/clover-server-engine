@@ -13,8 +13,8 @@ import (
 	"errors"
 	"sync"
 
-	"clover-server-engine/internal/domain/master/client"
-	"clover-server-engine/pkg/domain/master"
+	"github.com/qw576483/clover-server-engine/internal/domain/master/client"
+	"github.com/qw576483/clover-server-engine/pkg/domain/master"
 )
 
 // PlayerLookupGame 玩家定位模块所需的 game 侧能力（内部接口）。

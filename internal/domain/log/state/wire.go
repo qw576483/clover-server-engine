@@ -1,7 +1,7 @@
 // Package state 定义 log 服的 TCP 消息号与请求/响应载体。
 package state
 
-import plogbuf "clover-server-engine/pkg/foundation/logbuf"
+import plogbuf "github.com/qw576483/clover-server-engine/pkg/foundation/logbuf"
 
 // TCP 消息 ID（log 服专用，独立于 master 的消息号空间）。
 const (

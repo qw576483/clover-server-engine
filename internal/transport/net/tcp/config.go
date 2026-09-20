@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"clover-server-engine/internal/shared/config"
-	"clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/internal/shared/config"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 )
 
 const (

@@ -22,10 +22,10 @@ import (
 	"strings"
 	"sync"
 
-	"clover-server-engine/internal/transport/etcd"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/util"
+	"github.com/qw576483/clover-server-engine/internal/transport/etcd"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // roleMaster master 角色名（同时是 etcd 前缀的路径段）。

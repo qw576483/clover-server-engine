@@ -1,7 +1,7 @@
 package tcp
 
 import (
-	"clover-server-engine/pkg/foundation/metrics"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/metrics"
 )
 
 // net 层指标埋点

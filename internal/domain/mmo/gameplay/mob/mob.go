@@ -12,13 +12,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/mmo"
-	"clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
-	pkgbtree "clover-server-engine/pkg/domain/mmo/ai/btree"
-	"clover-server-engine/pkg/domain/mmo/collide"
-	pkgmob "clover-server-engine/pkg/domain/mmo/mob"
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/mmo"
+	"github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
+	pkgbtree "github.com/qw576483/clover-server-engine/pkg/domain/mmo/ai/btree"
+	"github.com/qw576483/clover-server-engine/pkg/domain/mmo/collide"
+	pkgmob "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mob"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // mobFailf mob 包的异常降频日志（首次全量 + 之后每 1000 条一条）。

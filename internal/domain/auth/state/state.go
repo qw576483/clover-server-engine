@@ -10,10 +10,10 @@ import (
 	"time"
 	"unicode/utf8"
 
-	idataaccount "clover-server-engine/internal/domain/data/account"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/id"
-	"clover-server-engine/pkg/shared/jwt"
+	idataaccount "github.com/qw576483/clover-server-engine/internal/domain/data/account"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/id"
+	"github.com/qw576483/clover-server-engine/pkg/shared/jwt"
 )
 
 // 默认值：零值自动回落到这里。

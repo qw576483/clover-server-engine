@@ -1,7 +1,7 @@
 package gobject
 
 import (
-	"clover-server-engine/pkg/runtime/timer"
+	"github.com/qw576483/clover-server-engine/pkg/runtime/timer"
 )
 
 const timerComponentName = "timer"

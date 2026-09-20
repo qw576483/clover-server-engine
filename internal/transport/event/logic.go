@@ -40,13 +40,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/shared/proto"
-	net_http "clover-server-engine/internal/transport/net/http"
-	"clover-server-engine/internal/transport/net/tcp"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/traceid"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	net_http "github.com/qw576483/clover-server-engine/internal/transport/net/http"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/tcp"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/traceid"
 )
 
 // 默认错误回包 opcode（与 clover-a 的 EReplyError 一致）；真身在 proto.EMsgError。

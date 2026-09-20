@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"clover-server-engine/internal/domain/log/state"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/state"
 )
 
 // ---------------- 测试替身 ----------------

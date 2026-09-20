@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	idata "clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
-	pkgmob "clover-server-engine/pkg/domain/mmo/mob"
-	"clover-server-engine/pkg/shared/geom"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
+	pkgmob "github.com/qw576483/clover-server-engine/pkg/domain/mmo/mob"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // 每只怪必须有**自己的**行为树实例。

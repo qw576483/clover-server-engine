@@ -1,7 +1,7 @@
 package data
 
 import (
-	pdata "clover-server-engine/pkg/domain/data"
+	pdata "github.com/qw576483/clover-server-engine/pkg/domain/data"
 )
 
 // bridge.go 持有原本落在 pkg/domain/data/bridge 的**解包实现**。

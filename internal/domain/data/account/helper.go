@@ -1,7 +1,7 @@
 package account
 
 import (
-	"clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
 )
 
 // AccountKey 构造"绑在账号上的其他数据"的 data.Key。

@@ -1,6 +1,6 @@
 package mmo
 
-import "clover-server-engine/internal/domain/mmo"
+import "github.com/qw576483/clover-server-engine/internal/domain/mmo"
 
 // 本文件把「服务端写 → 客户端 WorldSync 认」的 EPushDataSync 包壳**契约**固定成唯一出处。
 //

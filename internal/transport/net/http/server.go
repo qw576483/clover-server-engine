@@ -22,8 +22,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // Handler 每来一个 HTTP 请求回调一次（标准库签名，便于直接复用 http.HandlerFunc / mux）。

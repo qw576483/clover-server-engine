@@ -22,10 +22,10 @@ import (
 	"fmt"
 	"regexp"
 
-	"clover-server-engine/internal/domain/data"
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	pplayer "clover-server-engine/pkg/domain/data/player"
-	"clover-server-engine/pkg/shared/id"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	pplayer "github.com/qw576483/clover-server-engine/pkg/domain/data/player"
+	"github.com/qw576483/clover-server-engine/pkg/shared/id"
 )
 
 // 业务错误（指向 pkg 层本体）。

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // RedisConfig Redis 连接配置，对应 yaml 中 redis 节点，

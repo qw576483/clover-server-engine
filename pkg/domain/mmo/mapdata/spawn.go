@@ -1,8 +1,8 @@
 package mapdata
 
 import (
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // spawnClearance 出生点要求的"空旷半径"（格）：中心格与它的 ±1 圈邻居都要可走。

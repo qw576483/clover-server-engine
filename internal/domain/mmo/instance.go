@@ -3,9 +3,9 @@ package mmo
 import (
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	internalaoi "clover-server-engine/internal/domain/mmo/spatial/aoi"
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	internalaoi "github.com/qw576483/clover-server-engine/internal/domain/mmo/spatial/aoi"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 )
 
 // Instance 是 Scene 内的一个隔离实例：独立的 AOI 网格 + 物理体 + 实体类型记录。

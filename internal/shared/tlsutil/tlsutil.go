@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"os"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // Build 按路径构建 *tls.Config。

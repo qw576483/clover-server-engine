@@ -7,7 +7,7 @@ import (
 	"slices"
 	"time"
 
-	"clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
 )
 
 const (

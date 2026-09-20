@@ -28,10 +28,10 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
-	ujson "clover-server-engine/pkg/shared/json"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // ErrNoBackend 未配置持久化后端时调用 PersistScope/RestoreScope/ClearPersist 返回此错误。

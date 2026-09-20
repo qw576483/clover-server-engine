@@ -3,17 +3,17 @@ package app
 import (
 	"sync"
 
-	"clover-server-engine/internal/domain/data"
-	iaccessor "clover-server-engine/internal/domain/data/accessor"
-	imysql "clover-server-engine/internal/domain/data/store/mysql"
-	iredis "clover-server-engine/internal/domain/data/store/redis"
-	"clover-server-engine/internal/domain/data/visibility"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/event"
-	"clover-server-engine/internal/transport/nats"
-	"clover-server-engine/internal/transport/net/push"
-	"clover-server-engine/pkg/foundation/logger"
-	ujson "clover-server-engine/pkg/shared/json"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	iaccessor "github.com/qw576483/clover-server-engine/internal/domain/data/accessor"
+	imysql "github.com/qw576483/clover-server-engine/internal/domain/data/store/mysql"
+	iredis "github.com/qw576483/clover-server-engine/internal/domain/data/store/redis"
+	"github.com/qw576483/clover-server-engine/internal/domain/data/visibility"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/event"
+	"github.com/qw576483/clover-server-engine/internal/transport/nats"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/push"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	ujson "github.com/qw576483/clover-server-engine/pkg/shared/json"
 )
 
 // Core 是 Game 与 MasterGame 的共享内核，嵌入后自动继承全部数据访问/push/alert/monitor/timer 方法。

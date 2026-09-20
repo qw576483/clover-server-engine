@@ -26,12 +26,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	idata "clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/shared/proto"
-	"clover-server-engine/internal/transport/net/push"
-	"clover-server-engine/internal/transport/pubsub"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/conv"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/shared/proto"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/push"
+	"github.com/qw576483/clover-server-engine/internal/transport/pubsub"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // Subscriber 订阅接口（统一定义在 transport/pubsub）。

@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
 )
 
 // fakePub 只用于让同步实体非 nil（本用例不关心投递结果）。

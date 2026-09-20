@@ -16,8 +16,8 @@ package aoi
 import (
 	"time"
 
-	"clover-server-engine/internal/domain/object"
-	pkaoi "clover-server-engine/pkg/domain/mmo/aoi"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkaoi "github.com/qw576483/clover-server-engine/pkg/domain/mmo/aoi"
 )
 
 // NewGridFacade 创建 AOI 网格并包装为公开接口 `aoi.Grid`。

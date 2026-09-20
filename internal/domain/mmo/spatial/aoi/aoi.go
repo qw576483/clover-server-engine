@@ -33,9 +33,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // aoiFailf 是 AOI 内核的异常降频日志（首次全量 + 之后每 1000 条一条）。

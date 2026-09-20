@@ -12,7 +12,7 @@
 // 存储位标记。并发不安全，需调用方加锁保护。
 //
 // 设计要点：
-//   - 使用 clover-server-engine/pkg/shared/util 包的 Fnv32/Fnv32Key 作为哈希原语
+//   - 使用 pkg/shared/util 包的 Fnv32/Fnv32Key 作为哈希原语
 //   - 通过双哈希（double hashing）从两个基础哈希值派生出 k 个哈希函数
 //   - 位数组使用 []uint64，按 bit 操作，内存紧凑
 //   - 纯标准库、零外部依赖
@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"math"
 
-	cloverHash "clover-server-engine/pkg/shared/util"
+	cloverHash "github.com/qw576483/clover-server-engine/pkg/shared/util"
 )
 
 // maxBits 位数组规模上限（2^34 位 = 2 GiB）。

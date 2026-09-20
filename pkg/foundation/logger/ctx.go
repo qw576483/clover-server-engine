@@ -5,8 +5,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"clover-server-engine/pkg/foundation/trace"
-	"clover-server-engine/pkg/shared/traceid"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/trace"
+	"github.com/qw576483/clover-server-engine/pkg/shared/traceid"
 )
 
 // context 感知日志（自动注入 trace_id）

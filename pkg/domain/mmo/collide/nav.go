@@ -3,7 +3,7 @@ package collide
 import (
 	"math"
 
-	"clover-server-engine/pkg/shared/graph"
+	"github.com/qw576483/clover-server-engine/pkg/shared/graph"
 )
 
 // NavGrid 是基于网格的导航图（寻路 / 视线 / 沿线段滑行），

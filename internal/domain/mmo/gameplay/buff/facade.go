@@ -7,8 +7,8 @@
 package buff
 
 import (
-	object "clover-server-engine/internal/domain/object"
-	pkbuff "clover-server-engine/pkg/domain/mmo/buff"
+	object "github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkbuff "github.com/qw576483/clover-server-engine/pkg/domain/mmo/buff"
 )
 
 // containerFacade 门面 buff.Container 接口的实现：包装 internal 的 *Container。

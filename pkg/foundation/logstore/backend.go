@@ -15,7 +15,7 @@ import (
 	"sort"
 	"sync"
 
-	"clover-server-engine/pkg/foundation/logbuf"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logbuf"
 )
 
 // DefaultBackend 未配置 log_backend 时使用的内置后端名。

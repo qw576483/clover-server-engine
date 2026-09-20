@@ -5,7 +5,7 @@
 引擎的顶层协调服公开 API。本包暴露排行榜模块（MasterRank）、玩家定位查询（PlayerLookup），以及 master TCP 客户端（MasterClient）。
 
 ```go
-import "clover-server-engine/pkg/domain/master"
+import "github.com/qw576483/clover-server-engine/pkg/domain/master"
 ```
 
 ## 快速上手

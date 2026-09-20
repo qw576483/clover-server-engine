@@ -13,10 +13,10 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"clover-server-engine/internal/domain/object"
-	pkgcombat "clover-server-engine/pkg/domain/mmo/combat"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/rand"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	pkgcombat "github.com/qw576483/clover-server-engine/pkg/domain/mmo/combat"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/rand"
 )
 
 // combatRand 包级加密安全随机源，用于战斗方差与暴击判定。

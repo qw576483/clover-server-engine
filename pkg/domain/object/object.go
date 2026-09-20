@@ -18,7 +18,7 @@ import (
 	"strings"
 	"sync"
 
-	"clover-server-engine/pkg/shared/conv"
+	"github.com/qw576483/clover-server-engine/pkg/shared/conv"
 )
 
 // maxSeq 实例序号上限（低 48 位）。

@@ -6,10 +6,10 @@ import (
 	"math"
 	"sync/atomic"
 
-	"clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
-	pkgbtree "clover-server-engine/pkg/domain/mmo/ai/btree"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/graph"
+	"github.com/qw576483/clover-server-engine/internal/domain/mmo/gameplay/ai/btree"
+	pkgbtree "github.com/qw576483/clover-server-engine/pkg/domain/mmo/ai/btree"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/graph"
 )
 
 // pathFailf 寻路包的异常降频日志（首次全量 + 之后每 1000 条一条）。

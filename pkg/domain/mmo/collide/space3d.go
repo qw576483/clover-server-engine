@@ -18,7 +18,7 @@ import (
 	"sort"
 	"sync"
 
-	"clover-server-engine/pkg/shared/geom"
+	"github.com/qw576483/clover-server-engine/pkg/shared/geom"
 )
 
 // ===== 几何原语 =====

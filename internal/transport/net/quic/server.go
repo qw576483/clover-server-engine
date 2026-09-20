@@ -12,10 +12,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/shared/retry"
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/foundation/logger"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/internal/shared/retry"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 	iquic "github.com/quic-go/quic-go"
 )
 

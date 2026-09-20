@@ -5,7 +5,7 @@ package event
 // 本文件仅做类型别名和函数变量绑定，不含任何实现。
 
 import (
-	pevent "clover-server-engine/pkg/transport/event"
+	pevent "github.com/qw576483/clover-server-engine/pkg/transport/event"
 )
 
 // 类型重导出

@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	iframe "clover-server-engine/internal/domain/room/frame"
-	proom "clover-server-engine/pkg/domain/room"
-	pframe "clover-server-engine/pkg/domain/room/frame"
+	iframe "github.com/qw576483/clover-server-engine/internal/domain/room/frame"
+	proom "github.com/qw576483/clover-server-engine/pkg/domain/room"
+	pframe "github.com/qw576483/clover-server-engine/pkg/domain/room/frame"
 )
 
 // configFieldNames 是 room.Config 的对外字段契约（顺序即声明顺序）。

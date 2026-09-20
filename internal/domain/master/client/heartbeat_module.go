@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"clover-server-engine/pkg/foundation/logger"
+	"github.com/qw576483/clover-server-engine/pkg/foundation/logger"
 )
 
 // HeartbeatModule 封装心跳上报器生命周期。

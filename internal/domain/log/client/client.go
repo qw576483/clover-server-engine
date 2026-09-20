@@ -2,8 +2,8 @@
 package client
 
 import (
-	"clover-server-engine/internal/domain/log/state"
-	"clover-server-engine/internal/transport/tcpmsg"
+	"github.com/qw576483/clover-server-engine/internal/domain/log/state"
+	"github.com/qw576483/clover-server-engine/internal/transport/tcpmsg"
 )
 
 // Client log 服客户端：连接 log 服 TCP 端口，支持批量上报日志。

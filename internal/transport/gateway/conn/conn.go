@@ -9,8 +9,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"clover-server-engine/internal/transport/net/session"
-	"clover-server-engine/pkg/shared/safe"
+	"github.com/qw576483/clover-server-engine/internal/transport/net/session"
+	"github.com/qw576483/clover-server-engine/pkg/shared/safe"
 )
 
 // metaKeyPlayerID 连接级元数据中存放已绑定玩家 UID 的键名。

@@ -7,7 +7,7 @@
 package bridge
 
 import (
-	idata "clover-server-engine/internal/domain/data"
+	idata "github.com/qw576483/clover-server-engine/internal/domain/data"
 )
 
 // InternalStore 将门面 Store 接口还原为 internal 的具体 *Store；若底层不是则 ok=false。

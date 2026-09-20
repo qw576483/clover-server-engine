@@ -15,10 +15,10 @@ import (
 	"errors"
 	"fmt"
 
-	"clover-server-engine/internal/domain/data"
-	"clover-server-engine/internal/domain/object"
-	"clover-server-engine/internal/domain/object/gobject"
-	"clover-server-engine/pkg/domain/object/idgen"
+	"github.com/qw576483/clover-server-engine/internal/domain/data"
+	"github.com/qw576483/clover-server-engine/internal/domain/object"
+	"github.com/qw576483/clover-server-engine/internal/domain/object/gobject"
+	"github.com/qw576483/clover-server-engine/pkg/domain/object/idgen"
 )
 
 // 错误定义。
