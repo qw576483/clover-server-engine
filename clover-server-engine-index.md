@@ -14,7 +14,7 @@
 | 某个具体模块 | 各 `pkg/<模块>/README.md`（`internal/**` 不放 README，实现注释即文档） |
 | 消息号、线格式、协议边界 | `pkg/shared/proto/`（真身）与 `internal/shared/proto/`（引擎侧复用/内部信封） |
 | 业务侧如何用引擎（pkg 入口） | `pkg/app/README.md` + 各 `pkg/domain/*/README.md` |
-| 当前已知问题与待办 | 工作区根 `服务器待做.md`、`客户端待做.md`（不在本引擎目录内） |
+| 引擎的已知问题与待办 | [`修复记录.md`](修复记录.md)（S 编号体系）+ 文档站（`clover-doc/`） |
 
 > 约定：引擎常量用 `EMsg*` / `EPush*`（回包为 `E*Reply` 结构体，无 `EReply*` 常量前缀）；业务别名用 `Msg*`。
 > 结构方向（现行）：**门面在 `pkg`，真身在 `internal`**。`pkg` 只做门面（类型别名 / 变量转发 / 极薄参数适配）

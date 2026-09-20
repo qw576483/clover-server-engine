@@ -2,8 +2,8 @@
 
 clover 引擎的应用启动门面。业务项目只需 `app.Run(configPath)` 即可启动网关 + 逻辑服并阻塞到退出信号。
 
-> **结构方向（见 `结构规则.md` §五）**：本包是**门面包** —— 只有类型别名（`type Game = internal.app.GameFacade` 等）、
-> 常量转发（`const RoleGame = …`）与声明转发（`var Run = internal.app.RunFacade` 等），**不含实现体**。
+> **结构方向（见 `结构规则.md` §五）**：本包是**门面包** —— 只有类型别名（`type Game = internal/app.GameFacade` 等）、
+> 常量转发（`const RoleGame = …`）与声明转发（`var Run = internal/app.RunFacade` 等），**不含实现体**。
 > 真身（`GameFacade` / `MasterGameFacade` / `LogGameFacade` / `AuthGameFacade` 包装结构、
 > `Mount` / `RunFacade` / `RunWithConfigFacade` / `bridgeHandler` / `unwrapEventCtx`、admin 与 timer 包装）
 > 全部在 `internal/app/facade.go`（`channel.go` 的渠道校验器真身在 `internal/domain/auth`）。

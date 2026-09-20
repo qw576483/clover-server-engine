@@ -12,10 +12,14 @@
 // 用法（帧同步）：
 //
 //	roomMod := room.NewModule(room.Config{
-//	    MasterCaller: g.CallMaster,
-//	    Pusher:       g.PushToPlayerJSON,
-//	    NodeAddr:     g.Addr(),
-//	    FrameCfg:     frame.DefaultConfig(),
+//	    // MasterCaller 是「CallMaster + SwitchUpstream」两方法的接口，必须整传 g
+//	    MasterCaller: g,
+//	    // g.PushToPlayer 带变参（opts ...proto.DeliveryMode），不能直接赋给 Pusher，需包一层
+//	    Pusher: func(playerID string, msgID uint32, v any) error {
+//	        return g.PushToPlayer(playerID, msgID, v)
+//	    },
+//	    NodeAddr: g.Addr(),
+//	    FrameCfg: frame.DefaultConfig(),
 //	})
 //	roomMod.EnsureRoom(roomID)
 //	roomMod.JoinRoom(c.ConnID(), roomID, c.PlayerID())
@@ -23,10 +27,12 @@
 // 用法（业务自写内核，例如状态同步）：
 //
 //	roomMod := room.NewModule(room.Config{
-//	    MasterCaller: g.CallMaster,
-//	    Pusher:       g.PushToPlayerJSON,
-//	    NodeAddr:     g.Addr(),
-//	    Kernel:       myStateSyncKernel,
+//	    MasterCaller: g,
+//	    Pusher: func(playerID string, msgID uint32, v any) error {
+//	        return g.PushToPlayer(playerID, msgID, v)
+//	    },
+//	    NodeAddr: g.Addr(),
+//	    Kernel:   myStateSyncKernel,
 //	})
 package room
 

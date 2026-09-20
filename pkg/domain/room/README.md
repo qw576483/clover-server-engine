@@ -42,9 +42,12 @@ func bootstrap(g *app.Game) error {
 // ExportState / ImportState / Players / Close。
 mod := room.NewModule(room.Config{
     MasterCaller: g,
-    Pusher:       g.PushToPlayer,
-    NodeAddr:     g.Addr(),
-    Kernel:       myKernel, // ← 挂自己的内核，FrameCfg 被忽略
+    // g.PushToPlayer 带变参（opts ...proto.DeliveryMode），不能直接赋给 Pusher，需包一层
+    Pusher: func(pid string, msgID uint32, v any) error {
+        return g.PushToPlayer(pid, msgID, v)
+    },
+    NodeAddr: g.Addr(),
+    Kernel:   myKernel, // ← 挂自己的内核，FrameCfg 被忽略
 })
 mod.EnsureRoom("room-001") // 外壳 API 与帧同步房间完全一致
 ```
