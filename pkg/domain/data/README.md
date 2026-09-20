@@ -58,13 +58,14 @@ _ = store.LoadJSON(ctx, key, &bag)
 | `LoadJSON(ctx, key, v)` | 读取并反序列化 JSON 到 `v` |
 | `Delete(ctx, key)` | 删除一条数据 |
 
-### Key 三元键
+### Key 组合主键
 
 ```go
 type Key struct {
-    Owner OwnerType // 归属实体类型
-    ID    string    // 归属实体 ID
-    Type  string    // 业务数据类型
+    Owner        OwnerType // 归属实体类型
+    ID           string    // 归属实体 ID
+    Type         string    // 业务数据类型
+    NoLocalCache bool      // 跳过本地缓存，直读持久层（跨区镜像等场景）
 }
 ```
 

@@ -25,7 +25,8 @@
 // ───────────────────────────────────────────────────────────────────────────
 // 所有消息号按「方向 / 角色」分为三段，业务与引擎互不越界：
 //
-// [1, …] 引擎 C2S（客户端 → 逻辑服）：EMsgLogin=2、EMsgResumeSession=3、EMsgRankQuery=4、EMsgBindUDP=5、EMsgUDPBindGrant=6、EMsgQueuePosition=7（见 msg.go）
+// [1, …] 引擎 C2S（客户端 → 逻辑服）：EMsgLogin=2、EMsgResumeSession=3、EMsgRankQuery=4、EMsgBindUDP=5（见 msg.go）
+// 同号段但方向为 S2C（网关 → 客户端，网关直发）：EMsgUDPBindGrant=6、EMsgQueuePosition=7（见 msg.go）
 //
 //	号位 1 已作废保留（原 EMsgSignup，注册已移到账号服 HTTP）——列表见 pkg/shared/proto/msg.go。
 //

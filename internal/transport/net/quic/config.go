@@ -22,7 +22,7 @@ const defaultMaxStream = 100
 const defaultIdleTimeout = 30 * time.Second
 
 // defaultAcceptStreamTimeout 等待对端在新建连接上打开首条流的默认超时。
-// 每条连接固定一条双向流（见 README 规则 2），超时仍不开流的连接按异常连接关闭，
+// 每条连接固定一条双向流，超时仍不开流的连接按异常连接关闭，
 // 以免它长期占住唯一的 accept 循环。
 const defaultAcceptStreamTimeout = 10 * time.Second
 

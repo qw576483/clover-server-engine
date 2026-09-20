@@ -16,7 +16,7 @@
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `timewindow.go` | 142 | 包文档、`TimeWindow` 结构体、`NewTimeWindow`、`Incr`、`Sum`、`Reset`、`BucketCount`、`WindowDuration`、环形桶对齐逻辑 `align` |
+| `timewindow.go` | 151 | 包文档、`TimeWindow` 结构体、`NewTimeWindow`、`Incr`、`Sum`、`Reset`、`BucketCount`、`WindowDuration`、环形桶对齐逻辑 `align` |
 
 ## 核心类型与接口
 

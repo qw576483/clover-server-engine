@@ -15,7 +15,7 @@
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `hyperloglog.go` | ~180 | `HLL` 结构体、`NewHLL`、`Add`、`Count`、`Merge`、`Clone`、bias 修正系数 |
+| `hyperloglog.go` | 228 | `HLL` 结构体、`NewHLL`、`Add`、`Count`、`Merge`、`Clone`、bias 修正系数 |
 
 ## 核心类型与接口
 

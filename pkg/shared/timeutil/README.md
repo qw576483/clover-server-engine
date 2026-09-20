@@ -33,7 +33,7 @@
 
 **并发安全性**：全局时区用 `atomic.Pointer` 实现无锁读写，`Init` 可安全并发调用；所有函数无共享可变状态，**完全并发安全**。
 
-**时区回退规则**：`ParseTimezone("")` 返回系统本地时区；时区名无效时 `log.Printf` 打印警告并回退 `time.UTC`，保证服务能启动而非 panic。
+**时区回退规则**：`ParseTimezone("")` 返回系统本地时区；时区名无效时用 `logger.Warnf` 打印警告并回退 `time.UTC`，保证服务能启动而非 panic。
 
 ## 算法与实现原理
 
@@ -174,8 +174,8 @@ if timeutil.IsNewDay(lastCheck) {
 
 ## 依赖关系
 
-- **仅依赖 Go 标准库**：`fmt`、`log`、`sync/atomic`、`time`。
-- 零第三方依赖、**零引擎内部依赖**，是依赖树的叶子节点，可被任意模块安全引用而不会产生循环依赖。
+- **依赖**：Go 标准库 `fmt` / `sync/atomic` / `time`，以及引擎内部的 `pkg/foundation/logger`（时区名无效时告警）。
+- 零第三方依赖；**依赖引擎内部的 `pkg/foundation/logger`**，因此不是「零引擎内部依赖」的叶子包，但仍不 import `internal`（属自包含包）。
 
 ## 相关包
 

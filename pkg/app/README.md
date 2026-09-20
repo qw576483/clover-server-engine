@@ -81,7 +81,7 @@ func bootstrap(g *app.Game) error {
 | `ChannelStore()` | 账号渠道绑定存储 |
 | `OrderStore()` | 订单存储 |
 | `MasterClient()` | 跨服 master TCP 客户端 |
-| `Call(role, msgID, req, resp)` | **统一转发**到其他角色（`RoleMaster`/`RoleLog`/`RoleAuth`）；取代 `CallMaster`/`CallLog`/`CallAuth` 三个专用方法 |
+| `Call(role, msgID, req, resp)` | **统一转发**到其他角色（`RoleMaster`/`RoleLog`/`RoleAuth`）；`CallMaster`/`CallLog`/`CallAuth` 仍存在并可经门面内嵌直接调用，两者并存 |
 | `AddLog(ownerType, ownerID, typ, info, ...opts)` | 写入业务日志，攒积后批量上报 |
 | `Timer` | 共享定时器调度器（`*TimeEvent`） |
 

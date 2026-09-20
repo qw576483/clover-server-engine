@@ -25,7 +25,7 @@
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `traceid.go` | 185 | 全部内容：包文档与接入示例、`Span` 结构、`spanKey` context 键、`StartSpan` 创建（自动继承父 TraceID）、ID 访问器（TraceID/SpanID/ParentID）、context 传递（WithContext/FromContext）、`WithTag` 打标签、`End`/`SetEndHook` 结束与回调、`Duration` 耗时、`SetHeader` HTTP 注入、`InjectNATSHeader`/`StartNATSSpan` NATS 传播、`NewTraceID`/`newID` 随机 ID 生成 |
+| `traceid.go` | 246 | 全部内容：包文档与接入示例、`Span` 结构、`spanKey` context 键、`StartSpan` 创建（自动继承父 TraceID）、ID 访问器（TraceID/SpanID/ParentID）、context 传递（WithContext/FromContext）、`WithTag` 打标签、`End`/`SetEndHook` 结束与回调、`Duration` 耗时、`SetHeader` HTTP 注入、`InjectNATSHeader`/`StartNATSSpan` NATS 传播、`NewTraceID`/`newID` 随机 ID 生成 |
 
 ## 核心类型与接口
 

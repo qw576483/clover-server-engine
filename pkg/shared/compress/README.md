@@ -13,13 +13,13 @@
 5. **空值的非对称性**：`Compress(nil)` 返回非空的最小 DEFLATE 空流，而 `Decompress(nil)` 返回 `nil`；判定解压结果是否为空必须使用 `len()`，不得与 `nil` 比较。
 6. **全量内存模型**：三个函数均为一次性全量内存操作，输入与输出各占一份完整内存；GB 级数据必须使用 `flate.NewWriter` / `flate.NewReader` 做流式处理。
 7. **高频调用须自行复用**：每次调用都新建 `bytes.Buffer` 与 `flate.Writer`，超高频小包场景必须在上层引入 `sync.Pool` 并配合 `Writer.Reset` 复用。
-8. **不可信输入必须限流**：`Decompress` 不限制输出长度，处理不可信来源的数据时必须先用 `io.LimitReader` 包裹，或在调用前校验来源可信，以防解压炸弹耗尽内存。
+8. **不可信输入已有内置上限**：`Decompress` 内置 `MaxDecompressedSize`（256 MiB）上限，超限直接返回错误（`flate.go:61`）；需要更大输出时要改用 `flate.NewReader` 做流式处理。
 
 ## 文件清单
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `flate.go` | 51 | 全部内容：`CompressLevel`（指定级别压缩，非法级别回退默认）、`Compress`（默认级别便捷函数）、`Decompress`（解压，空输入返回 nil） |
+| `flate.go` | 66 | 全部内容：`MaxDecompressedSize`（解压输出上限常量）、`CompressLevel`（指定级别压缩，非法级别回退默认）、`Compress`（默认级别便捷函数）、`Decompress`（解压，空输入返回 nil，超上限报错） |
 
 ## 核心类型与接口
 

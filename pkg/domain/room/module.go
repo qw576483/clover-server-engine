@@ -36,7 +36,7 @@ type Config struct {
 
 	// FrameCfg 挂载引擎内置帧同步内核时的「房间默认配置」（TargetFPS / 快照频率等）。
 	// 语义是逐项覆盖 DefaultConfig()：零值字段不覆盖（详见 frame.WithDefaultRoomConfig）。
-	// 与 Kernel 二选一：不传 Kernel 时，传它（或 FrameSvc / FrameSvcOpts）即挂帧同步内核。
+	// 与 Kernel 二选一：不传 Kernel 时，传它、FrameSvc、FrameSvcOpts 或 Pusher 任一项即挂帧同步内核。
 	FrameCfg *frame.Config
 	// FrameSvc 可选的预构造帧服务（nil 表示由实现内部根据 FrameCfg 构造）。
 	FrameSvc frame.Service

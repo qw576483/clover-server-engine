@@ -95,6 +95,7 @@ _ = svc.Destroy("room-001")
 | `WithOnRoomDestroy(fn)` | 房间销毁钩子 |
 | `WithTakeoverHook(fn)` | 接管钩子 |
 | `WithInputApplier(fn)` | 注册输入应用器 |
+| `WithDefaultRoomConfig(cfg)` | 设置后续所有新建房间的默认房间配置（`types.go:269`） |
 
 ### 错误
 
@@ -105,6 +106,7 @@ _ = svc.Destroy("room-001")
 | `ErrPlayerNotIn` | 玩家不在房间中 |
 | `ErrPlayerExists` | 玩家已加入 |
 | `ErrRoomDestroyed` | 房间已销毁 |
+| `ErrRoomFull` | 房间满员（`Room.Join` 拒绝新玩家，`types.go:444`） |
 | `ErrFrameTooOld` | 帧号过旧（超出历史范围） |
 | `ErrFrameTooFar` | 帧号过远（超出未来缓冲） |
 | `ErrInputDuplicated` | 输入重复投递 |

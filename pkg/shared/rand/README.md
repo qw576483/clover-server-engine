@@ -26,8 +26,8 @@
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `weighted.go` | 150 | `weightedItem` 内部条目、`WeightedPicker` 选择器主体、`NewWeightedPicker`/`NewSeededPicker` 构造、`cryptoRandIntn` 加密安全随机整数（含重试与降级）、`Add`/`TotalWeight`/`Pick`/`PickN`/`Reset` 五个导出方法、错误值 `ErrWeightOverflow` |
-| `source.go` | 77 | `Source` 通用随机源：`NewSource`/`NewSeededSource` 构造、`IntN`/`Float64`/`Shuffle`/`Pick` 四个导出方法，及内部 `cryptoRandFloat64` |
+| `weighted.go` | 157 | `weightedItem` 内部条目、`WeightedPicker` 选择器主体、`NewWeightedPicker`/`NewSeededPicker` 构造、`cryptoRandIntn` 加密安全随机整数（含重试与降级）、`Add`/`TotalWeight`/`Pick`/`PickN`/`Reset` 五个导出方法、错误值 `ErrWeightOverflow` |
+| `source.go` | 84 | `Source` 通用随机源：`NewSource`/`NewSeededSource` 构造、`IntN`/`Float64`/`Shuffle`/`Pick` 四个导出方法，及内部 `cryptoRandFloat64` |
 
 ## 核心类型与接口
 

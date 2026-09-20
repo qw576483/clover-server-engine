@@ -74,5 +74,5 @@
 1. **并发安全属性各不相同**：`cache`、`memrank`、`semaphore`、`timewindow` 内部已加锁；`geom` 为值类型天然安全。使用前务必对照上表与子包 README。
 2. **不要过度依赖 util 做性能关键路径**：`compress` 有压缩/解压开销、`id` 有系统调用开销——超高频场景应做局部缓存或换更快实现。
 3. **与标准库同名函数语义可能不同**：`NextPow2` 对负数返回 1 不报错。
-4. **零依赖带来的边界**：util 子包刻意不引入 logger 等内部依赖（如 `safe` 默认写 `os.Stderr`），接入日志系统须在启动期调用对应 `SetXxx` 注入。
+4. **依赖边界按子包区分**：根包 `util` 会 import `pkg/foundation/logger`（`util.go:28` 的 `NextPow2` 越界告警）；除 `timeutil`（也 import 了 logger）外，其余子包刻意不引入 logger（如 `safe` 默认写 `os.Stderr`），接入日志系统须在启动期调用对应 `SetXxx` 注入。
 5. **`id` 受墙钟回拨影响**：生成的 ID 不保证单调递增，切勿用作强排序键或唯一性判定。

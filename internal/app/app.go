@@ -51,7 +51,7 @@ var loggerReady atomic.Bool
 const EngineVersion = "pre-v0.0.1"
 
 // Run 从配置目录 / 文件加载配置并按 server_type 启动对应进程，阻塞到收到 SIGINT/SIGTERM。
-// 配置文件中的 server_type 字段为 "game" / "gateway" / "all" / "master"。
+// 配置文件中的 server_type 字段为 "game" / "gateway" / "all" / "master" / "log" / "auth"。
 //
 // bootstrap（可选）在逻辑服启动监听前被调用，用于给 *Game 绑定业务 handler
 // （On / OnEvent）。不传则仅启动「登录 + 网关转发」的纯框架，不含任何业务。

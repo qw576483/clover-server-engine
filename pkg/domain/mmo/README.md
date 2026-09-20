@@ -6,8 +6,8 @@ MMO 场景的统一组合层。把 AOI 视野、场景管理、物理碰撞、�
 
 结构方向（见 `结构规则.md` §五）：本包是**门面包** —— 只做**类型别名 / 变量转发 / 极薄参数适配**，
 真身（`SceneManagerFacade` / `SceneFacade` / `InstanceFacade` + 各自包装实现、工厂函数、错误与常量）全部在
-`internal/domain/mmo`（主门面 `facade.go`；`aoi` / `pathfinding` / `buff` / `skill` 的对口包装分别在
-`internal/domain/mmo/{spatial/aoi,spatial/pathfinding,gameplay/buff,gameplay/skill}/facade.go`）。
+`internal/domain/mmo`（主门面 `facade.go`；`aoi` / `pathfinding` / `buff` / `skill` / `mob` 的对口包装分别在
+`internal/domain/mmo/{spatial/aoi,spatial/pathfinding,gameplay/buff,gameplay/skill,gameplay/mob}/facade.go`）。
 
 子包 `ai/btree`、`aoi`、`buff`、`collide`、`combat`、`mapdata`、`mob`、`mover`、`pathfinding`、`skill`、`sync`
 **自身不 import internal**，属 §5.2 的**自包含包**（类型真身 + 自包含实现留在 pkg）。

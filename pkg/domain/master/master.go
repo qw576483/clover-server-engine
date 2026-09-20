@@ -9,7 +9,7 @@
 // session token 等能力由引擎在 app 层自动装配，业务经 app.Game 与基础设施包访问：
 //   - 自定义消息转发：app.Game.CallMaster
 //   - master TCP 客户端：app.Game.MasterClient
-//   - 配置热加载：foundation/config 的 Loader.Watch（本地 fsnotify / etcd 双通道）
+//   - 配置热加载：foundation/config 的 Loader.Watch（本地文件源 + fsnotify；etcd 源当前未启用）
 //
 // 这些装配细节不向业务暴露。
 package master

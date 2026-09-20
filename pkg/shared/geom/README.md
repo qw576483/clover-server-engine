@@ -27,7 +27,7 @@
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `vec.go` | 208 | 包文档、`Vec3` 三维向量及其 10 个方法、`Quaternion` 四元数及 `FromAxisAngle`/`Normalize`/`Len`/`Mul`/`Rotate`/`Slerp`、运动积分 `Integrate`/`IntegrateScalar`、5 个标量工具函数（Clamp/Lerp/RadToDeg/DegToRad/Sign） |
+| `vec.go` | 215 | 包文档、`Vec3` 三维向量及其 10 个方法、`Quaternion` 四元数及 `FromAxisAngle`/`Normalize`/`Len`/`Mul`/`Rotate`/`Slerp`、运动积分 `Integrate`/`IntegrateScalar`、5 个标量工具函数（Clamp/Lerp/RadToDeg/DegToRad/Sign） |
 | `trig.go` | 41 | `TrigTable` 离散角度正弦余弦查表：`NewTrigTable` 构造预计算、`Sin`/`Cos` 按度取模查表 |
 
 ## 核心类型与接口

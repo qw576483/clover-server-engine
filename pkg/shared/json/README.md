@@ -2,7 +2,7 @@
 
 ## 模块职责
 
-`json` 提供**统一的 JSON 序列化 / 反序列化封装**。它是对标准库 `encoding/json` 的一层极薄包装，目的有二：一是**收敛引用点**——全引擎统一走这个包，将来若要整体切换到更快的 JSON 实现（如 `sonic`、`go-json`），只需改这一个文件而不必全仓库替换 import；二是**统一错误包装**——所有错误都加上 `util.Marshal:` / `util.Unmarshal:` 前缀，日志中一眼可辨错误来源，同时用 `%w` 保留原始错误链以便 `errors.Is` / `errors.As` 判定。
+`json` 提供**统一的 JSON 序列化 / 反序列化封装**。它是对标准库 `encoding/json` 的一层极薄包装，目的有二：一是**收敛引用点**——全引擎统一走这个包，将来若要整体切换到更快的 JSON 实现（如 `sonic`、`go-json`），只需改这一个文件而不必全仓库替换 import；二是**统一错误包装**——所有错误都加上 `json.Marshal:` / `json.Unmarshal:` 前缀，日志中一眼可辨错误来源，同时用 `%w` 保留原始错误链以便 `errors.Is` / `errors.As` 判定。
 
 ## 规则与约束
 
@@ -11,7 +11,7 @@
 3. **高频大对象序列化的优化由调用方负责**：本包不做缓冲池复用与预分配，每次 `Marshal` 都会新分配字节切片。
 4. **必须遵守 `encoding/json` 的行为约定**：map 键按字典序排序输出；`[]byte` 序列化为 base64 字符串；nil slice 输出 `null` 而空 slice 输出 `[]`；JSON 中缺失的字段保留目标变量原值；字段名匹配大小写不敏感；目标为 `any` 时数字解析为 `float64`；未导出字段不参与编解码；HTML 特殊字符默认转义。
 5. **`Unmarshal` 的目标必须是非 nil 指针**：传值或 nil 指针会返回 `InvalidUnmarshalError`。
-6. **错误日志按 `util.Marshal` / `util.Unmarshal` 前缀检索**：该前缀为历史命名，不随包路径变化。
+6. **错误日志按 `json.Marshal` / `json.Unmarshal` 前缀检索**：前缀与包名一致（`json.go:13` / `json.go:21`）。
 7. **不得序列化含 `chan` / `func` / `complex` 字段的类型**：此类字段直接返回 `UnsupportedTypeError`，循环引用返回 `UnsupportedValueError`。
 8. **`Marshal` 失败时返回 nil 切片**：成功与否必须由 error 判定，不得用 `len(b) == 0` 判断。
 
@@ -39,12 +39,12 @@
 ```go
 // Marshal
 if err != nil {
-    return nil, fmt.Errorf("util.Marshal: %w", err)
+    return nil, fmt.Errorf("json.Marshal: %w", err)
 }
 
 // Unmarshal
 if err := stdjson.Unmarshal(data, v); err != nil {
-    return fmt.Errorf("util.Unmarshal: %w", err)
+    return fmt.Errorf("json.Unmarshal: %w", err)
 }
 ```
 
@@ -68,7 +68,7 @@ if errors.As(err, &ute) { ... }
 func Marshal(v any) ([]byte, error)
 ```
 
-用途：把任意值序列化为 JSON 字节。成功返回字节切片，失败返回带 `util.Marshal:` 前缀的包装错误。
+用途：把任意值序列化为 JSON 字节。成功返回字节切片，失败返回带 `json.Marshal:` 前缀的包装错误。
 
 ```go
 type Settings struct {
@@ -89,7 +89,7 @@ if err != nil {
 func Unmarshal(data []byte, v any) error
 ```
 
-用途：把 JSON 字节反序列化到 `v`（必须是**非 nil 指针**）。失败返回带 `util.Unmarshal:` 前缀的包装错误。
+用途：把 JSON 字节反序列化到 `v`（必须是**非 nil 指针**）。失败返回带 `json.Unmarshal:` 前缀的包装错误。
 
 ```go
 var s Settings

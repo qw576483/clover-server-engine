@@ -1,10 +1,10 @@
-// package mover 的七态运动组件。
+// package mover 的八态运动组件。
 //
 // 设计原则：纯几何/物理积分，不绑定任何业务（无技能、无网络、无数据落地）。
 // 对外只暴露一个 *Mover：持有位置/速度/朝向/状态，由 Step(dt) 逐帧积分推进。
 // 想落地到真实地面，可注入 *collide.HeightField；不注入则在创建时的 Y 平面运动。
 //
-// 七态（State）定义：
+// 八态（State）定义（含 Idle）：
 // Idle/Walk/Run/Jump/Fall/Climb/Fly/Swim。其中 Jump/Fall 由垂直速度自动判定，
 // Walk/Run 由平面移动自动判定；Climb/Fly/Swim 作为引擎中立状态保留（可由上层按
 // 地形/水体标记直接赋值扩展，本层不强依赖外部信息）。

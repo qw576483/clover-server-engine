@@ -15,7 +15,7 @@
 // 本包是**门面**（见 `结构规则.md` §5.1）：真身全部在 `internal/domain/mmo`
 // —— 主门面 `facade.go`（`SceneManagerFacade` / `SceneFacade` / `InstanceFacade` /
 // `SceneEventHandlerFacade` + 包装实现 + 包级操作函数 + 工厂），
-// 以及按能力拆分的 `{spatial/aoi,spatial/pathfinding,gameplay/buff,gameplay/skill}/facade.go`
+// 以及按能力拆分的 `{spatial/aoi,spatial/pathfinding,gameplay/buff,gameplay/skill,gameplay/mob}/facade.go`
 // （aoi / 寻路 / buff / skill 的对口包装）。
 //
 // 这里只有三类东西：**类型别名**（`type X = internal.X`）、**声明转发**
@@ -143,7 +143,7 @@ type (
 	Formula = combatpkg.Formula
 )
 
-// 运动七态状态。
+// 运动八态状态（含 Idle）。
 const (
 	// StateIdle 静止。
 	StateIdle = movpkg.StateIdle

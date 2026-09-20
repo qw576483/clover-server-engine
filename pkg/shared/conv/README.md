@@ -25,7 +25,7 @@
 
 | 文件名 | 行数 | 职责说明 |
 | --- | --- | --- |
-| `conv.go` | 166 | 全部内容：字符串转数值（`ToInt` / `ToInt64` / `ToFloat64` / `ToFloat32` / `ToBool`）、数值转字符串（`FormatInt` / `FormatIntBase` / `FormatUint` / `FormatBool` / `FormatFloat`）、`ToString` 任意值转字符串、`StructCopy` / `StructCopyStrict` 结构体反射浅拷贝、`MapMerge` 映射浅合并 |
+| `conv.go` | 188 | 全部内容：字符串转数值（`ToInt` / `ToInt64` / `ToFloat64` / `ToFloat32` / `ToBool`）、数值转字符串（`FormatInt` / `FormatIntBase` / `FormatUint` / `FormatBool` / `FormatFloat`）、`ToString` 任意值转字符串、`StructCopy` / `StructCopyStrict` 结构体反射浅拷贝、`MapMerge` 映射浅合并 |
 
 ## 核心类型与接口
 
@@ -100,7 +100,7 @@ func ToFloat32(s string) float32
 func ToBool(s string) bool
 ```
 
-用途：容错的字符串转浮点数与布尔值，失败返回零值。`ToFloat32` 先按 float64 解析再窄化；`ToBool` 走 `strconv.ParseBool`，接受 `1/t/T/TRUE/true/True` 与 `0/f/F/FALSE/false/False`，其余返回 `false`。
+用途：容错的字符串转浮点数与布尔值，失败返回零值。`ToFloat32` 用 `strconv.ParseFloat(s, 32)`（单精度解析，不做 float64 再窄化）；`ToBool` 走 `strconv.ParseBool`，接受 `1/t/T/TRUE/true/True` 与 `0/f/F/FALSE/false/False`，其余返回 `false`。
 
 ```go
 conv.ToFloat64("3.14")   // 3.14

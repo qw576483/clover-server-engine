@@ -10,9 +10,10 @@ import (
 
 // fixture 是测试用的 CloverMap 数据构造器：按 format.go 的布局逐字节产出。
 //
-// ★ 它与 Unity 端编码器（客户端引擎 `Editor/MapBake/CloverMapWriter.cs`）是**两份独立实现**
+// ★ 它与 Unity 端编码器（客户端引擎 `Runtime/Presentation/MapWriter.cs` 的 `CloverMapWriter`）是**两份独立实现**
 // （一份 Go 一份 C#），互为对照：同一组输入两边产出的字节必须一致，否则说明契约被改歪了。
-// 真·跨端那一环由 `crosslang_test.go` 覆盖（用 C# 真编码器产出的字节喂 Go 解码器）。
+// 真·跨端那一环（C# 真编码器产出的字节喂 Go 解码器）目前**没有用例** —— 原计划的
+// `crosslang_test.go` 未落地（见本包 `README.md` 的测试策略表）。
 //
 // 约定：encode 不做任何默认值填充，要默认值用 newFixture；这样测试才能显式构造"flags=0"
 // 这类非法头（若 encode 擅自兜底，非法数据就永远造不出来）。
