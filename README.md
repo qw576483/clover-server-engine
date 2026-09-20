@@ -36,7 +36,10 @@ func main() {
 ```go
 package logic
 
-import "github.com/qw576483/clover-server-engine/pkg/app"
+import (
+    "github.com/qw576483/clover-server-engine/pkg/app"
+    "github.com/qw576483/clover-server-engine/pkg/transport/event"
+)
 
 func init() {
     app.Mount(app.RoleGame, func(g *app.Game) {
@@ -44,7 +47,8 @@ func init() {
     })
 }
 
-func onGetPlayerList(c *event.Ctx) { /* 读 → 改 → 返回，handler 返回即自动提交 */ }
+// handler 签名固定为 func(event.Ctx) error；返回即自动提交（读 → 改 → 返回）
+func onGetPlayerList(c event.Ctx) error { return nil }
 ```
 
 `app.Mount` 是**四个角色共用的唯一入口**（通常在业务包 `init` 里调用）。fn 签名必须与 role 匹配，不匹配会在进程启动时立刻 panic，不会出现"挂错角色、消息永远到不了"的静默失败：
