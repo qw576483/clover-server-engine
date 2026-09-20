@@ -1,0 +1,37 @@
+# ── 编译产物 ──
+/bin/
+/dist/
+/outputs/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# ── Go 本地工作文件 ──
+/vendor/
+go.work
+go.work.sum
+__debug_bin*
+
+# ── 运行期日志与本地数据 ──
+*.log
+/logs/
+/run/
+*.pid
+
+# ── 编辑器 / IDE ──
+.idea/
+.vscode/
+.vs/
+*.swp
+
+# ── 系统文件 ──
+.DS_Store
+Thumbs.db
+
+# ── 临时文件 ──
+*.tmp
+/.ai-tmp/
