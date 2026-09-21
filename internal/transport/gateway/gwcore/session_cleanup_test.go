@@ -7,7 +7,7 @@ import (
 	iconn "github.com/qw576483/clover-server-engine/internal/transport/gateway/conn"
 )
 
-// TestCleanupFiresOnDisconnectWithSingleIndexedSession 复现缺陷 S1（清理切片越界 panic ⇒ 断线回调永不触发）。
+// TestCleanupFiresOnDisconnectWithSingleIndexedSession 复现缺陷（清理切片越界 panic ⇒ 断线回调永不触发）。
 //
 // 复现什么缺陷：会话断开时 cleanup 要从 idIndex 的 []*Session 里摘掉本会话。旧写法是
 //
@@ -72,7 +72,7 @@ func TestCleanupFiresOnDisconnectWithSingleIndexedSession(t *testing.T) {
 	}
 }
 
-// TestCleanupFiresOnDisconnectWithSingleExtraIDIndex 复现缺陷 S1 的**第二段**（业务端到端实测栈）。
+// TestCleanupFiresOnDisconnectWithSingleExtraIDIndex 复现同一缺陷的**第二段**（业务端到端实测栈）。
 //
 // 复现什么缺陷：cleanup 派发断线事件**之前**还有一段索引清理 ——
 // `removeExtraIDs` → `removeFromIDIndex`（摘掉 "p:playerID" 这类额外索引），

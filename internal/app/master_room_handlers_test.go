@@ -102,7 +102,7 @@ func TestMasterRoomHandlerRoundTripOverTCP(t *testing.T) {
 }
 
 // TestMasterGameOnMsgStillRejectsInternalIDs 对照组：**业务**注册路径的硬约束不许被放宽。
-// 修 S2 只给「引擎内部注册路径」开了口子；业务经 MasterGame.OnMsg 注册 ≤10000 的号
+// 「引擎内部注册路径」是唯一开了口子的地方；业务经 MasterGame.OnMsg 注册 ≤10000 的号
 // 仍必须 panic —— 否则业务可以覆盖 EMsgLogin / EMasterRoom* 等引擎内建 handler。
 func TestMasterGameOnMsgStillRejectsInternalIDs(t *testing.T) {
 	mg := newMasterGame(&Config{}, nil)

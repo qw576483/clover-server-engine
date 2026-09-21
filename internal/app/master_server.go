@@ -282,18 +282,16 @@ func runMaster(cfg *Config) (func(), error) {
 			"(game will fall back to static master_addr)", shard.Total)
 	}
 	if shard.Sharded() && stCfg.Backend != master.SessionTokenBackendRedis {
-		// 多分片 + memory token 后端：**只告警、不阻断**（本期口径，与 修复记录.md
-		// §七「S5 排行榜 / token 分片」行一致：「memory token 后端在分片下同样正确（按 playerID
-		// 路由），多分片仍推荐 redis（重启不丢）」）。
+		// 多分片 + memory token 后端：**只告警、不阻断**。memory token 后端在分片下同样
+		// 正确（按 playerID 路由），多分片只是更推荐 redis（重启不丢）。
 		//
 		// 不阻断的依据：session 客户端所有操作都经 Client.ForKey(playerID) 路由到属主分片
 		//（见 internal/domain/master/client/session_client.go），每个 player 的 token 恒落
 		// 自己的分片、不存在跨分片校验 —— memory 与 redis 的正确性相同，差别仅是属主分片
 		// 重启会丢 token、该批玩家需重新登录。
 		//
-		// ⚠️ 注意文档自相矛盾：修复记录.md §四「S5 落点」表写「多分片部署**必须**
-		// backend=redis」——那是给运维的部署建议，不是本进程的启动约束。此处刻意不做硬校验，
-		// 避免把「重启需重登」这一非致命差异升级为启动失败；两处口径如需统一，应改文档。
+		// 「多分片部署推荐 backend=redis」是给运维的部署建议，不是本进程的启动约束。
+		// 此处刻意不做硬校验，避免把「重启需重登」这一非致命差异升级为启动失败。
 		logger.Warnf("master: shard.total=%d with session_token.backend=%s; players on a restarted shard "+
 			"must re-login — redis backend is recommended", shard.Total, stCfg.Backend)
 	}

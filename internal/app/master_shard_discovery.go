@@ -1,6 +1,6 @@
 // #nosec G115 -- 同上：Xxhash64(key) % uint64(total) 的结果恒小于 total，total 为正分片数。
 
-// master 分片的 etcd 服务发现（步骤文档 S1 + S2）。
+// master 分片的 etcd 服务发现。
 //
 // 与 discovery.go 的「注册值为裸地址、按轮询选实例」约定**不同**：master 分片是
 // 「按 key 定归属」，因此走独立前缀与独立解析器：
