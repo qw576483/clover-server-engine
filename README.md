@@ -2,6 +2,8 @@
 
 Clover 的 **Go 游戏服务端引擎**：进程编排、网关与鉴权、集群服务发现、数据持久化、事件总线、跨节点通信、MMO 世界、房间与对象系统。
 
+> **从没用过 Clover？** 照着 [新手指南：用 AI 从零做一个 Clover 游戏](https://github.com/qw576483/clover-doc#beginner-guide) 走一遍即可 —— 从装 Unity 6 到让 AI 开出第一个工程，全程不用自己写代码。
+
 ## 安装
 
 ```bash
