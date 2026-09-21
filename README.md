@@ -2,7 +2,9 @@
 
 Clover 的 **Go 游戏服务端引擎**：进程编排、网关与鉴权、集群服务发现、数据持久化、事件总线、跨节点通信、MMO 世界、房间与对象系统。
 
-> **从没用过 Clover？** 照着 [新手指南：用 AI 从零做一个 Clover 游戏](https://github.com/qw576483/clover-doc#beginner-guide) 走一遍即可 —— 从装 Unity 6 到让 AI 开出第一个工程，全程不用自己写代码。
+## 从没用过 Clover？
+
+照着 **[新手指南：用 AI 从零做一个 Clover 游戏](https://github.com/qw576483/clover-doc#beginner-guide)** 走一遍即可 —— 从装 Unity 6 到让 AI 开出第一个工程，全程不用自己写代码。
 
 ## 安装
 
@@ -106,7 +108,8 @@ pkg/         同名六类                                                   （�
 |---|---|
 | [clover-client-unity-engine](https://github.com/qw576483/clover-client-unity-engine) | Unity 客户端引擎 UPM 包（协议与 API 语义两端对齐） |
 | [clover-server-tools](https://github.com/qw576483/clover-server-tools) | 本地一键依赖环境、调试客户端、压测机器人、集群编排、运营后台 |
-| [clover-tools](https://github.com/qw576483/clover-tools) | 打表工具、AI 交付 skill |
+| [clover-tools](https://github.com/qw576483/clover-tools) | 打表工具（Excel → Go / C# 强类型代码） |
+| [clover-ai-skill](https://github.com/qw576483/clover-ai-skill) | AI 交付 skill（规则 / 范式 / 脚手架） |
 | [clover-doc](https://github.com/qw576483/clover-doc) | 完整文档 |
 
 ## 开发
