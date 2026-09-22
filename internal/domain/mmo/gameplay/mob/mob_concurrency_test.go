@@ -55,7 +55,7 @@ func (s *stubScene) Members() []uint64                  { return nil }
 //   - 拆掉 map 类字段（hate 等）的锁：读侧与写侧对同一 map 的并发读-写会触发
 //     runtime 的 "concurrent map read and map write"（无需 -race 也可检出）。
 //     此前用例里 AddHate/Hate 都在同一 goroutine 顺序调用，拆锁也无人能察觉；
-//     读侧 goroutine 是为此补上的（实测：拆掉 AddHate 的锁后本用例必红）。
+//     读侧 goroutine 是为此补上的（拆掉 AddHate 的锁后本用例必红）。
 //   - 数值字段（respawnRetry / respawnAt / patrolIdx）的竞争在无 -race 环境不可从
 //     行为层观测（对齐访存不会撕裂、也无 panic），需 `go test -race` 检出——
 //     无 cgo 环境请在带 -race 的 CI 上跑本用例。

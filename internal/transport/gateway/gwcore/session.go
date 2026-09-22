@@ -35,7 +35,7 @@ import (
 // unauthRejectLogCount 未鉴权拒绝的**日志降频**计数。
 //
 // 为什么需要：会话失效/未登录的客户端可能在重连期间持续高频重发业务消息
-// （实测：一次服务端重启后客户端仍以 20Hz 重发移动帧，刷出 3262 条同因日志）。
+// （一次服务端重启后客户端仍以 20Hz 重发移动帧，刷出 3262 条同因日志）。
 // 这类"同一原因反复发生"的日志必须降频（首次 + 每 1000 次一条），
 // 精确次数由 metricRejected(reasonUnauth) 指标承担，不依赖日志计数。
 var unauthRejectLogCount atomic.Uint64
@@ -261,7 +261,7 @@ func (g *Gateway) replyUnauthenticated(s *Session, requestID uint32) {
 	s.sendMu.Unlock()
 	if err != nil {
 		// 同样是高频路径：连接已关（或对端已 RST）时，每条未鉴权帧的"回包"都会失败，
-		// 不降频会以收帧速率刷日志（实测一次刷了 747 条）。降频：首次 + 每 1000 次。
+		// 不降频会以收帧速率刷日志（一次刷了 747 条）。降频：首次 + 每 1000 次。
 		if n := unauthReplyFailLogCount.Add(1); n == 1 || n%1000 == 0 {
 			logger.Warnf("gwcore: send unauthenticated reply to %s: %v（同类累计 %d 次，已降频输出）", s.connID, err, n)
 		}

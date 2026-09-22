@@ -20,7 +20,7 @@ func (s *aggroScene) Neighbors(uint64, float64) []uint64 { return s.neighbors }
 // 仇恨时效：被激怒后 timeout 内没人再激它 → 忘掉目标与仇恨；
 // 没到时间不许忘（否则怪会反复脱战）；刷新之后重新计时。
 //
-// 这条用例守的是实测事故：玩家离图 / 挂机后仇恨永久存在，
+// 这条用例守的是玩家离图 / 挂机后仇恨永久存在，
 // 怪追着那个 objID 打，玩家一重新进图就被围殴（"进图即阵亡"）。
 func TestMobAggroTimeoutForgetsStaleTarget(t *testing.T) {
 	sc := &aggroScene{stubScene: newStubScene()}

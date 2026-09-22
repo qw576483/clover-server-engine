@@ -54,7 +54,7 @@ func (f *fakePusher) PushToPlayer(playerID string, msgID uint32, _ any, _ ...pro
 }
 
 // 只看观看者：假人没有连接，把它当推送目标不会报错但会重复投递
-// （实测客户端因此同一条事件收到 4 份）。这条用例把过滤钉死。
+// （客户端因此同一条事件收到 4 份）。这条用例把过滤钉死。
 func TestPlayerViewers_FiltersNonPlayers(t *testing.T) {
 	s := newViewersScene()
 	got := PlayerViewers(s, 1001, 96)

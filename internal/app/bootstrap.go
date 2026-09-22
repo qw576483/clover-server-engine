@@ -86,7 +86,7 @@ func RunGame(ctx context.Context, cfg *Config) (*Game, error) {
 	//   ——「跨机场景路由后端」（配 etcd 用 etcdStore，否则静默退化为进程内内存表）
 	//   与「master 分片路由」（配 etcd 才起分片解析器，否则告警后回落静态单连接）。
 	//   顺序写反的后果是**功能静默失效**：etcd 明明配了、服务发现也照常工作，
-	//   但分片路由永不启用、跨机对象迁移也查不到别的节点（实测踩过）。
+	//   但分片路由永不启用、跨机对象迁移也查不到别的节点。
 	//   etcd 客户端先建，两者才都拿到真实句柄。
 	if len(cfg.Etcd.Endpoints) > 0 {
 		ec, err := etcd.NewClient(cfg.Etcd)

@@ -136,7 +136,7 @@ func NextDelay(p Policy, attempt int) time.Duration {
 	// 计算无抖动的指数退避基值 BaseDelay * Multiplier^(attempt-1)。
 	//
 	// 注意：attempt 很大时 math.Pow 会返回 +Inf，而 time.Duration(+Inf) 的
-	// 转换结果未定义（实测为 0），会绕过 MaxDelay 截断。因此这里全程在
+	// 转换结果未定义（为 0），会绕过 MaxDelay 截断。因此这里全程在
 	// float64 域内比较并优先按 MaxDelay 收敛，绝不把 Inf/溢出值交给 Duration。
 	var delay time.Duration
 	// 不设上限（MaxDelay<=0）时以「Duration 可表示的最大值」为界：

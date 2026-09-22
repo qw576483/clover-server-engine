@@ -6,6 +6,12 @@ Clover 的 **Go 游戏服务端引擎**：进程编排、网关与鉴权、集�
 
 照着 **[新手指南：用 AI 从零做一个 Clover 游戏](https://github.com/qw576483/clover-doc/blob/main/ai/ai-quick-start.md)** 走一遍即可 —— 从装 Unity 6 到让 AI 开出第一个工程，全程不用自己写代码。
 
+用这套流程做出来的成品见 **[游戏 Demo 清单](https://github.com/qw576483/clover-doc/blob/main/ai/game-demo.md)**。
+
+## 交流群
+
+QQ 群：**clover-engine交流1群** `1101150552`
+
 ## 安装
 
 ```bash

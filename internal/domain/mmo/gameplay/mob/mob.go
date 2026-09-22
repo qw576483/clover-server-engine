@@ -522,7 +522,7 @@ func mgrScene(b pkgbtree.Blackboard) (pkgmob.MobScene, bool) {
 // 决策状态，串扰发生在**同一帧内**（Update 按 map 顺序逐怪 tick），
 // 表现为「上一只怪停在哪，下一只就从哪续跑」——例如永久跳过「攻击」分支。
 //
-// # 开销（实测口径）
+// # 开销（口径）
 //
 // 每次调用新建 11 个节点对象 + 3 个 children 切片：
 //   - 节点结构体合计约 170 字节（Selector 48 / 2×Sequence 各 24 / 4×Condition 各 8 /

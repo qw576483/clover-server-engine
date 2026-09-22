@@ -49,5 +49,5 @@ var NewMovePatch = mmo.NewMovePatch
 //
 // props 的键就是客户端 OnEntityProperty 收到的属性名（如 "hp" / "max_hp"）。
 // ★ 血量类属性请**成对下发**：只推 hp 时客户端拿不到上限，血条会按错的分母画
-// （实测表现：60 血的怪物被画成"一出来就残血"），所以进入视野的初值至少要带 max_hp。
+// （表现：60 血的怪物被画成"一出来就残血"），所以进入视野的初值至少要带 max_hp。
 var NewPropertyPatch = mmo.NewPropertyPatch
