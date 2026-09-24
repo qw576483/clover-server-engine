@@ -30,6 +30,10 @@ type fixture struct {
 	Cells     []bool // 行主序，长度应为 Width*Depth
 	Colliders []collide.AABB3
 	Spawns    []geom.Vec3
+	// Markers 命名标记点。⚠️ 与真实导出端**刻意相反**：真实导出端是"有数据才置 FlagMarkers"，
+	// 这里以 Flags 位为准（置位就写段，Markers 为空则写 count=0）——测试要能构造
+	// "置了位但段缺/坏/空"这些导出端不该产生、读端必须正确处理的用例。
+	Markers []Marker
 }
 
 // newFixture 返回一份填好合法默认值的 fixture（全可走、无碰撞体、无出生点）。
@@ -52,8 +56,17 @@ func (f fixture) encode() []byte {
 	name := []byte(f.Name)
 	bits := packCells(f.Cells)
 
+	// 标记段只在置了 FlagMarkers 时出现（段字节数 = 段头 4 + Σ(MarkerStride + 名字字节)）。
+	markersLen := 0
+	if f.Flags&FlagMarkers != 0 {
+		markersLen = 4
+		for _, mk := range f.Markers {
+			markersLen += MarkerStride + len(mk.Name)
+		}
+	}
+
 	out := make([]byte, HeaderSize+len(name)+len(bits)+
-		len(f.Colliders)*ColliderStride+len(f.Spawns)*SpawnStride)
+		len(f.Colliders)*ColliderStride+len(f.Spawns)*SpawnStride+markersLen)
 
 	le := binary.LittleEndian
 	copy(out[0:4], f.Magic)
@@ -80,6 +93,19 @@ func (f fixture) encode() []byte {
 	for _, s := range f.Spawns {
 		putVec3(out[off:off+12], s)
 		off += SpawnStride
+	}
+	// 命名标记点段：**追加在末尾**（与 format.go 的段顺序一致）。
+	if f.Flags&FlagMarkers != 0 {
+		le.PutUint32(out[off:off+4], uint32(len(f.Markers)))
+		off += 4
+		for _, mk := range f.Markers {
+			nb := []byte(mk.Name)
+			le.PutUint32(out[off:off+4], uint32(len(nb)))
+			off += 4
+			off += copy(out[off:], nb)
+			putVec3(out[off:off+12], mk.Pos)
+			off += 12
+		}
 	}
 	return out
 }

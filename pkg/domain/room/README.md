@@ -10,7 +10,9 @@
   这部分与「用什么同步」无关，两种内核共用。
 - **内核（`Kernel`）**：房间内部到底怎么同步。可插拔：
   - **引擎内置帧同步内核**：`Config` 传 `FrameCfg` / `FrameSvc` / `FrameSvcOpts`
-  - **业务自写内核**：实现 `Kernel` 接口后经 `Config.Kernel` 传入（例如状态同步房间）
+  - **引擎内置状态同步内核（参考实现）**：`Config.Kernel = room.NewStateSyncKernel(...)`，见下方
+    「状态同步内核（StateSyncKernel）」一节
+  - **业务自写内核**：实现 `Kernel` 接口后经 `Config.Kernel` 传入
 
 本包是 `internal/domain/room` 的接口化封装：所有具体实现被遮住，对外只暴露业务可达的抽象。
 
@@ -148,3 +150,69 @@ app.Game
 
 > 状态字段（`ExportPack.State` / `Recovery`）以 `json.RawMessage` 承载，外壳不解析其内容——
 > 这是「换内核不用改外壳」的前提。
+
+## 状态同步内核（StateSyncKernel）
+
+引擎内置的**第二款**内核（`state_sync.go`）：服务端持有唯一权威状态，任何一次变化都把
+**完整状态**推给房内真人；客户端不做逐帧确定性模拟，只按收到的全量状态重建画面。
+与帧同步内核共用同一套外壳 API（`EnsureRoom` / `JoinRoom` / `LeaveRoom` / `DestroyRoom`）。
+
+```go
+mod := room.NewModule(room.Config{
+    MasterCaller: g,
+    Pusher: func(pid string, msgID uint32, v any) error { return g.PushToPlayer(pid, msgID, v) },
+    NodeAddr: g.Addr(),
+    Kernel: room.NewStateSyncKernel(room.StateSyncConfig{
+        Seats:      2, // 座位数 = 队伍数
+        Pusher:     func(pid string, msgID uint32, v any) error { return g.PushToPlayer(pid, msgID, v) },
+        StateMsgID: def.PushRoomState, // 房间完整状态（RoomSnapshot）
+        ListMsgID:  def.PushRoomList,  // 房间列表（RoomList）
+    }),
+})
+
+// 拉列表：注册观察者并拿到完整列表（首帧兜底）；返回值回给客户端即完成同步。
+list, _ := k.Watch(playerID)
+// 业务侧定时器（例如 3s）：漏推的观察者按版本号补推自愈。
+k.FlushWatchers()
+```
+
+### 三条语义（提炼自进程内状态同步房间，三条都保留）
+
+| # | 语义 | 落在哪 |
+|---|------|--------|
+| ① | **房主移交**：房主离开时由**座位号最小的真人**接任；机器人座位不接任；房里没有真人 ⇒ 房主清空，下一次真人进房时由 `Join` 顶上 | `stateSyncRoom.reassignHostLocked`（`Leave` 调用）、`join`、`healHostLocked`（`ImportState` 调用） |
+| ② | **座位号 = 队伍号**：`RoomSnapshot.Seats` 的**下标就是队伍号**（座位 0 = 队伍 0）；座位是固定槽，别人离开 / 掉线都不会让自己的座位号前移 | `SeatOf`、`SetOffline`、`Leave`（对局进行中拒绝离房）、`SetRunning`（坐满才可开打） |
+| ③ | **观察者版本号兜底补推**：全局版本号 + 每个观察者的「已下发版本」；新观察者注册即拿到完整列表，之后变化即时推，**推送失败**的由 `FlushWatchers` 按版本号补推 | `Watch` / `Unwatch` / `FlushWatchers` / `listLocked` / `recordListPushed` |
+
+### API 速查表（`*StateSyncKernel`）
+
+| API | 说明 |
+|-----|------|
+| `StateSyncConfig` | `Seats`（座位数 = 队伍数，<=0 取 `DefaultStateSyncSeats`=2）、`Pusher`、`StateMsgID`、`ListMsgID` |
+| `NewStateSyncKernel(cfg)` | 构造（返回具体类型；`*StateSyncKernel` 实现 `Kernel`，可直接赋给 `Config.Kernel`） |
+| `Seats()` / `Version()` | 座位数 / 全局房间版本号 |
+| `EnsureRoom` `Join` `Leave` `Destroy` `ExportState` `ImportState` `Players` `Close` | `Kernel` 接口的 8 个方法 |
+| `JoinBot(roomID, botID)` | 机器人占座（不接收推送、不接任房主） |
+| `SeatOf(roomID, playerID)` | **座位号（= 队伍号）**，`ok=false` 表示不在房内 |
+| `Host(roomID)` / `Snapshot(roomID)` / `RoomList()` | 房主 / 房间完整状态 / 列表快照（都是副本） |
+| `SetReady` / `SetRunning` / `SetOffline` | 准备态 / 对局开关 / 掉线标记（对局中掉线**不摘座位**） |
+| `Watch(playerID)` / `Unwatch(playerID)` / `FlushWatchers()` | 大厅观察者注册（返回完整列表）/ 注销 / 版本号兜底补推 |
+
+### 推送与写状态（锁外做网络 I/O）
+
+所有推送都在**锁外**执行（推送放在锁内会把所有房间的操作串行到一条网络上）：
+
+- 房间状态变化 ⇒ 把 `RoomSnapshot` 推给房内所有**真人**座位（空座位与机器人不推）；
+- 房间列表变化 ⇒ 把 `RoomList` 推给所有观察者，**推送成功才记版本**，
+  失败的下次由 `FlushWatchers` 补推。
+- `Pusher` 为 nil（未接网络）时内核只维护状态，业务自行读取 `Snapshot` / `RoomList` 下发。
+
+### 与源实现的差异
+
+- 座位用**固定槽**（删人不移动其它座位）⇒ 不存在「座位号漂移」，
+  也就不需要源实现里那套「座位一变就清空准备态」的补偿逻辑。
+- 观察者的「已下发版本」只在**推送成功之后**记录（源实现先记版本再推，推送失败不会补推）。
+- 玩法 / 展示字段（昵称、头像、阵容、资源、战绩……）**不进内核状态**：
+  内核只持有影响同步与结算的字段（谁坐几号座位、是否房主、是否准备、是否在线、是否机器人）。
+- 对局实例**不随状态迁移**：`ImportState` 后房间回到未开打态（掉线标记清除、准备态清零）。
+- 覆盖上述语义的测试：`state_sync_test.go`（`go test ./pkg/domain/room/ -run TestStateSyncKernel -v`）。

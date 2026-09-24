@@ -45,6 +45,13 @@ type Map struct {
 	Origin geom.Vec3
 	// Spawns 出生点（已过净空校验，见 spawn.go）。
 	Spawns []geom.Vec3
+	// Markers 命名标记点（名字 + 世界坐标）；仅当文件含 `FlagMarkers` 段时非空。
+	//
+	// 服务端当前**不消费**它（出生点走 Spawns），解析它是为了两件事：
+	//   1. **校验段完整性** —— 截断 / 坏数据必须当场报错，不能"客户端拒收、服务端照收"；
+	//   2. 后续扩展（AI 路线锚点 / 包点 / 巡逻点）时不必再改一次格式契约。
+	// 消费方按名字自行过滤（名字语义属于业务，引擎不解释）。
+	Markers []Marker
 	// WalkableCnt 可走格数。
 	WalkableCnt int
 	// BlockedCnt 阻挡格数。
@@ -139,6 +146,16 @@ func Decode(data []byte) (*Map, error) {
 		}
 	}
 
+	// 命名标记点段（仅当 flags 含 FlagMarkers）：追加在文件末尾、长度不定，
+	// 必须**完整解析**才能发现截断 / 坏数据 —— 只跳过的话，同一份坏文件会出现
+	// "客户端与导出端都判非法、服务端却照收"的两端不一致。
+	if h.Flags&FlagMarkers != 0 {
+		m.Markers, err = readMarkers(data, s.markerOff)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// 单层导航网格：基面 = origin.Y，顶面 = origin.Y + navLayerHeight。
 	grid := collide.NewNavGrid(m.width, m.depth)
 	for z := 0; z < m.depth; z++ {
@@ -155,8 +172,8 @@ func Decode(data []byte) (*Map, error) {
 	// 那种位置会让玩家一出生就被客户端本地碰撞锁死（只能原地跑动画），详见 spawn.go。
 	m.sanitizeSpawns()
 
-	logger.Infof("mapdata: 地图已构建 scene=%d name=%s %dx%d cell=%.2f 可走=%d 阻挡=%d 碰撞体=%d 出生点=%d v=%d",
-		m.SceneID, m.Name, m.width, m.depth, m.CellSize, m.WalkableCnt, m.BlockedCnt, m.ColliderCnt, len(m.Spawns), m.Version)
+	logger.Infof("mapdata: 地图已构建 scene=%d name=%s %dx%d cell=%.2f 可走=%d 阻挡=%d 碰撞体=%d 出生点=%d 标记点=%d v=%d",
+		m.SceneID, m.Name, m.width, m.depth, m.CellSize, m.WalkableCnt, m.BlockedCnt, m.ColliderCnt, len(m.Spawns), len(m.Markers), m.Version)
 	for i, sp := range m.Spawns {
 		logger.Infof("mapdata: 出生点[%d] = (%.1f, %.1f, %.1f)", i, sp.X, sp.Y, sp.Z)
 	}
