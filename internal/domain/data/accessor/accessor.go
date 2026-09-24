@@ -365,8 +365,16 @@ func (a *Accessor) DeleteField(ctx context.Context, ownerType data.OwnerType, id
 	a.invalidateSnapshotCache(ownerType, id)
 	if notifyMsgID != 0 {
 		// 以 {field: null} 作为删除哨兵广播，客户端据此移除该字段。
-		patch, _ := json.Marshal(map[string]any{field: nil})
-		a.broadcast(ctx, ownerType, typ, id, patch, notifyMsgID)
+		// 编码错误不能吞：patch 为 nil 时广播出去的是「空 patch」，客户端既删不掉该字段、
+		// 也看不出异常（静默失效）。此分支理论不可达（map[string]any{string: nil} 恒可序列化），
+		// 仅作兜底：留日志并放弃这次广播，绝不把残缺 patch 当删除哨兵发出去。
+		patch, merr := json.Marshal(map[string]any{field: nil})
+		if merr != nil {
+			logger.Errorf("accessor: marshal delete sentinel %s/%s/%s field=%s: %v",
+				ownerType, id, typ, field, merr)
+		} else {
+			a.broadcast(ctx, ownerType, typ, id, patch, notifyMsgID)
+		}
 	}
 	return nil
 }

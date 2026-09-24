@@ -433,14 +433,20 @@ func NewTimeout(d time.Duration, child pkgbtree.Node) *Timeout {
 }
 
 // Tick 实现 Node。
+//
+// 累加口径：只在**本帧的 dt** 上做一次「浮点秒 → Duration」换算，再累加进 Duration 形态的
+// n.elapsed。此前是 `float64(n.elapsed)/1e9 + dt` 再 `time.Duration(sec*1e9)`：每 tick 都把
+// **已累加的 elapsed** 过一次 float64，舍入误差随 tick 数累积（实测 1/30s 步长下 200k tick
+// 偏短 14.6µs、1e6 tick 约 25µs）⇒ 超时/节流的时间口径长跑偏短。
+// 现在误差只来自本帧 dt 的这一次换算（常数级，不随已累加时长放大）。
+// 见 btree_logicalclock_test.go 的 TestTimeoutElapsedDoesNotAccumulateRounding。
 func (n *Timeout) Tick(b pkgbtree.Blackboard) pkgbtree.Status {
 	s := n.child.Tick(b)
 	if s != pkgbtree.StatusRunning {
 		n.elapsed = 0
 		return s
 	}
-	elapsedSec := float64(n.elapsed)/1e9 + b.GetFloat64(KeyDT)
-	n.elapsed = time.Duration(elapsedSec * 1e9)
+	n.elapsed += time.Duration(b.GetFloat64(KeyDT) * float64(time.Second))
 	if n.elapsed >= n.d {
 		n.elapsed = 0
 		return pkgbtree.StatusFailure

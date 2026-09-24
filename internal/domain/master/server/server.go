@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/qw576483/clover-server-engine/internal/domain/master/state"
@@ -197,6 +198,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgRankTop, "board", req.Board); err != nil {
+			return marshalErr(err)
+		}
 		entries, err := st.Top(ctx, req.Board, req.N)
 		if err != nil {
 			return marshalErr(err)
@@ -279,6 +283,12 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgRankByRankRange, "board", req.Board); err != nil {
+			return marshalErr(err)
+		}
+		if err := validateRankRange(state.MsgRankByRankRange, req.Start, req.Stop); err != nil {
+			return marshalErr(err)
+		}
 		entries, err := st.GetByRankRange(ctx, req.Board, req.Start, req.Stop)
 		if err != nil {
 			return marshalErr(err)
@@ -316,6 +326,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgRankClear, "board", req.Board); err != nil {
+			return marshalErr(err)
+		}
 		if err := st.Clear(rctx, req.Board, req.DeleteBackup); err != nil {
 			return marshalErr(err)
 		}
@@ -350,6 +363,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgRankBackup, "board", req.Board); err != nil {
+			return marshalErr(err)
+		}
 		if err := st.Backup(rctx, req.Board); err != nil {
 			return marshalErr(err)
 		}
@@ -370,6 +386,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		defer cancel()
 		var req state.RankRestoreReq
 		if err := json.Unmarshal(body, &req); err != nil {
+			return marshalErr(err)
+		}
+		if err := requireField(state.MsgRankRestore, "board", req.Board); err != nil {
 			return marshalErr(err)
 		}
 		if err := st.Restore(rctx, req.Board); err != nil {
@@ -395,6 +414,14 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		// uid 与 node_id 都是索引键：空值会往 players/nodePlayers 里塞空键，
+		// 让 PlayerNode("") 之类的查询返回「有个节点」，且反向索引永远清不掉。
+		if err := requireField(state.MsgPlayerRegister, "uid", req.UID); err != nil {
+			return marshalErr(err)
+		}
+		if err := requireField(state.MsgPlayerRegister, "node_id", req.NodeID); err != nil {
+			return marshalErr(err)
+		}
 		if err := st.RegisterPlayer(ctx, req.UID, req.NodeID); err != nil {
 			return marshalErr(err)
 		}
@@ -404,6 +431,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 	srv.Register(state.MsgPlayerRemove, func(_ *netpkg.Conn, requestID uint32, body []byte) ([]byte, error) {
 		var req state.PlayerRemoveReq
 		if err := json.Unmarshal(body, &req); err != nil {
+			return marshalErr(err)
+		}
+		if err := requireField(state.MsgPlayerRemove, "uid", req.UID); err != nil {
 			return marshalErr(err)
 		}
 		if err := st.RemovePlayer(ctx, req.UID, req.NodeID); err != nil {
@@ -417,6 +447,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgPlayerLookup, "uid", req.UID); err != nil {
+			return marshalErr(err)
+		}
 		nodeID, found := st.PlayerNode(ctx, req.UID)
 		return json.Marshal(&state.PlayerLookupResp{OK: true, NodeID: nodeID, Found: found})
 	})
@@ -427,6 +460,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		defer cancel()
 		var req state.SessionNewReq
 		if err := json.Unmarshal(body, &req); err != nil {
+			return marshalErr(err)
+		}
+		if err := requireField(state.MsgSessionNew, "player_id", req.PlayerID); err != nil {
 			return marshalErr(err)
 		}
 		token, err := st.NewSessionToken(rctx, req.PlayerID)
@@ -442,6 +478,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		defer cancel()
 		var req state.SessionValidateReq
 		if err := json.Unmarshal(body, &req); err != nil {
+			return marshalErr(err)
+		}
+		if err := requireField(state.MsgSessionValidate, "player_id", req.PlayerID); err != nil {
 			return marshalErr(err)
 		}
 		valid, err := st.ValidateSessionTokenResult(rctx, req.PlayerID, req.Token)
@@ -461,6 +500,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgSessionDelete, "player_id", req.PlayerID); err != nil {
+			return marshalErr(err)
+		}
 		// 注意：DeleteSessionToken 无返回值（签名契约），后端删除失败时 state 侧会记日志，
 		// 此处无法感知失败（见 s-bug：接口层仍回 OK:true）。
 		st.DeleteSessionToken(rctx, req.PlayerID)
@@ -474,6 +516,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		if err := json.Unmarshal(body, &req); err != nil {
 			return marshalErr(err)
 		}
+		if err := requireField(state.MsgSessionCurrent, "player_id", req.PlayerID); err != nil {
+			return marshalErr(err)
+		}
 		token := st.CurrentSessionToken(rctx, req.PlayerID)
 		return json.Marshal(&state.SessionCurrentResp{OK: true, Token: token})
 	})
@@ -483,6 +528,9 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		defer cancel()
 		var req state.SessionRefreshReq
 		if err := json.Unmarshal(body, &req); err != nil {
+			return marshalErr(err)
+		}
+		if err := requireField(state.MsgSessionRefresh, "player_id", req.PlayerID); err != nil {
 			return marshalErr(err)
 		}
 		if err := st.RefreshSessionToken(rctx, req.PlayerID, req.Token); err != nil {
@@ -508,6 +556,35 @@ func registerHandlers(srv *tcpmsg.Server, st *state.State) {
 		}
 		logger.Infof("master: node %s disconnected (will be detected by heartbeat timeout if abnormal)", nodeID)
 	}
+}
+
+// —— 参数校验 ——
+//
+// 连接级鉴权（installConnAuth）只回答「这条连接是否可信」，不回答「请求参数是否合法」。
+// 空 ID / 倒挂区间会被 state 层原样落进内存（空 playerID 的 session token、空 uid 的
+// 玩家定位、空 board 的排行榜），污染索引且调用方无法与「正常空结果」区分，故在
+// 协议边界显式拒绝。拒绝路径一律留日志（非预期分支必须可追溯）。
+
+// requireField 校验必填字符串字段非空（纯空白视同为空）。
+func requireField(msgID uint32, field, value string) error {
+	if strings.TrimSpace(value) != "" {
+		return nil
+	}
+	err := fmt.Errorf("%s required", field)
+	logger.Warnf("master/tcp: msgID=%d rejected: %v", msgID, err)
+	return err
+}
+
+// validateRankRange 校验排名区间：stop 允许负数（-1 = 取到末尾，见 memrank），
+// 但非负时不得小于 start —— 倒挂区间此前静默返回空集，调用方无从区分
+// 「区间非法」与「榜是空的」。start 的下界由 memrank 自行钳制（1-based），此处不重复约束。
+func validateRankRange(msgID uint32, start, stop int) error {
+	if stop >= 0 && stop < start {
+		err := fmt.Errorf("invalid rank range: stop(%d) < start(%d)", stop, start)
+		logger.Warnf("master/tcp: msgID=%d rejected: %v", msgID, err)
+		return err
+	}
+	return nil
 }
 
 func marshalOK() ([]byte, error) {

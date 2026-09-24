@@ -196,3 +196,48 @@ func TestLogicalTimeClampsNonFinite(t *testing.T) {
 		t.Fatalf("超大逻辑秒应夹紧为正的时刻（不许溢出成负值=时间倒流），实际 %v", huge.UnixNano())
 	}
 }
+
+// runningLeaf 恒返回 Running：让 Timeout 持续累加 elapsed（不触发"已完成⇒清零"分支）。
+type runningLeaf struct{ n int }
+
+// Tick 实现 pkgbtree.Node。
+func (r *runningLeaf) Tick(pkgbtree.Blackboard) pkgbtree.Status {
+	r.n++
+	return pkgbtree.StatusRunning
+}
+
+// Timeout 的已耗时累加不许「Duration→浮点秒→Duration」往返：误差不得随 tick 数累积。
+//
+// 守的是本缺陷：原实现把**已累加的 elapsed** 先转浮点秒、加上本帧 dt、再转回 Duration
+// （`elapsedSec := float64(n.elapsed)/1e9 + dt; n.elapsed = time.Duration(elapsedSec*1e9)`），
+// 于是每 tick 都在累加值上过一次 float64。dt 取 1/30 秒（33333333ns，二进制不可精确表示）
+// 时实测：1e5 tick 已偏小约 14µs、1e6 tick 约 25µs，且随 tick 数增长
+// ⇒ 长跑（超时 / 移动节流）的时间口径整体偏短。
+//
+// 判别方式：期望值 = 「单帧 dt 换算一次得到的 step」× tick 数。
+// 累加值若被反复往返就会偏小，本用例即转红；只在本帧 dt 上换算一次则恒等。
+func TestTimeoutElapsedDoesNotAccumulateRounding(t *testing.T) {
+	leaf := &runningLeaf{}
+	const dt = 33333333 * time.Nanosecond // ≈ 1/30 s
+	const ticks = 200000
+	// 超时上限远大于 ticks*dt，保证整个循环都在"未超时"分支累加。
+	to := NewTimeout(time.Duration(ticks)*time.Second, leaf)
+	bb := NewBlackboard()
+	bb.Set(KeyDT, dt.Seconds())
+
+	for i := 0; i < ticks; i++ {
+		if s := to.Tick(bb); s != pkgbtree.StatusRunning {
+			t.Fatalf("第 %d 帧应为 Running（未超时），实际 %v", i, s)
+		}
+	}
+	if leaf.n != ticks {
+		t.Fatalf("子节点应被 tick %d 次，实际 %d 次", ticks, leaf.n)
+	}
+
+	step := time.Duration(dt.Seconds() * float64(time.Second))
+	want := step * time.Duration(ticks)
+	if to.elapsed != want {
+		t.Fatalf("Timeout 已耗时随 tick 漂移：got %d ns，期望 %d ns，少 %d ns / %d tick"+
+			"（累加值不得每 tick 过一次 float64）", to.elapsed, want, want-to.elapsed, ticks)
+	}
+}
