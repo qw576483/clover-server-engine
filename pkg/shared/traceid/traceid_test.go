@@ -11,8 +11,8 @@ import (
 // TestSpanContextKeyShared_TraceidToTrace 钉住「两包共用同一个 context key」：
 // traceid 写入的追踪上下文，foundation/trace 必须读得到。
 //
-// 这正是修复前的断链点 —— 两包各用私有 key、互不识别，
-// 请求链路（traceid）的 trace_id 到不了 logger / 跨节点注入（trace）。
+// 两包各用私有 key 时互不识别，请求链路（traceid）的 trace_id 就到不了
+// logger / 跨节点注入（trace）。
 func TestSpanContextKeyShared_TraceidToTrace(t *testing.T) {
 	span := traceid.StartSpan(context.Background(), "gateway.recv")
 	ctx := span.WithContext(context.Background())
@@ -78,7 +78,7 @@ func TestStartSpanInheritsTraceWrittenByOtherPackage(t *testing.T) {
 }
 
 // TestCrossNodePropagationKeepsSameTrace 端到端：网关侧（traceid）起的 trace，
-// 经 foundation/trace 注入协议头 → 对端提取，trace_id 必须原样贯通（修复前的断链场景）。
+// 经 foundation/trace 注入协议头 → 对端提取，trace_id 必须原样贯通。
 func TestCrossNodePropagationKeepsSameTrace(t *testing.T) {
 	span := traceid.StartSpan(context.Background(), "gateway.recv")
 	carrier := map[string]string{}
@@ -100,9 +100,8 @@ func TestCrossNodePropagationKeepsSameTrace(t *testing.T) {
 
 // TestTraceIDLengthsPinned 钉住「两个 NewTraceID 长度一致」这一结论。
 //
-// 历史形态是 traceid.NewTraceID 输出 24 hex（12 字节）、foundation/trace 输出 32 hex，
-// 两处各自生成 ⇒ 长度漂移。现已统一为 32 hex（W3C Trace Context / OTel 位宽）：
-// traceid 直接转发 foundation/trace，本用例防止任一侧再被改回短长度。
+// traceid 转发 foundation/trace，两处统一为 32 hex（W3C Trace Context / OTel 位宽）：
+// 本用例防止任一侧被改回短长度。
 func TestTraceIDLengthsPinned(t *testing.T) {
 	if got := len(traceid.NewTraceID()); got != 32 {
 		t.Fatalf("traceid.NewTraceID 长度 = %d，期望 32 hex（16 字节，W3C traceparent 对齐）", got)

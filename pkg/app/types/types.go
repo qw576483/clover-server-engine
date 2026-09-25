@@ -12,9 +12,8 @@ const (
 	//
 	// 必须是**回环地址**：admin 挂着 /admin/shutdown、/admin/gateway/upstream、/metrics、
 	// /debug/pprof 等高危端点，绑到通配地址等于把运维面暴露到公网。
-	// 此前这里是空串，而 net.Listen("tcp", "") 会监听**所有网卡 + 随机端口**——与文档
-	// 承诺的「零值即监听 127.0.0.1:8041」不符，且不是「只绑定回环」。需要关闭请设
-	// admin.disable=true，不要靠留空来表达。
+	// net.Listen("tcp", "") 会监听**所有网卡 + 随机端口**，不是「只绑定回环」。
+	// 需要关闭请设 admin.disable=true，不要靠留空来表达。
 	DefaultListenAddr      = "127.0.0.1:8041"
 	DefaultShutdownTimeout = 5 * time.Second
 )

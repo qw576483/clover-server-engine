@@ -153,7 +153,7 @@ func (c SessionTokenConfig) Normalize() SessionTokenConfig {
 	c.TTL = config.DefDuration(c.TTL, DefaultSessionTokenTTL)
 	c.KeyPrefix = config.DefString(c.KeyPrefix, DefaultSessionTokenKeyPrefix)
 	if c.Backend != SessionTokenBackendMemory && c.Backend != SessionTokenBackendRedis {
-		// 非法 backend 静默回落 memory：此前的实现无任何告警，配置写错时
+		// 非法 backend 若静默回落 memory：不告警时配置写错就只
 		// 表现为「token 重启即失效」，排查无痕。
 		logger.Warnf("master: session_token.backend=%q invalid (want memory/redis), fallback to memory", c.Backend)
 		c.Backend = SessionTokenBackendMemory

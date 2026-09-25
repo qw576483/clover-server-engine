@@ -86,7 +86,7 @@ const TableLoadedType = "table.Loaded"
 // TableLoadedEvent 表加载完成事件载荷（业务手动 emit 时使用）。
 type TableLoadedEvent = apptypes.TableLoadedEvent
 
-// TableLoader 表加载接口。业务实现后自行调用 LoadAll，引擎不再自动加载。
+// TableLoader 表加载接口。业务实现后自行调用 LoadAll，引擎不自动加载。
 type TableLoader = apptypes.TableLoader
 
 // PublishTableLoaded 辅助：广播 table.Loaded 事件。

@@ -73,7 +73,7 @@ func registerService(ctx context.Context, ec *etcd.Client, role, addr string) (f
 	if ec == nil || addr == "" {
 		return func() {}, nil
 	}
-	// TTL 不再在此兜默认值：etcd 客户端已把 <=0 归一化为 defaultRegisterTTL，
+	// TTL 此处不兜默认值：etcd 客户端已把 <=0 归一化为 defaultRegisterTTL，
 	// Register 自身也对 <=0 兜底，应用层再写一份默认值只会多一处需要同步的地方。
 	ttl := ec.Config().RegisterTTL
 	key := servicePrefix(role) + serviceInstanceID(role)

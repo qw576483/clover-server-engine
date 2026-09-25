@@ -53,8 +53,7 @@ const (
 )
 
 // validateHostPort 校验 host:port 形态（非空 host + 数字端口 1..65535）。
-// 用于 admin 端点里会被「网关拨号」消费的地址参数（drain target / gateway upstream）：
-// 此前只校验非空，任何垃圾串都会被原样接受。
+// 用于 admin 端点里会被「网关拨号」消费的地址参数（drain target / gateway upstream）。
 func validateHostPort(addr string) error {
 	host, port, err := net.SplitHostPort(addr)
 	if err != nil {

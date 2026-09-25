@@ -33,11 +33,6 @@ type TLSConfig struct {
 // JetStreamConfig JetStream 持久化配置。
 type JetStreamConfig struct {
 	Enable bool `yaml:"enable" mapstructure:"enable"` // 游戏必须开启持久化，防止消息丢失
-	// 说明：本结构体原有 StorageType / MaxMsgAge 两个字段，它们只服务于「引擎预建流」，
-	// 而预建流的入口 CreateStream / CreateConsumer 已按死代码删除（见 jetstream.go 顶部说明）
-	// —— 流改由部署侧预建，这两个字段因此在引擎内**没有任何读取点、配了不生效**，
-	// 属"静默失效的配置项"，已一并删除。yaml 里若仍写着 storage_type / max_msg_age，
-	// 会被 mapstructure 静默忽略（不再报错），但不会有任何效果。
 }
 
 // defaultMaxReconnect 是「未设置 max_reconnect」时的默认值：-1 = 无限重连，仅 Close() 才断开。

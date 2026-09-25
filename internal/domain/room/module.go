@@ -68,9 +68,6 @@ func isNilInterface(v any) bool {
 // ★ 类型真身**只有一份**：`pkg/domain/room.Config`。本行是**类型别名**（`type X = Y`），
 // 不是又一份字段逐一对应的 struct —— 两侧编译期就是同一个类型，字段不可能漂移。
 //
-// 历史教训：这里曾复制一份同名 struct，靠 pkgfacade 的逐字段手工拷贝衔接，
-// 任何一侧加字段而拷贝处漏改就**静默漂移**（不报错、值丢失）。别名从根上消除该风险。
-//
 // 与 pkg 侧唯一的形态差异是 FrameSvc：门面侧是接口 `frame.Service`，
 // 内部装内核前需经 iframe.UnwrapService 还原成本引擎的具体服务（见 NewModule）。
 type Config = proom.Config
@@ -86,7 +83,7 @@ type Module struct {
 
 // unwrapFrameService 把门面帧服务（`pkg/domain/room/frame.Service` 接口）还原为本引擎的具体服务。
 //
-// 返回 nil 的两种情形（调用方一律按「未提供 FrameSvc」处理，与历史行为一致）：
+// 返回 nil 的两种情形（调用方一律按「未提供 FrameSvc」处理）：
 //   - 入参为 nil 或「非空接口里的 nil 值」（typed-nil）；
 //   - 入参不是本引擎构造的实现（门面接口未绑定内部实现，无法还原）—— 此时告警留痕：
 //     若静默丢弃，Module 会另建一个空 Service，业务预构造的服务及其全部选项/监听会静默消失。
@@ -118,7 +115,6 @@ func NewModule(cfg Config) *Module {
 		logger.Warnf("room: Config.Kernel 为非空接口里的 nil 值（typed-nil），按未提供处理")
 	}
 	// Config.FrameSvc 是门面接口（真身在 pkg），装内核前先还原为本引擎的具体服务。
-	// 这一步原先在 pkgfacade 的逐字段拷贝里做，Config 改成别名后统一收在装配处。
 	prebuiltFrame := unwrapFrameService(cfg.FrameSvc)
 	switch {
 	case kernelProvided:
@@ -133,7 +129,7 @@ func NewModule(cfg Config) *Module {
 		if cfg.Pusher != nil {
 			opts = append(opts, iframe.WithBroadcaster(iframe.Broadcaster(cfg.Pusher)))
 		}
-		// FrameCfg 真正作为「房间默认配置」注入：历史上它只被当成布尔开关，字段值被忽略。
+		// FrameCfg 作为「房间默认配置」注入。
 		if cfg.FrameCfg != nil {
 			opts = append(opts, iframe.WithDefaultRoomConfig(*cfg.FrameCfg))
 		}

@@ -58,8 +58,6 @@ func (s *Server) Start() error {
 
 func (s *Server) acceptLoop(ln net.Listener) {
 	// 错误退避曲线统一由 retry.Backoff 提供（与 udp / quic / demux 读循环同一条策略）。
-	// 此前只把 net.Error.Timeout() 当临时错误，fd 耗尽（EMFILE）这类可恢复错误被误判为
-	// 永久错误而退出整个 accept 循环——监听从此停摆且无法自愈。
 	bo := retry.NewBackoff(retry.Policy{
 		BaseDelay:  time.Millisecond,
 		MaxDelay:   time.Second,

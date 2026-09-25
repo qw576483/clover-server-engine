@@ -127,8 +127,8 @@ func buildSyncBody(pe data.CommitResult) []byte {
 			return body
 		}
 	}
-	// 复用提交期已序列化好的全量 JSON（pe.JSON）：此前这里又 Marshal 一次，
-	// 而落库早已序列化过同一份数据。仅在提交期序列化失败（JSON 为 nil）时兜底。
+	// 复用提交期已序列化好的全量 JSON（pe.JSON）。
+	// 仅在提交期序列化失败（JSON 为 nil）时兜底。
 	cur := pe.JSON
 	if len(cur) == 0 {
 		var err error
@@ -141,7 +141,7 @@ func buildSyncBody(pe data.CommitResult) []byte {
 	if body := jsonFieldDiff(pe.Snapshot, cur); body != nil {
 		return body
 	}
-	// diff 为空也直接用同一份 cur：原实现这里又 Marshal 了一遍，等于每次同步都序列化两次。
+	// diff 为空也直接用同一份 cur。
 	return cur
 }
 

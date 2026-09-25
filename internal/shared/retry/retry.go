@@ -162,7 +162,7 @@ func NextDelay(p Policy, attempt int) time.Duration {
 		delay = time.Duration(d)
 	}
 
-	// 抖动在 float64 域内施加、之后再统一收敛——两个都踩过的坑：
+	// 抖动在 float64 域内施加、之后再统一收敛，两条不变量：
 	//  1. 若先转 Duration 再乘抖动系数，则在「不设上限」（MaxDelay<=0，
 	//     delay=MaxInt64）时乘积 > MaxInt64，float64→Duration 溢出为负、
 	//     被修正成 0 → 退避间隔归零形成忙等；
@@ -194,9 +194,9 @@ func NextDelay(p Policy, attempt int) time.Duration {
 //   - Backoff 用于**不设次数上限**的常驻循环——accept / read / watch / 重连这类
 //     循环不能退出，只需要「失败时按同一套曲线退避、成功后立刻恢复灵敏」。
 //
-// 曲线与 Do 完全一致（同一个 Policy + NextDelay），因此全仓库只需维护一条退避策略。
-// 此前各处手写 `backoff *= 2; if backoff > max {...}`，上限（1s / 30s）与是否带抖动
-// 已经各不相同。
+// 曲线与 Do 完全一致（同一个 Policy + NextDelay），因此全仓库只需维护一条退避策略：
+// 各处手写 `backoff *= 2; if backoff > max {...}` 时，上限（1s / 30s）与是否带抖动
+// 会各不相同。
 //
 // 并发不安全：每个循环持有自己的 Backoff。
 type Backoff struct {
@@ -253,9 +253,8 @@ func Do(ctx context.Context, policy Policy, fn func(attempt int) error) error {
 		if err == nil {
 			return nil
 		}
-		// 不可重试：立即返回，但**保留 Permanent 包装**。
-		// 以前这里 unwrap 掉标记，导致该 err 再进入外层 Do（嵌套重试 / 上层重试器）时
-		// 被重新视为可重试，永久性错误被反复重试。
+		// 不可重试：立即返回，但**保留 Permanent 包装**——否则该 err 进入外层 Do
+		//（嵌套重试 / 上层重试器）时会被重新视为可重试，永久性错误被反复重试。
 		// 包装实现了 Unwrap()，调用方的 errors.Is/As 仍可穿透到原始错误。
 		if IsPermanent(err) {
 			return err

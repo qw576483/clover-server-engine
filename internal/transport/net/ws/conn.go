@@ -169,8 +169,6 @@ const sendTimeout = session.DefaultSendTimeout
 //
 // 两段式：先无阻塞试写 —— 绝大多数发送都能立刻入队，这一段不碰任何定时器；
 // 只有队列确实满了才走带超时的慢路径，并在返回前显式 Stop。
-// （原实现无条件 `time.After`，等于每次发送都造一个 runtime timer，
-// 而绝大多数的成功路径根本不需要等待。）
 func (c *Conn) Send(data []byte) error {
 	if c.IsClosed() {
 		return session.ErrClosed

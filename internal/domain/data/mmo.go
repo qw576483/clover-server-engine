@@ -22,7 +22,7 @@ import (
 //
 // NoLocalCache 的 Key 明确声明「跳过本地内存缓存」：此时不能写内存——
 // getMMO / LoadDirect 对同一 Key 都跳过内存，写进去的值永不被读；
-// 改为同步直写 MySQL（其语义就是「直读持久层」的对偶），不标脏。
+// 直接同步直写 MySQL（其语义就是「直读持久层」的对偶），不标脏。
 func (s *Store) saveMMO(ctx context.Context, key Key, data []byte) error {
 	if key.NoLocalCache {
 		if s.mysql == nil {

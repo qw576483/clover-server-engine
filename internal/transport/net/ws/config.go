@@ -18,8 +18,7 @@ const (
 	// 会话加密密文上限同值）。
 	//
 	// **与客户端一致**：客户端 `Runtime/Network/WebSocketConnection.cs:33` 的 `MaxMsgPayload`
-	// 同为 `10 << 20`，此前服务端这里是 1<<16（64KiB）而网关又未下发 `MaxFrameSize`：
-	// 客户端认为合法的 >64KiB 消息被 gorilla `SetReadLimit` 判超限、连接被直接关闭。
+	// 同为 `10 << 20`。
 	defaultMaxMsgSize       = session.MaxFrameSize // 10MiB，与客户端一致
 	defaultHandshakeTimeout = 10 * time.Second
 	defaultSendBufferSize   = 256

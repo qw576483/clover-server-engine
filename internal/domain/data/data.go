@@ -141,8 +141,8 @@ func NewStore(cfg Config) (*Store, error) {
 		}
 	}
 
-	// 以本 Store 是否具备 MySQL 后端决定启用周期落盘。此前用全局
-	// pdata.TierHasPersistent() 判断：Schema 注册表是全局的，与单个 Store 的
+	// 以本 Store 是否具备 MySQL 后端决定启用周期落盘。用全局
+	// pdata.TierHasPersistent() 判断时：Schema 注册表是全局的，与单个 Store 的
 	// Tier/配置解耦——TierRedisMySQL 的 Store 在「无任何 Schema 注册持久 Tier」时
 	// 周期落盘不会启动，脏数据只能等 Close 终落（叠加 Flush 的同类门控即彻底不落库）。
 	if s.mysql != nil {
@@ -233,7 +233,7 @@ func (s *Store) initPeriodicFlush(cfg *Config) {
 }
 
 // defaultRedisKeyPrefix 引擎默认 Redis key 前缀。
-// 所有默认配置经此常量取值——此前同一字符串在本文件里写了五遍，改前缀时漏改一处
+// 所有默认配置经此常量取值——同一字符串在本文件里写五遍时，改前缀漏改一处
 // 就会让不同 tier 的 key 空间分裂。
 const defaultRedisKeyPrefix = "clover:data"
 
@@ -276,7 +276,7 @@ func MemoryConfig() Config {
 // 设 FlushInterval=0 可完全关闭周期落盘（仅依赖进程 Close 终落，即「下线落」模式）。
 //
 // 必须带 Redis 配置：TierSnapshot 的离线写路径（saveRedis/getMMO 冷加载）依赖 Redis，
-// validateConfig 也要求 Redis（含 PoolSize>=1）；此前产出零值 Redis 配置会让
+// validateConfig 也要求 Redis（含 PoolSize>=1）；产出零值 Redis 配置会让
 // NewStore(MMOConfig()) 必然报 "redis config invalid" —— 该「默认配置」不可用。
 func MMOConfig() Config {
 	return Config{
@@ -314,7 +314,7 @@ func (s *Store) Table() string { return s.table }
 func (s *Store) RedisClient() *iredis.Client { return s.redis }
 
 // MySQLClient 返回底层 imysql.Client（供业务做原生 SQL 操作）。
-// TierMemory 模式没有持久层，返回 nil；调用方必须判空（此前注释声称「所有模式均非 nil」，
+// TierMemory 模式没有持久层，返回 nil；调用方必须判空（注释若声称「所有模式均非 nil」，
 // 按注释直接解引用会 nil panic）。
 func (s *Store) MySQLClient() *imysql.Client {
 	c, ok := s.mysql.(*imysql.Client)
@@ -356,7 +356,7 @@ func (s *Store) doClose() error {
 	// stopPeriodicFlush 内部对未启用的情况幂等空操作，故无副作用。
 	s.stopPeriodicFlush()
 	// 退出前需终落库避免丢数据。以本 Store 是否具备 MySQL 后端为准：
-	// 此前用全局 pdata.TierHasPersistent() 门控，与 Store 自身 Tier 解耦——
+	// 用全局 pdata.TierHasPersistent() 门控会与 Store 自身 Tier 解耦——
 	// 默认 Tier 的 Store 在无任何 Schema 注册持久 Tier 时，进程退出也不落盘脏数据。
 	if s.mysql != nil {
 		// 终落库最多重试 3 次（指数退避），避免单次网络抖动导致进程退出时丢脏数据。

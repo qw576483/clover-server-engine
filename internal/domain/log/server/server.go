@@ -13,8 +13,8 @@ import (
 )
 
 // Serve 启动 log 服 TCP 服务端。返回 Server 用于 Shutdown。
-// 监听同步完成并把错误返回：此前在 goroutine 里 ListenAndServe 后立即
-// return nil error —— 端口被占/绑定失败时调用方会误判「启动成功」。
+// 监听同步完成并把错误返回：在 goroutine 里 ListenAndServe 后立即
+// return nil error 会让端口被占/绑定失败时调用方误判「启动成功」。
 func Serve(addr string, st state.LogService) (*tcpmsg.Server, error) {
 	srv := tcpmsg.NewServer(addr)
 	registerHandlers(srv, st)
@@ -49,13 +49,13 @@ func registerHandlers(srv *tcpmsg.Server, st state.LogService) {
 	srv.Register(state.MsgLogBatch, func(_ *netpkg.Conn, requestID uint32, body []byte) ([]byte, error) {
 		var req state.LogBatchReq
 		if err := json.Unmarshal(body, &req); err != nil {
-			// 坏帧必须留日志：log 服收到畸形报文此前完全无记录。
+			// 坏帧必须留日志：否则 log 服收到畸形报文完全无记录。
 			logger.Warnf("logsvc/tcp: decode LogBatchReq failed (len=%d): %v", len(body), err)
 			return marshalErr()
 		}
 		written, err := st.WriteBatch(req.Source, req.Entries)
 		if err != nil {
-			// 落库失败此前只回包、服务端日志完全不可见——丢日志无从排查。
+			// 落库失败必须留日志：只回包时服务端日志完全不可见——丢日志无从排查。
 			logger.Errorf("logsvc/tcp: write batch failed (source=%s entries=%d): %v", req.Source, len(req.Entries), err)
 			return marshalErr()
 		}

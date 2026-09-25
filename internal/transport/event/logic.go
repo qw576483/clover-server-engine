@@ -598,10 +598,6 @@ func httpRecovery(next http.Handler) http.Handler {
 
 // unknownMsgIDs 已告警过的未知消息号集合（msgID → struct{}）。
 //
-// 必须按消息号分桶：早先用单一全局计数器时，「第二个及以后出现的新 msgID」的首条告警
-// 会被吞掉（要等全局计数恰好撞上 1000 的倍数才留痕），而异常/恶意客户端可以构造任意
-// 消息号 —— 排查时表现为「日志里从来没出现过这个号」。
-//
 // 登记表有容量上限：海量不同 msgID 不得把这张表撑爆。
 var (
 	unknownMsgIDs     sync.Map // msgID(uint32) → struct{}

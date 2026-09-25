@@ -56,7 +56,7 @@ func (c *Client) ExpireByPattern(ctx context.Context, pattern string, expiration
 		ok, expErr := c.Expire(ctx, k, expiration)
 		if expErr != nil {
 			// 单个失败不中断其余，但必须同时留日志并上报首个错误：
-			// NOAUTH/READONLY 等失败只表现为 total 偏小（此前整体仍返回 nil，故障被吞）。
+			// NOAUTH/READONLY 等失败只表现为 total 偏小（整体返回 nil 时故障被吞）。
 			logger.Warnf("redis: expirebypattern set expire %s failed: %v", k, expErr)
 			if firstErr == nil {
 				firstErr = expErr
@@ -78,7 +78,7 @@ func (c *Client) GetDel(ctx context.Context, key string) (string, error) {
 
 // GetSetJSON 获取并反序列化 JSON 对象后立即删除 key。
 // 适用于一次性读取配置或临时数据。
-// 删除失败必须返回错误：此前静默吞掉删除错误，key 残留会让下次重复读到
+// 删除失败必须返回错误：静默吞掉删除错误时，key 残留会让下次重复读到
 // 同一份数据（一次性消费语义被破坏，且调用方无从察觉）。
 func (c *Client) GetSetJSON(ctx context.Context, key string, out any) error {
 	err := c.GetJSON(ctx, key, out)

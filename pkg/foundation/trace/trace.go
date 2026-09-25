@@ -16,14 +16,13 @@
 //
 //   - **trace_id / span_id 与 context 传播**的唯一真身在本包：`SpanContext`（值类型）
 //     加本包私有的 context key。`traceid.Span` 往**同一个 key** 镜像写入，读侧也认本包
-//     的 key ⇒ 两包双向可读（任一方 set、另一方都能 get），链路不再断在包边界上。
-//     历史形态是两包各用私有 key、互不识别，同一条 trace 跨包即断链。
+//     的 key ⇒ 两包双向可读（任一方 set、另一方都能 get），链路不断在包边界上。
 //   - `traceid` 只保留「带 tags 与 End 钩子的请求段对象」这一层（业务/耗时指标用），
-//     不再自带独立的追踪语义。
+//     不带独立的追踪语义。
 //
-// **ID 长度已统一为 32 hex（16 字节，与 W3C traceparent 对齐）**：`traceid.NewTraceID`
-// 已改为直接转发本包的 `NewTraceID`（traceid 的 `StartSpan` / `StartNATSSpan` 内部 trace_id
-// 本来就是 16 字节），因此本包 / traceid / 对外 `shared/id.GenTraceID` 三处长度一致。
+// **ID 长度统一为 32 hex（16 字节，与 W3C traceparent 对齐）**：`traceid.NewTraceID`
+// 转发本包的 `NewTraceID`（traceid 的 `StartSpan` / `StartNATSSpan` 内部 trace_id
+// 为 16 字节），因此本包 / traceid / 对外 `shared/id.GenTraceID` 三处长度一致。
 
 // # 典型用法
 

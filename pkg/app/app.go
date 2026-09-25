@@ -40,8 +40,8 @@ type (
 	// GatewayConfig 网关进程配置（别名到 internal 的定义，字段与服务端一处定义）。
 	// 字段：ListenWS 客户端 WebSocket 接入地址；WSPath WebSocket 升级路径；WSAllowAllOrigins 允许跨域 WS（测试工具用）；ListenTCP 客户端 TCP 接入地址；ListenUDP UDP 接入地址（QUIC + 裸 UDP 共享）；EnableWT 是否启用 WebTransport；TLSCert/TLSKey TLS 证书/私钥路径；WTCert/WTKey WebTransport 专用证书/私钥路径；WTPin 是否启用证书固定（空自动生成）；MaxConns 连接总数上限；QueueCap 等候队列容量；QueueReleasePerSec 排队每秒放行数；QueueTimeout 排队最长时间；ReconnectGrace 重连宽限；DisconnectGrace 断线宽限；MaxFrameSize 上行客户端帧最大长度；AuthDisabled 关闭登录门禁；AuthExemptMsgIDs 免登录消息号白名单；TCPTLSDisabled true=TCP 接入不加密；MaxConnsPerSec 每秒新建连接数上限（0=不限）。各连接/限流字段 0 值表示「不启用 / 立即触发」。
 	//
-	// 用别名而非独立 struct：此前门面各写一份，已经漂移（门面版本缺少 AuthDisabled /
-	// AuthExemptMsgIDs，业务按门面类型根本设不了登录门禁）。
+	// 用别名而非独立 struct：独立 struct 会与 internal 的定义漂移（缺字段时业务按
+	// 门面类型根本设不了登录门禁）。
 	GatewayConfig = iapp.GatewayConfig
 	// LogicConfig 逻辑服配置（别名到 internal 的定义）。
 	// 字段：ListenAddr TCP 监听地址（网关拨号此地址）；HTTPListen HTTP 控制面监听地址（空=不启用）；Heartbeat 网关↔逻辑服心跳间隔（默认 30s）；FrameTimeout 单帧处理上限（默认 30s）；ReconnectGrace 重连宽限（默认 30s）。

@@ -18,7 +18,7 @@
 10. **`WithContext` 返回新的 context，必须接收返回值**：未回写 `ctx = span.WithContext(ctx)` 会导致后续 `StartSpan` 找不到父 Span，链路断裂。
 11. **TraceID 格式必须与全链路统一**：本包为 **32 位**纯十六进制（16 字节，无前缀），`shared/id.GenTraceID` 为 `trc_` + 32 位十六进制，两者不可互换，混用会导致链路无法关联。
     长度与 W3C Trace Context / OTel 的 trace-id 位宽一致：`NewTraceID` 直接转发 `pkg/foundation/trace.NewTraceID`（**唯一真身**），`StartSpan` / `StartNATSSpan` 的 trace_id 同样是 16 字节 —— 全链路长度统一。
-    ⚠️ 历史形态是两处各自生成（本包 24 hex / `foundation/trace` 32 hex）导致长度漂移，**不要**再让任一侧自建 ID 生成逻辑。
+    ⚠️ ID 生成真身只有 `pkg/foundation/trace.NewTraceID` 一处，任何一侧都**不得**自建 ID 生成逻辑。
 12. **context 传播的真身不在本包**：追踪上下文的唯一 key 属于 `pkg/foundation/trace`。本包 `Span.WithContext` 会往该 key 镜像写入、`FromContext` 未命中时会回读该 key 合成只读 Span —— 两包双向可读，**不要**再给本包新增独立的 context key（那会重新引入跨包断链）。
 
 ## 文件清单
@@ -374,7 +374,7 @@ func onMessage(ctx context.Context, hdr map[string]string, payload []byte) {
 ## 依赖关系
 
 - **依赖 Go 标准库**：`context`、`crypto/rand`（强随机）、`encoding/hex`（ID 编码）、`net/http`（`http.Header`）、`sync`（Mutex/Once）、`sync/atomic`（`atomic.Bool`）、`time`。
-- **引擎内依赖仅一个**：`pkg/foundation/trace`（追踪上下文的规范 key 与最小传播单元真身，见规则 12）——不再是「零引擎内部依赖」的叶子包，但仍是自包含包（不 import `internal`）。
+- **引擎内依赖仅一个**：`pkg/foundation/trace`（追踪上下文的规范 key 与最小传播单元真身，见规则 12）；仍是自包含包（不 import `internal`）。
 - 零第三方依赖。
 - **相关包**：`shared/id` 提供 `GenTraceID()`（`trc_` + 32 位十六进制，其随机熵即来自本包 `NewTraceID`），与本包的 TraceID 格式**不同**（本包是纯 32 位十六进制无前缀），两者不可混用。
 - **升级路径**：接口概念与 OpenTelemetry 对齐（TraceID 16 字节 / SpanID 8 字节 / Span 树），后续可替换为 OTel SDK 实现。

@@ -8,7 +8,7 @@ import (
 )
 
 // shardDialCooldown 建连失败后的冷却窗口：窗口内 ForKey/All 直接返回 nil，
-// 不再重复 TCP dial。此前失败不缓存失败态，master 宕机时每一次高频路由调用
+// 不再重复 TCP dial。失败不缓存失败态时，master 宕机时每一次高频路由调用
 // 都会重新拨号并把调用阻塞在 dial 超时上。
 const shardDialCooldown = time.Second
 

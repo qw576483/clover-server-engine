@@ -280,7 +280,6 @@ const adminTokenHeader = "X-Admin-Token"
 //
 // /ping、/routes、/metrics 不在此列 —— 它们是探针与指标抓取，只读且无副作用，不该被令牌挡住。
 //
-// /deadletter 曾以「需业务语义、不含进程级破坏力」为由放行，该口径已废弃：
 // /deadletter/dlq/retry 与 /deadletter/dlq/remove 会**重投 / 删除**跨服事件（有业务副作用），
 // 只读的 /deadletter/dlq 与 /deadletter/pending 也直接暴露事件体与玩家标识，
 // 仅在回环之外可达就等于把这些能力交给所有同网可达者，故整组纳入门禁。

@@ -13,11 +13,11 @@ import (
 //
 // 为什么需要它：渠道校验器的注册位是**单值**的（state.RegisterChannelVerifier 后写覆盖先写）。
 // 业务同时接两家渠道时，第二次注册会**静默覆盖**第一家 —— 启动期不报错，
-// 直到玩家登录才表现为「票据失败」，排查成本极高。本原语把「同名覆盖」改成
+// 直到玩家登录才表现为「票据失败」，排查成本极高。本原语将「同名覆盖」转为
 // **启动期 panic**（见 Register），并让业务不必自己写 router。
 //
-// 与既有单值注册的关系：**纯新增、互不影响**。既有 app.RegisterChannelVerifier
-// （单值）的行为一字未改；业务接多家渠道时改为注册一个 *ChannelRouter：
+// 与单值注册的关系：**纯新增、互不影响**。既有 app.RegisterChannelVerifier
+// （单值）的行为未变；业务接多家渠道时注册一个 *ChannelRouter：
 //
 //	r := app.NewChannelRouter()
 //	r.Register("wechat", wx)

@@ -36,7 +36,7 @@ func newLoaderInner(source SourceType, sourceInfo SourceInfo) *Loader {
 //
 // 读入 viper 与解码 target 必须在**同一把写锁**内完成：中间放开锁，
 // 并发的热加载（Watch 的 OnConfigChange）会趁机把 viper 换成另一份配置，
-// 解码结果就成了「新文件 + 旧内存」的混合体（此前的实现正是这样）。
+// 解码结果就成了「新文件 + 旧内存」的混合体。
 func (l *Loader) Load(target any) error {
 	l.mu.Lock()
 	defer l.mu.Unlock()

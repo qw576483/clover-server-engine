@@ -112,7 +112,7 @@ func TestMobAggroTimeoutDisabledKeepsHate(t *testing.T) {
 
 // 被动单位（纯靶子）：即使身边有人、即使被显式设了目标，也**不索敌、不还手**。
 //
-// 守的是实测设计事故：训练靶子会还手时，近战玩家"砍靶子"变成"被靶子磨死"，
+// 依据：靶子还手时，近战玩家"砍靶子"变成"被靶子磨死"，
 // 玩家感受是"我一挥剑自己就掉血"。
 func TestPassiveMobNeverAttacks(t *testing.T) {
 	sc := &aggroScene{stubScene: newStubScene(), neighbors: []uint64{2}}

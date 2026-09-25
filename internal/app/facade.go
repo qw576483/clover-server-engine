@@ -267,7 +267,7 @@ func PublishTableLoadedFacade(g *GameFacade, names []string) {
 //	func(*LogGameFacade)     ← RoleLog
 //	func(*AuthGameFacade)    ← RoleAuth
 //
-// 用法（业务侧类型是别名，写法与旧版逐字一致）：
+// 用法：
 //
 //	app.Mount(app.RoleGame,   func(g *app.Game)       { g.OnMsg(1000101, onXxx) })
 //	app.Mount(app.RoleMaster, func(m *app.MasterGame) { m.OnMsg(3000101, onXxx) })

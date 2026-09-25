@@ -21,13 +21,12 @@ var (
 	ErrUnreliableNotSupported = errors.New("session: unreliable transport not supported")
 	// ErrSendTimeout 发送队列满且等待超时（连接本身**未**关闭）。
 	//
-	// 只此一份：tcp 与 ws 连接层此前各定义一个同义 sentinel（各带包名前缀），
-	// 调用方要按传输类型分别判断。统一后一次 errors.Is 即可覆盖两种传输，
+	// 只此一份：tcp 与 ws 连接层共用，一次 errors.Is 即可覆盖两种传输，
 	// 并与 ErrClosed 明确区分——避免把「对端太慢」误判成断线而触发清理/重连（假断线）。
 	ErrSendTimeout = errors.New("session: send timeout (send buffer full)")
 )
 
-// 连接写入相关的默认超时：tcp / ws 连接层共用（此前两边各写一份同名常量，值会漂移）。
+// 连接写入相关的默认超时：tcp / ws 连接层共用。
 const (
 	// DefaultWriteTimeout 单次写操作的兜底超时（心跳开启时以心跳间隔为限）。
 	DefaultWriteTimeout = 30 * time.Second

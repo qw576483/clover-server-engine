@@ -103,7 +103,7 @@ func (e *SyncEntity) LoadJSON(ctx context.Context, v any) error {
 // 返回 error（含 Publish 失败），供调用方感知广播结果。
 func (e *SyncEntity) broadcast(ctx context.Context, v any, notifyMsgID uint32) error {
 	if ctx != nil {
-		// 尊重调用方 ctx：请求已取消 / 已超时时不再下发（此前该参数被忽略）。
+		// 尊重调用方 ctx：请求已取消 / 已超时时不再下发。
 		if err := ctx.Err(); err != nil {
 			return fmt.Errorf("sync: broadcast %d canceled: %w", notifyMsgID, err)
 		}
@@ -188,9 +188,9 @@ func (e *SyncEntity) BroadcastRecordPatch(ctx context.Context, rec *Record, noti
 // 数据同步默认使用 Reliable（丢包=客户端状态不一致）。
 func (e *SyncEntity) broadcastPatch(ctx context.Context, bag *object.Bag, notifyMsgID uint32) bool {
 	if ctx != nil {
-		// ctx 此前被**完全忽略**（参数名是 `_`）：调用方取消 / 超时后广播照旧下发，
+		// 必须尊重调用方 ctx：不检查时，调用方取消 / 超时后广播照旧下发，
 		// 自动同步回调（gobject 的写即推送）用 context.Background() 时更等于没有生命周期约束。
-		// 这里显式尊重它：已取消就丢弃本次广播（脏标记保留，可重试）。
+		// 已取消就丢弃本次广播（脏标记保留，可重试）。
 		if err := ctx.Err(); err != nil {
 			return false
 		}
@@ -264,7 +264,7 @@ func (e *SyncEntity) SaveJSONRecordPatch(ctx context.Context, v any, rec *Record
 // 返回是否真的发布了广播。
 func (e *SyncEntity) broadcastRecordPatch(ctx context.Context, rec *Record, notifyMsgID uint32) bool {
 	if ctx != nil {
-		// 同 broadcastPatch：ctx 此前被忽略，取消后广播照旧下发。
+		// 同 broadcastPatch：ctx 未检查时，取消后广播照旧下发。
 		if err := ctx.Err(); err != nil {
 			return false
 		}

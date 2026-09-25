@@ -88,8 +88,6 @@ func validateStruct(val reflect.Value, errs *Errors, depth int) {
 		tag := field.Tag.Get("validate")
 		if tag == "" {
 			// 具名嵌套 struct / 结构体指针：自身没有 validate tag 时也要下钻。
-			// 旧实现只递归匿名字段，`Player PlayerInfo`（内部字段带 tag、自身不带）
-			// 的内部规则会被完全跳过，与包注释「支持嵌套 struct 和指针字段」矛盾。
 			fv := fieldVal
 			if fv.Kind() == reflect.Ptr {
 				if fv.IsNil() {
@@ -329,7 +327,6 @@ func splitRules(tag string) []string {
 func isZero(v reflect.Value) bool {
 	if !v.IsValid() {
 		// 零值 reflect.Value（如 Var(nil, ...) 的入参）应当被视为零：
-		// 旧实现走 default 返回 false，使 `required` 对 nil 误判为通过。
 		return true
 	}
 	switch v.Kind() {

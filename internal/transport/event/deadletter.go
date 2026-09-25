@@ -128,8 +128,6 @@ func (q *MemoryDLQ) Push(_ context.Context, dl DeadLetter) error {
 	}
 	if q.liveLenLocked() >= q.capacity {
 		// 丢最老一条：只前移 head（O(1)）。
-		// 原实现每次淘汰都 `q.items = q.items[1:]` 再全量重建索引 —— 故障期间死信高频涌入时，
-		// 每次入队都要在写锁里扫一遍整表（容量越大越久），队列反而成了故障放大器。
 		delete(q.index, q.items[q.head].ID)
 		q.head++
 		q.dropped.Add(1)

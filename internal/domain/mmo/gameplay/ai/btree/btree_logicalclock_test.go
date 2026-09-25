@@ -18,13 +18,13 @@ func (c *countingLeaf) Tick(pkgbtree.Blackboard) pkgbtree.Status {
 
 // Cooldown / Limiter 必须使用**黑板注入的逻辑时刻**，而不是墙钟。
 //
-// 守的是本缺陷：这两个节点原先读黑板 "now"（但全仓没有生产端）+ 回落 time.Now()，
-// 而同一棵树的 Timeout 用 dt 累加 —— 同一棵树里三套时间口径。
-// 服务器暂停 / 变速（逻辑时钟不动）时，冷却会照墙钟走完，表现与设计不符。
+// 这两个节点只认黑板注入的逻辑时刻；读黑板 "now"（但全仓没有生产端）或回落 time.Now()
+// 都会与同一棵树的 Timeout（dt 累加）形成三套时间口径 —— 服务器暂停 / 变速（逻辑时钟不动）时，
+// 冷却会照墙钟走完，表现与设计不符。
 //
 // 判别方式：把逻辑时刻设为 Unix 纪元附近的**很小的值**（如 10 秒）。
 // 用墙钟时 time.Now() 远大于任何逻辑窗口，节点会「永远已就绪」，
-// 下面的"窗口内不许执行"断言会立刻失败 —— 即本用例对真缺陷有检出能力。
+// 下面的"窗口内不许执行"断言会立刻失败 —— 即本用例对该口径有检出能力。
 func TestCooldownUsesBlackboardLogicalNow(t *testing.T) {
 	leaf := &countingLeaf{}
 	cd := NewCooldown(5*time.Second, leaf)
@@ -129,7 +129,7 @@ func TestCooldownFallsBackToWallClock(t *testing.T) {
 }
 
 // Tree.Tick 必须保证黑板 "now" 存在：驱动方不注入时按 **dt 自累加的逻辑钟**兜底，
-// 从而 Limiter / Cooldown / Timeout 在同一棵树里共用一套时间源（历史缺陷：三套口径）。
+// 从而 Limiter / Cooldown / Timeout 在同一棵树里共用一套时间源。
 //
 // 判别方式：自累加的钟从 0 起算（每帧 +dt），若节点回落墙钟，其值会远大于逻辑时刻。
 func TestTreeTickInjectsLogicalNow(t *testing.T) {
@@ -208,10 +208,8 @@ func (r *runningLeaf) Tick(pkgbtree.Blackboard) pkgbtree.Status {
 
 // Timeout 的已耗时累加不许「Duration→浮点秒→Duration」往返：误差不得随 tick 数累积。
 //
-// 守的是本缺陷：原实现把**已累加的 elapsed** 先转浮点秒、加上本帧 dt、再转回 Duration
-// （`elapsedSec := float64(n.elapsed)/1e9 + dt; n.elapsed = time.Duration(elapsedSec*1e9)`），
-// 于是每 tick 都在累加值上过一次 float64。dt 取 1/30 秒（33333333ns，二进制不可精确表示）
-// 时实测：1e5 tick 已偏小约 14µs、1e6 tick 约 25µs，且随 tick 数增长
+// dt 取 1/30 秒（33333333ns，二进制不可精确表示）时，在累加值上反复过一次 float64
+// 会使误差随 tick 数增长（1e5 tick 偏小约 14µs、1e6 tick 约 25µs）
 // ⇒ 长跑（超时 / 移动节流）的时间口径整体偏短。
 //
 // 判别方式：期望值 = 「单帧 dt 换算一次得到的 step」× tick 数。

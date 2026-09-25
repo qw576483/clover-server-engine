@@ -26,7 +26,7 @@
 // 两包双向可读 —— 任一方 set、另一方都能 get，同一条 trace 不会在包边界断链。
 // 本包保留的只是「带 tags / End 钩子的请求段对象」这一层能力。
 //
-// **ID 长度已统一为 32 hex（16 字节）**：本包 `NewTraceID` 直接转发
+// **ID 长度统一为 32 hex（16 字节）**：本包 `NewTraceID` 转发
 // `pkg/foundation/trace.NewTraceID`（W3C Trace Context / OTel 的 trace-id 位宽），
 // 因此本包 / `StartSpan` / 对外 `shared/id.GenTraceID` 三处长度一致，可直接互通。
 package traceid
@@ -79,7 +79,7 @@ func StartSpan(parent context.Context, name string) *Span {
 }
 
 // spanContext 把 Span 映射为规范的最小传播单元（真身类型在 pkg/foundation/trace）。
-// traceid 不做采样决策，故 Sampled 恒为 true（与历史行为一致：始终全采）。
+// traceid 不做采样决策，故 Sampled 恒为 true。
 func (s *Span) spanContext() trace.SpanContext {
 	return trace.SpanContext{
 		TraceID:  s.traceID,
@@ -104,9 +104,9 @@ func (s *Span) ParentID() string { return s.parentID }
 //   - `pkg/foundation/trace` 的规范 key：追踪上下文的唯一真身（InjectInto / ExtractFrom /
 //     logger 的 ctx 字段都读它）—— 没有这一步，本条 trace 跨包即断链；
 //   - 本包私有 key：镜像富对象（tags / End 钩子），保证 `FromContext` 取回的是
-//     原始 `*Span` 而非合成对象，行为与历史完全一致。
+//     原始 `*Span` 而非合成对象。
 //
-// ctx 为 nil 时由 trace 侧归一为 Background（历史实现会 panic，这里顺带收紧）。
+// ctx 为 nil 时由 trace 侧归一为 Background。
 func (s *Span) WithContext(ctx context.Context) context.Context {
 	if s == nil {
 		return ctx

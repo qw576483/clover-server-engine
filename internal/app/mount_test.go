@@ -11,7 +11,7 @@ import (
 
 // 共享调度器必须**只建一次**。
 //
-// 缺陷形态：ensure() 无同步，并发首次调用（Scheduler / Every / After / Cron …）各建一个
+// 若 ensure() 无同步，并发首次调用（Scheduler / Every / After / Cron …）各建一个
 // Scheduler —— 而 NewScheduler 会立即起一条调度 goroutine；后建的覆盖字段，
 // 先建的那个连同其上注册的任务一起失联（任务永不触发、goroutine 无人关闭）。
 func TestTimeEventSchedulerIsCreatedOnce(t *testing.T) {

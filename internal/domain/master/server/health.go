@@ -32,7 +32,7 @@ func RegisterHealth(srv *tcpmsg.Server, st *state.State, det *failover.Detector)
 		}
 
 		// 先判 state 是否认识该节点，再决定是否喂给探测器：
-		// 此前顺序相反——探测器先把未注册节点补登记为 Alive，然后才报 Known:false。
+		// 顺序不能相反——若先喂探测器，它会把未注册节点补登记为 Alive，然后才报 Known:false。
 		// 这类节点不在 state 中，判 Dead 后 RemoveNodeWithReason 返回 ErrNodeNotFound、
 		// 不触发 Untrack → d.nodes 永久滞留、nodes_dead Gauge 永久虚高；
 		// 且 master 一边说「不认识」一边把它计入 Alive 计数，健康视图自相矛盾。

@@ -72,8 +72,6 @@ func (c *Client) WatchPrefix(ctx context.Context, prefix string, cb func()) erro
 //     调用方自行决定生命周期（例如用自己的 WaitGroup 让 Close 等到 watch 退出）。
 //
 // 两者共用同一个 watchLoop 骨架，因此续看 / 压缩重置 / 退避 / 回调 panic 回收的行为完全一致。
-// 此前调用方各自实现过一套，退避策略（固定 1s vs 指数 2s→30s）与压缩判定方式
-// （CompactRevision 字段 vs 错误文案匹配）已经漂移。
 func (c *Client) WatchPrefixLoop(ctx context.Context, prefix string, onEvents func([]WatchEvent)) {
 	c.WatchPrefixLoopResync(ctx, prefix, onEvents, nil)
 }
@@ -137,7 +135,7 @@ func (c *Client) registerWatch(ctx context.Context, regKey string, run func(cont
 //	                  过期 revision 无限重连失败；同时调用 onReset —— 那段事件已经取不回来，
 //	                  只有调用方自己全量重同步才能补上（nil 表示调用方不需要该通知）。
 //	指数退避        ：2s 起步逐次翻倍、上限 30s；收到有效响应即重置，避免一次长断线后
-//	                  后续每次闪断都从上限起步。曲线由 retry 包统一定义（不再手写 *= 2）。
+//	                  后续每次闪断都从上限起步。曲线由 retry 包统一定义。
 //	回调 panic 回收 ：同步调用回调但加 recover，否则回调 panic 会击垮 watch 协程（及进程）。
 func (c *Client) watchLoop(ctx context.Context, key string, prefix bool, onEvents func([]WatchEvent), onReset func()) {
 	// 退避曲线统一由 retry.Backoff 提供：同一套 Policy 供 Do 与全仓库的常驻循环复用。

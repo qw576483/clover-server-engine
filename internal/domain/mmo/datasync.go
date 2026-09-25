@@ -14,9 +14,9 @@ import "github.com/qw576483/clover-server-engine/pkg/shared/proto"
 //	{"move":     {"entity_id": 1001, "position": {"x": 12.5, "y": 0, "z": -3}}}
 //	{"property": {"entity_id": 1001, "properties": {"hp": 88, "max_hp": 100}}}
 //
-// 这个形状此前**没有任何构造器**：服务端只能手写 map，写错 key 就静默丢包
-// （客户端匹配不上就 return，不抛错、不进日志），而且这段包壳散落在每个业务的 handler 里 ——
-// 每个项目重写一遍。与"地图管线"同一条判据：两端共用同一份契约，分处维护必然漂移。
+// 服务端手写 map 时写错 key 就静默丢包（客户端匹配不上就 return，不抛错、不进日志），
+// 而且这段包壳散落在每个业务的 handler 里 —— 每个项目重写一遍。
+// 与"地图管线"同一条判据：两端共用同一份契约，分处维护必然漂移。
 //
 // ★ 客户端侧是**宽容匹配**（Runtime/Network/WorldSync.cs）：事件名接受
 // move / position / updateposition、property / properties / attr / attribute / update 等别名，

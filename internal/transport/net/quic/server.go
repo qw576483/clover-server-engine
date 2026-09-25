@@ -263,7 +263,7 @@ func (s *Server) readLoop(c *Conn) {
 		}
 		if frameLen == 0 {
 			// 空帧（如对端保活）：只算活跃信号，不派发给业务 handler
-			//（与 tcp「空业务帧忽略」对齐；此前会把空 body 当有效消息下发）。
+			//（与 tcp「空业务帧忽略」对齐）。
 			c.touch()
 			continue
 		}

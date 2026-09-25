@@ -6,25 +6,14 @@ import (
 )
 
 // ============================================================================
-// B1 复现与根因定位：帧同步房间"Broadcast 失败"
+// 帧同步房间：广播与输入超时兜底的回归用例
 //
-// 背景：历史上记录过「帧同步房间自测 1004401 的 Broadcast 失败」，
-// 当时**没有测试载体**（本目录曾无任何 _test.go），所以只留了"待查 tick 循环与输入帧推进条件"。
-//
-// 本文件重建载体，把两个候选根因各自钉成**可复现的断言**（先跑测试、再看结论）：
-//
-//	根因 1：`PushMessageID` 默认为 0（`DefaultConfig()` 不设它），而 `broadcast()` 首行
-//	        就是 `if pushMsgID == 0 { return }` ⇒ 每帧都在"广播"，却一条都发不出去（静默空转）。
-//	        这与"Broadcast 失败"最契合：帧推进正常、日志无异常、客户端永远收不到帧推。
-//
-//	根因 2（已修，回归见场景 D）：wait-for-all 与「输入超时兜底」互相依赖 —— 历史上兜底判据是
-//	        `frame - ps.LastFrame >= InputTimeoutTicks`；若房间内**没有任何人**提交输入，
-//	        帧号恒为 0（下一次推进目标是 1），`1-0 >= 90` 永远不成立 ⇒ 自锁（房间卡住且无提示）。
-//	        现判据改为 inputWaitTicks（连续未提交的 step 次数）：由 ticker 驱动、卡帧时仍增长，
-//	        达到阈值即填 fallback 输入推进。
-//
-// 根因 1 是「配置必须显式给 PushMessageID」的语义（见 broadcast 注释，已登记不是待修 bug）；
-// 根因 2 已按兜底语义修好，两者现象都叫"Broadcast 失败"，必须能被一眼分辨。
+// 契约：
+//   - `PushMessageID` 默认为 0，`broadcast()` 首行 `if pushMsgID == 0 { return }`
+//     ⇒ 帧照常推进，但一条广播都不发（静默空转）。建房间必须显式
+//     `frame.WithPushMessageID(...)`（见 room.go broadcast 的 ⚠️ 注释）。
+//   - 输入超时兜底判据是 inputWaitTicks（连续未提交的 step 次数）：由 ticker 驱动、
+//     卡帧时仍增长，达到阈值即填 fallback 输入推进。
 // ============================================================================
 
 // pushRec 一条广播记录。
@@ -63,7 +52,7 @@ func (rec *recorder) all() []pushRec {
 }
 
 // newTestService 造一个可控房间服务：记录每次广播 + 注入确定性输入应用器。
-// 注意**不设** PushMessageID —— 那正是根因 1 要验证的点。
+// 注意**不设** PushMessageID（默认 0 ⇒ 不广播）。
 func newTestService(rec *recorder) *Service {
 	return NewService(
 		WithBroadcaster(rec.push),
@@ -77,11 +66,10 @@ func newTestService(rec *recorder) *Service {
 	)
 }
 
-// 场景 A（根因 1）：默认配置不设 PushMessageID ⇒ **帧能推进，但广播 0 条**。
+// 场景 A：默认配置不设 PushMessageID ⇒ **帧能推进，但广播 0 条**。
 //
-// 这条断言直接把"Broadcast 失败"翻译成了"配置少了消息号"。
-// 注意：静默跳过是**已登记的设计**（见 room.go broadcast 的 ⚠️ 注释：0 = 不广播），
-// 不是待修 bug —— 建房间时必须显式 frame.WithPushMessageID(...)。
+// 注意：静默跳过是**设计**（见 room.go broadcast 的 ⚠️ 注释：0 = 不广播），
+// 建房间时必须显式 frame.WithPushMessageID(...)。
 func TestB1_BroadcastSilentWhenPushMessageIDUnset(t *testing.T) {
 	rec := &recorder{}
 	svc := newTestService(rec)
@@ -113,10 +101,9 @@ func TestB1_BroadcastSilentWhenPushMessageIDUnset(t *testing.T) {
 		}
 		t.Fatalf("PushMessageID 未配置时 broadcast 应静默跳过，实际广播 %d 条 msgID=%v", n, ids)
 	}
-	t.Log("根因 1 复现：帧推进正常，但广播 0 条 —— 缺 PushMessageID 就是「Broadcast 失败」的真相")
 }
 
-// 场景 B（修法）：显式 `WithPushMessageID(1004401)` ⇒ 每帧广播到每个成员。
+// 场景 B：显式 `WithPushMessageID(1004401)` ⇒ 每帧广播到每个成员。
 //
 // 1004401 就是 B1 记录里的那个自测消息号。
 func TestB1_BroadcastFiresWithPushMessageID(t *testing.T) {
@@ -197,10 +184,10 @@ func TestB1_WaitingPushAlsoNeedsPushMessageID(t *testing.T) {
 	}
 }
 
-// 场景 D（根因 2 回归）：**单人从不提交输入也不再自锁**。
+// 场景 D：**单人从不提交输入也不再自锁**。
 //
-// 判据不再是帧号差（卡帧时恒为 0/1，阈值永不满足），而是 inputWaitTicks（连续未提交的 step 次数）：
-// ①②分别钉住「阈值未满仍等待」与「达到阈值即兜底推进」，防止把"帧永远停在 0"重新当成应然行为。
+// 判据是 inputWaitTicks（连续未提交的 step 次数，卡帧时仍增长）：
+// ①②分别钉住「阈值未满仍等待」与「达到阈值即兜底推进」。
 func TestB1_InputTimeoutFallbackUnlocksFrames(t *testing.T) {
 	// --- D1：默认阈值（90）→ 阈值未满仍等待，第 90 次 step 兜底生效 ---
 	recLenient := &recorder{}
@@ -239,5 +226,4 @@ func TestB1_InputTimeoutFallbackUnlocksFrames(t *testing.T) {
 	if got := r1.Frame(); got != 5 {
 		t.Fatalf("阈值=1 时应由超时兜底推进到 5，实际 frame=%d", got)
 	}
-	t.Log("根因 2 回归：阈值按 step 次数计，达到阈值即兜底推进，不再依赖帧号差")
 }

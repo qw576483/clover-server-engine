@@ -33,7 +33,7 @@ func NewClient(conf EtcdConfig) (*Client, error) {
 	}
 	// 默认值在此一次性归一化进 conf：Config() 返回的应是**生效值**。
 	// 否则调用方（如服务发现注册时的租约 TTL）还得各自再兜一次默认值，
-	// 同一个 10s / 5s 就会散落到多个包（应用层曾为此各写一份常量）。
+	// 同一个 10s / 5s 就会散落到多个包。
 	if conf.DialTimeout <= 0 {
 		conf.DialTimeout = defaultDialTimeout
 	}
@@ -209,7 +209,7 @@ func (c *Client) Register(ctx context.Context, key, value string, ttl time.Durat
 	}
 	// 初始注册重试：etcd 偶发不可达（网络瞬断 / 探活波峰）时不应直接让服务启动失败。
 	// 用引擎统一重试器（退避曲线只有一处定义，见 internal/shared/retry）：
-	// 3 次尝试、100ms 起步、倍率 2、无上限截断——与原实现逐次延迟一致。
+	// 3 次尝试、100ms 起步、倍率 2、无上限截断。
 	const maxAttempts = 3
 	policy := retry.Policy{
 		MaxAttempts: maxAttempts,
@@ -349,8 +349,7 @@ func (c *Client) cleanupRegistration(bgCtx context.Context, key string, leaseID 
 // reregister 续租断开后的自动重注册：指数退避重建「租约+Put+KeepAlive」。
 // stopCh 触发时放弃并返回 ok=false。
 func (c *Client) reregister(bgCtx context.Context, key, value string, ttl int, stopCh <-chan struct{}) (<-chan *clientv3.LeaseKeepAliveResponse, clientv3.LeaseID, context.CancelFunc, bool) {
-	// 退避曲线统一走 retry.Backoff（与 watch / accept / read 循环同一条策略，
-	// 不再各处手写 `*= 2` 与自定上限）。
+	// 退避曲线统一走 retry.Backoff（与 watch / accept / read 循环同一条策略）。
 	bo := retry.NewBackoff(retry.Policy{
 		BaseDelay:  time.Second,
 		MaxDelay:   30 * time.Second,

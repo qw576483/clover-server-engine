@@ -14,11 +14,10 @@ func (fakePub) Publish(string, []byte) error { return nil }
 
 // AddRecord 与 SetNotifier / EnableAutoSync / DisableAutoSync 并发。
 //
-// 缺陷形态：「是否自动同步」的判定若在锁外取，就能取到「已开启 + 同步器随后被置 nil」
-// 的组合，于是把 nil 同步器捕获进表回调 —— 之后任何一次写表都在
-// BroadcastRecordPatch 上崩（空指针，业务侧表现为偶发进程崩溃）。
-//
-// 修复后：判定在锁内一次取完，且 attachRecordNotifier 对 nil 同步器直接不挂回调。
+// 契约：「是否自动同步」的判定必须在锁内一次取完 —— 在锁外取可能拿到
+// 「已开启 + 同步器随后被置 nil」的组合，把 nil 同步器捕获进表回调后，
+// 任何一次写表都会在 BroadcastRecordPatch 上崩（空指针，业务侧表现为偶发进程崩溃）；
+// attachRecordNotifier 对 nil 同步器直接不挂回调。
 func TestAddRecordConcurrentWithNotifierSwitch(t *testing.T) {
 	g := New(nil, object.NewObjectID(object.TypePlayer, 1))
 	stop := make(chan struct{})

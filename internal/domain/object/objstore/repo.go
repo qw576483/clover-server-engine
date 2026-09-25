@@ -289,8 +289,7 @@ func (r *Repository) BulkApply(ctx context.Context, ids []object.ObjectID, fn fu
 		ar.Applied = true
 		res = append(res, ar)
 	}
-	// 逐对象细节在 res 里；但「整批全部失败」必须让只看 error 的调用方也能感知 ——
-	// 历史上这里恒返回 nil，批量操作整体失败会被误判为成功。
+	// 逐对象细节在 res 里；但「整批全部失败」必须让只看 error 的调用方也能感知。
 	applied, failed := 0, 0
 	for _, ar := range res {
 		if ar.Err != nil {

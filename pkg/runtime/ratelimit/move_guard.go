@@ -16,14 +16,12 @@ const (
 
 // MoveGuard 移动限频器：一个玩家（或任何移动体）一个实例。
 //
-// 为什么必须有它（而不是拿现成单计数器凑）：
 // 「服务端权威位置 + 客户端上行坐标」这一类同步模型，要防的是**两种**互相独立的作弊：
 //   - 频率：无限刷位移包（把单步上限合法地反复发送 ⇒ 等效无限速度）；
 //   - 位移：降频发包、每包一个大跳（1Hz 发 50 米 —— 条数完全不超，位移严重超标）。
 //
-// 所以两条约束必须**同时**存在，缺任一条都能被绕过；而引擎现有的限流原语都是单维的
-// （TokenBucket/FixedWindow/SlidingWindow 只吃整数次数，SlidingSum 只吃量），
-// 组合这件事此前只能由每个业务自己做一遍 —— 本项目就把这段写在业务的 combat.go 里。
+// 两条约束必须**同时**存在，缺任一条都能被绕过：引擎现有的限流原语都是单维的
+// （TokenBucket/FixedWindow/SlidingWindow 吃整数次数，SlidingSum 吃量）。
 //
 // ★ 两个阈值都是**业务数值**（客户端上行频率、角色跑速、留多少余量），引擎只给机制：
 // 构造函数只做"取正"兜底，不给任何默认值猜测。
@@ -73,8 +71,7 @@ func NewMoveGuardWithClock(rateLimit int, distLimit float64, window time.Duratio
 
 // Allow 判定本次移动（位移为 dist 米）是否放行，返回 (是否放行, 拒绝原因)。
 //
-// ★ 零值 / 未构造的守卫**放行而不拦截**：宁可漏拦一个坏包，也不能把守门人自己变成故障源
-// （历史上"限频器未初始化就拦人"的表现是正常玩家被卡死，比作弊更难查）。
+// ★ 零值 / 未构造的守卫**放行而不拦截**：宁可漏拦一个坏包，也不能把守门人自己变成故障源。
 func (g *MoveGuard) Allow(dist float64) (bool, string) {
 	if g == nil || g.rate == nil || g.dist == nil {
 		return true, MoveRejectNone

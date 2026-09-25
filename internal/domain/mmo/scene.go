@@ -316,7 +316,7 @@ func (s *Scene) Collider() *collide.Grid { return s.cgrid }
 
 // Collider3 返回场景的 3D 碰撞宽相：业务往里注册三层墙体/楼板（Mask 含 GroupWall）后，
 // 即可用 QueryRegion / QuerySphere / SweepCCD / Raycast 做**立体**的区域判定、
-// 弹道避障与视线判定——这是 2D 版做不到的部分（2D 只看水平面）。
+// 弹道避障与视线判定。
 //
 // 约定：Y 为高度；掩码用 collide.GroupWall 标记静态障碍，其余分组见 collide.CollisionGroup。
 func (s *Scene) Collider3() *collide.Grid3 { return s.cgrid3 }
@@ -443,9 +443,9 @@ func (s *Scene) MoveBatch(moves []MoveOp) {
 
 // 视图批处理
 //
-// 锁分工（关键，历史缺陷点）：batchMu 守卫「批处理窗口」本身（Begin/End 配对），
+// 锁分工（关键）：batchMu 守卫「批处理窗口」本身（Begin/End 配对），
 // viewMu 只守卫 viewBatch 数据，且**只在读写 viewBatch 的瞬间持有**。
-// 不能像过去那样让 viewMu 跨整个窗口：l.grid.EndBatch() 会**同步**回调 Scene.onViewChange，
+// viewMu 不能跨整个窗口：l.grid.EndBatch() 会**同步**回调 Scene.onViewChange，
 // 那里要拿 viewMu，同一 goroutine 反复加同一把非重入锁 = 必然死锁。
 //
 // 批窗口是**可嵌套**的：深度由 batchDepth 记录，只有最外层真正开/关窗口，
@@ -566,7 +566,7 @@ func (s *Scene) Position(objID uint64) (Vec3, bool) {
 	if !ok {
 		return Vec3{}, false
 	}
-	// 三维原样返回：这里曾被压成 {X, Z}，使业务拿不到高度（跳跃/飞行位置查询全失真）。
+	// 三维原样返回：压成 {X, Z} 会使业务拿不到高度（跳跃/飞行位置查询全失真）。
 	return p, true
 }
 

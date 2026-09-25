@@ -3,8 +3,7 @@
 // 1. 订阅 opts.viewSubject，解析 viewPush 的 enter/leave：
 //   - 维护反向索引「谁在观察哪个实体」（map[objID]map[watcherID]bool）；
 //   - **并把 enter/leave 下发给 watcher 客户端**（EPushDataSync + 外层 key = 事件名）。
-//     少了这一步，客户端 Game.Sync.OnEntityEnter/OnEntityLeave 永远不触发，
-//     且 Scene 预先取好的视图快照无人使用（历史缺陷，已修）。
+//     少了这一步，客户端 Game.Sync.OnEntityEnter/OnEntityLeave 永远不触发。
 //
 // 2. 订阅 accessor.Accessor 的 notify subject（与 Accessor.NotifySubject 同源），
 // accessor.Accessor.broadcast 把变更（kind/id 编入信封、已剔除 ServerOnly）发到该 subject；
@@ -216,8 +215,8 @@ func (es *EntitySync) onViewChange(_ string, payload []byte) {
 		//
 		// 快照（vp.SnapshotBin）随事件一起下发：它是 Scene 侧进视野时经 RPC 拉取并序列化的
 		// 实体初始快照（map[kind]二进制，见 view_sync.go / accessor.SnapshotClientBinary）。
-		// 此前这里把它**丢掉**，等于白做一次 RPC + 序列化 + NATS 传输，客户端还得等常规
-		// 数据同步补齐属性；现在改为放进 body 的 `snapshot` 字段（值走 base64）。
+		// 放进 body 的 `snapshot` 字段（值走 base64）—— 丢掉它等于白做一次 RPC + 序列化
+		// + NATS 传输，客户端还得等常规数据同步补齐属性。
 		// 该字段是**新增的可选字段**：客户端当前只读 entity_id，未知字段会被忽略，
 		// 因此对端无需同步改动即可保持兼容。
 		es.pushViewEvent(vp.Watcher, vp.Event, vp.Object, vp.DeliveryMode, vp.SnapshotBin)
@@ -233,8 +232,8 @@ func (es *EntitySync) onViewChange(_ string, payload []byte) {
 //     外层 key 不是事件名时客户端会静默丢弃，因此这里不能改成 {event:..., data:...} 之类的形状。
 //
 // snapshot 为可选的实体初始快照（map[kind]二进制），随事件一起下发到 `snapshot` 字段
-// （[]byte 由 encoding/json 自动编成 base64 字符串）。它是**新增可选字段**，
-// 不改变既有字段语义，客户端不读也不受影响 —— 但不该再像以前那样把它丢掉白算一场。
+// （[]byte 由 encoding/json 自动编成 base64 字符串）。它是**可选字段**，
+// 不改变既有字段语义，客户端不读也不受影响。
 func (es *EntitySync) pushViewEvent(watcherID uint64, event string, objID uint64, mode proto.DeliveryMode, snapshot map[string][]byte) {
 	if es.pub == nil || watcherID == 0 || objID == 0 {
 		return

@@ -10,7 +10,7 @@ import (
 // 本文件提供「非法几何输入」的统一防护：AABB 含 NaN/±Inf、Min>Max、
 // 或格子跨度大到会溢出/爆炸时，拒绝登记并降频留痕。
 //
-// 背景（缺陷）：Grid / Grid3 的 addToCells 用 (x1-x0+1)*(...) 预分配容量，
+// Grid / Grid3 的 addToCells 用 (x1-x0+1)*(...) 预分配容量，
 // 而 cellRange 直接把 float 转 int —— 非法 AABB（NaN/Inf/单位错误/超大跨度）
 // 会让容量算式溢出为负（make panic）或循环次数变成天文数字（事实上的死循环）。
 // 畸形 mapdata 文件即可把这类坐标喂进来。

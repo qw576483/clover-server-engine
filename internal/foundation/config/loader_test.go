@@ -30,13 +30,8 @@ type fileCfg struct {
 
 // Load 必须「读入 viper + 解码 target」在同一把写锁内一次完成。
 //
-// 缺陷形态：旧实现在 ReadInConfig 之后释放写锁，再单独 Unmarshal —— 中间并发的热加载
-// （Watch 的 reloadOnce 或并发的 Load）会把 viper 换成另一份配置，解码结果成为
-// 「新文件 + 旧内存」的混合体。
-//
 // 本用例真的换配置：写入方不断在两个**完整**版本之间原子替换配置文件（临时文件 + Rename），
 // 读取方并发 Load，断言任一时刻解出的都是其中一个完整版本。
-// 只对同一份从不改写的文件反复 Load 是假并发——旧实现同样能过。
 func TestLoaderLoadDecodesConfig(t *testing.T) {
 	variantA := "listen: \":8001\"\ncount: 3\n"
 	variantB := "listen: \":9002\"\ncount: 7\n"

@@ -35,7 +35,7 @@ type CritStrategy func(chance, damage float64) (crit bool, final float64)
 
 // HitStrategy 命中判定策略：返回本次攻击是否命中目标。
 //
-// 未配置（nil）时引擎视为「必定命中」—— 与历史行为一致，不影响现有玩法。
+// 未配置（nil）时引擎视为「必定命中」，不影响现有玩法。
 // 业务用它实现命中率 / 闪避：返回 false 时本次**完全不结算**
 // （Result.Hit=false、Damage=0、不叠加方差、不 roll 暴击、HP 不变）。
 //

@@ -7,24 +7,13 @@ import (
 	iconn "github.com/qw576483/clover-server-engine/internal/transport/gateway/conn"
 )
 
-// TestCleanupFiresOnDisconnectWithSingleIndexedSession 复现缺陷（清理切片越界 panic ⇒ 断线回调永不触发）。
+// TestCleanupFiresOnDisconnectWithSingleIndexedSession 覆盖「idIndex 里只有这一条会话」时
+// 的断线清理路径（单人一个账号连接 = 最常见的断开场景）：
+// cleanup 要从 idIndex 的 []*Session 里摘掉本会话。
 //
-// 复现什么缺陷：会话断开时 cleanup 要从 idIndex 的 []*Session 里摘掉本会话。旧写法是
+// 本用例直接调 cleanup（真实断连路径 <s.bc.ClosedCh() → cleanup 的同一函数）。
 //
-//	sessions = append(sessions[:i], sessions[i+1:]...)
-//	sessions[len(sessions)-1] = nil // 清尾
-//
-// 一旦该索引里**只有这一条会话**（单人一个账号连接 = 最常见的断开场景），
-// append 之后切片长度已变成 0，紧接着的「清尾」就是对 sessions[-1] 赋值
-// ⇒ panic: index out of range [-1]。
-//
-// 修复前什么现象：cleanup 在 idIndex 摘除处 panic（真实链路里被 safe.GoSafe 兜住、
-// 只打栈不停进程），而派发断线事件的 fireHardDisconnect 在该处**之后**（session.go 尾部），
-// 于是 g.OnDisconnect 注册的回调永不触发 —— 现象就是「客户端断了，服务端 0 条业务断线日志」。
-// 本用例直接调 cleanup（真实断连路径 <s.bc.ClosedCh() → cleanup 的同一函数），
-// 修复前在这里 panic、用例红。
-//
-// 修复后什么断言：cleanup 不 panic，onDisconnect 回调收到 (connID, owner)，
+// 断言：cleanup 不 panic，onDisconnect 回调收到 (connID, owner)，
 // 且 idIndex 里的 key 被真正清空（不留僵尸索引去接 NATS 推送）。
 func TestCleanupFiresOnDisconnectWithSingleIndexedSession(t *testing.T) {
 	const connID, uid = "conn-1", "player-1"
@@ -51,11 +40,11 @@ func TestCleanupFiresOnDisconnectWithSingleIndexedSession(t *testing.T) {
 	key := idPrefixAccount + uid
 	is := g.idShardOf(key)
 	is.mu.Lock()
-	is.idIndex[key] = []*Session{s} // ★ 只有一条：删掉它索引就空了（触发 sessions[-1]）
+	is.idIndex[key] = []*Session{s} // ★ 只有一条：删掉它索引就空了
 	is.mu.Unlock()
 	g.currentConns.Add(1)
 
-	g.cleanup(connID) // 修复前：此处 panic: index out of range [-1]
+	g.cleanup(connID)
 
 	mu.Lock()
 	got := append([]string(nil), events...)
@@ -72,21 +61,13 @@ func TestCleanupFiresOnDisconnectWithSingleIndexedSession(t *testing.T) {
 	}
 }
 
-// TestCleanupFiresOnDisconnectWithSingleExtraIDIndex 复现同一缺陷的**第二段**（业务端到端实测栈）。
+// TestCleanupFiresOnDisconnectWithSingleExtraIDIndex 覆盖 cleanup 派发断线事件**之前**的
+// 额外索引清理路径 —— `removeExtraIDs` → `removeFromIDIndex`（摘掉 "p:playerID" 这类额外索引），
+// 该索引里只有一条时会走到「append 截断之后再清尾」这一步（见 session.go 的越界防护注释）。
 //
-// 复现什么缺陷：cleanup 派发断线事件**之前**还有一段索引清理 ——
-// `removeExtraIDs` → `removeFromIDIndex`（摘掉 "p:playerID" 这类额外索引），
-// 那里是同一段「append 截断之后再清尾」⇒ 该索引里只有一条时同样
+// 真实链路里角色 playerID 索引一定存在，由 GWConnect 的 GWControlBind 追加。
 //
-//	panic: index out of range [-1]
-//	gwcore.(*Gateway).removeFromIDIndex  session.go
-//	gwcore.(*Gateway).removeExtraIDs       session.go
-//	gwcore.(*Gateway).cleanup              session.go
-//
-// （这正是修完账号那一段后、业务端到端仍然「0 条断线日志 + panic」的原因：
-// 真实链路里角色 playerID 索引一定存在，由 GWConnect 的 GWControlBind 追加。）
-//
-// 修复后什么断言：cleanup 不 panic、断线回调被调到、"p:" 索引被清空。
+// 断言：cleanup 不 panic、断线回调被调到、"p:" 索引被清空。
 func TestCleanupFiresOnDisconnectWithSingleExtraIDIndex(t *testing.T) {
 	const connID, uid, playerID = "conn-2", "account-2", "player-2"
 
@@ -129,7 +110,7 @@ func TestCleanupFiresOnDisconnectWithSingleExtraIDIndex(t *testing.T) {
 	ss.mu.Unlock()
 	g.currentConns.Add(1)
 
-	g.cleanup(connID) // 修复前：此处 panic（removeFromIDIndex 的 sessions[-1]）
+	g.cleanup(connID)
 
 	mu.Lock()
 	got := append([]string(nil), events...)
@@ -146,9 +127,9 @@ func TestCleanupFiresOnDisconnectWithSingleExtraIDIndex(t *testing.T) {
 }
 
 // TestCleanupKeepsSiblingSessionsInIndex 对照组：同一 owner 多端在线（索引里 ≥2 条）时，
-// 断开其中一条**不得**影响另一条 —— 旧写法的「清尾」写到 sessions[len-1] 上，
+// 断开其中一条**不得**影响另一条 —— 「清尾」若写到 sessions[len-1] 上，
 // 长度算对时也会把最后一条**存活**会话误置为 nil（索引里出现 nil 会话）。
-// 修复后断言：只剩存活那条，且无 nil 空洞。
+// 断言：只剩存活那条，且无 nil 空洞。
 func TestCleanupKeepsSiblingSessionsInIndex(t *testing.T) {
 	const uid = "player-multi"
 	var mu sync.Mutex

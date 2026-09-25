@@ -64,8 +64,7 @@ func NewObject(id ObjectID) Value { return Value{typ: TypeObject, O: id, S: id.S
 func NewZeroValue(typ Type) Value { return Value{typ: typ} }
 
 // NewValueFromRaw 从类型 + 原始 JSON 构造 Value（紧凑反序列化入口）。
-// 解析失败时降级为该类型零值，并经结构化日志告警（原实现用 fmt.Printf，
-// 生产环境 stdout 不被采集 = 数据损坏无人知）。
+// 解析失败时降级为该类型零值，并经结构化日志告警。
 func NewValueFromRaw(typ Type, raw json.RawMessage) Value {
 	v := Value{typ: typ}
 	switch typ {
@@ -93,8 +92,7 @@ func NewValueFromRaw(typ Type, raw json.RawMessage) Value {
 		}
 		dec, derr := base64.StdEncoding.DecodeString(s)
 		if derr != nil {
-			// 同一 switch 的 int/float/string/bool 分支都 Warnf，唯独这里曾经静默，
-			// 数据损坏时与其它类型表现为两种截然不同的可观测性。
+			// 与同一 switch 的 int/float/string/bool 分支一致，都要 Warnf。
 			logger.Warnf("object: decode base64 bytes value failed: %v", derr)
 			break
 		}
@@ -251,10 +249,8 @@ func (v *Value) UnmarshalJSON(data []byte) error {
 	out := Value{typ: w.T}
 	switch w.T {
 	case TypeNil:
-		// 与 MarshalJSON 对称：零值 Value 编码为 {"t":0,"v":null}，
-		// 旧实现这里落进 default 报 "unsupported type 0"，往返必失败。
+		// 与 MarshalJSON 对称：零值 Value 编码为 {"t":0,"v":null}。
 	// 标量分支与 NewValueFromRaw 同口径：失败时降级为零值，但必须留日志。
-	// 旧实现用 `_ =` 静默吞掉，损坏的载荷会退化成「看起来合法的零值」且无任何痕迹。
 	case TypeInt:
 		if err := json.Unmarshal(w.V, &out.I); err != nil {
 			logger.Warnf("object: value_json unmarshal int failed (type=%d): %v", w.T, err)

@@ -15,11 +15,8 @@ var configFieldNames = []string{
 	"MasterCaller", "Pusher", "NodeAddr", "Kernel", "FrameCfg", "FrameSvc", "FrameSvcOpts",
 }
 
-// TestConfigIsPkgTypeAlias 钉住「Config 真身只有一份」这条不变量。
-//
-// 历史上 internal 侧复制过一份同名 struct，靠 pkgfacade 逐字段手工拷贝衔接：
-// 任一侧加字段而拷贝处漏改就**静默漂移**（不报错、值丢失）。改成别名后，
-// 本测试用来防止有人把别名再拆回 struct —— 那时本测试立刻失败。
+// TestConfigIsPkgTypeAlias 钉住「Config 真身只有一份」这条不变量：
+// 把别名再拆回 struct 时本测试立刻失败（那会引入字段静默漂移）。
 func TestConfigIsPkgTypeAlias(t *testing.T) {
 	local, pkg := reflect.TypeOf(Config{}), reflect.TypeOf(proom.Config{})
 	if local != pkg {
@@ -29,8 +26,7 @@ func TestConfigIsPkgTypeAlias(t *testing.T) {
 }
 
 // TestPkgConfigPublicContract 钉住 Config 的对外可用面：字段名与 FrameSvc 的类型。
-// FrameSvc 必须是门面接口 frame.Service（曾一度在 internal 侧写成具体 *iframe.Service，
-// 正是这份差异逼出了手工拷贝的 UnwrapService 分支）。
+// FrameSvc 必须是门面接口 frame.Service。
 func TestPkgConfigPublicContract(t *testing.T) {
 	pkg := reflect.TypeOf(proom.Config{})
 	if pkg.NumField() != len(configFieldNames) {

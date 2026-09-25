@@ -136,8 +136,8 @@ func RunGame(ctx context.Context, cfg *Config) (*Game, error) {
 		}
 	}
 
-	// 节点目录读取侧（S4b）：存活节点改由 etcd 维护（watch 本地缓存），
-	// crossnode 不再每 5s 轮询 master；未配 etcd 时保持原读路径（g.nodeDir 为 nil）。
+	// 节点目录读取侧（S4b）：存活节点由 etcd 维护（watch 本地缓存）；
+	// 未配 etcd 时 g.nodeDir 为 nil。
 	if g.etcdCli != nil && g.crossNodeBus != nil {
 		g.nodeDir = newNodeDirectory(g.etcdCli)
 		g.nodeDir.start(ctx)
@@ -313,8 +313,8 @@ func (g *Game) setupNATSBackends(nc *nats.Client, cfg *Config, store *data.Store
 			// 注意这句话有两种来源，别混为一谈：
 			//   ① 确实没配 etcd（正常降级）；
 			//   ② 配了 etcd 但句柄还没建——装配顺序错了（etcd 客户端必须早于 setupNATSBackends）。
-			// ②曾真实发生过且**完全静默**（服务发现照常工作，只有分片路由永不启用），
-			// 所以这里把「配了却为 nil」单独点名，下次再被写反能一眼定位。
+			// ②完全静默（服务发现照常工作，只有分片路由永不启用），
+			// 所以这里把「配了却为 nil」单独点名。
 			if len(cfg.Etcd.Endpoints) > 0 {
 				logger.Errorf("app: master_shard.total=%d and etcd.endpoints is configured, but the etcd client is nil here — "+
 					"assembly order bug: the etcd client must be created BEFORE setupNATSBackends (see RunGame). "+
@@ -364,7 +364,7 @@ func (g *Game) setupNATSBackends(nc *nats.Client, cfg *Config, store *data.Store
 	//
 	// 本地回退 TTL 取 master 侧 `master_session_token.ttl` 的实际值：本地 TTL 是
 	// master 不可达时唯一的有效性判据，与远端不一致会「接受 master 已过期的 token」
-	// 或「拒绝 master 仍有效的 token」。不再各写死一个 24h 靠巧合对齐。
+	// 或「拒绝 master 仍有效的 token」。
 	g.sessionStore = sessiontoken.NewStoreWithTTL(g.MasterClient(), cfg.MasterSessionToken.Normalize().TTL)
 	g.fullSyncer = NewFullSyncer(FullSyncOptions{
 		EntityAcc:     g.entityAcc,
@@ -489,8 +489,7 @@ func runGateway(cfg *Config) (*gwcore.Gateway, error) {
 	}
 
 	// 逻辑服上游地址：优先静态 event.listen_addr；未配置且启用 etcd 时从 etcd 解析。
-	// 走统一解析器：列出 `clover/services/logic/` 下全部实例后轮询选一个
-	//（旧实现是「单 key 取一次」，多实例会互相覆盖，等于只能发现一个逻辑服）。
+	// 走统一解析器：列出 `clover/services/logic/` 下全部实例后轮询选一个。
 	upstream := cfg.Logic.ListenAddr
 	if upstream == "" && len(cfg.Etcd.Endpoints) > 0 {
 		ec, err := etcd.NewClient(cfg.Etcd)

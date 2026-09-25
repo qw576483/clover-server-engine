@@ -88,7 +88,7 @@ func internalProtoDir() string {
 
 // TestInternalEngineMsgIDs 覆盖「只在服务端存在的引擎内部号」。
 //
-// 背景（缺陷）：TestClientMsgIDsMatchServer 只扫描 pkg 包；internal/shared/proto 的
+// TestClientMsgIDsMatchServer 只扫描 pkg 包；internal/shared/proto 的
 // EMasterRoom*（6001–6004，game↔master，客户端 EMsg.cs 本就没有对应常量）成为测试盲区——
 // 号位漂移、与对外号段碰撞都不会有测试拦截。这里把 internal 侧号位纳入同一套不变量：
 // 落引擎段、不与 pkg 号位碰撞、且与文档约定的 6001–6004 一致。客户端不需要这些号。

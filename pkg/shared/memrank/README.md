@@ -466,5 +466,5 @@ top3 := rank.Top("daily_damage", 3)
 ## 依赖关系
 
 - **依赖 Go 标准库**：`encoding/json`（`RawMessage`）、`log`（非法门槛配置告警）、`math`（`IsNaN` / `IsInf`）、`sort`（`Names` 排序）、`sync`（读写锁）。
-- 零第三方依赖；依赖引擎内 `pkg/domain/master`（`RankMember` / `Threshold` / `Thresholds` 类型真身所在），**不再是零引擎依赖的叶子包**。
+- 零第三方依赖；依赖引擎内 `pkg/domain/master`（`RankMember` / `Threshold` / `Thresholds` 类型真身所在）。
 - **扩展点**：实现 `SortedSet` 接口即可接入 Redis ZSET 等外部后端，`Manager.Register` 注入。

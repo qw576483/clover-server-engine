@@ -17,8 +17,7 @@
 // migrator := migration.NewMigrator(db, "")
 // migrator.Up(ctx)
 //
-// ⚠️ 只支持「向前迁移」：`Migrator.Down`（回滚到指定版本）已按死代码删除 ——
-// 全仓零调用点，且 Migration.Down 从未被任何注册点赋值。需要回滚时人工执行反向 SQL。
+// ⚠️ 只支持「向前迁移」：需要回滚时人工执行反向 SQL。
 package migration
 
 import (
@@ -40,8 +39,7 @@ type Migration struct {
 	Up      string // 向前迁移 SQL（可多条，分号分隔）
 	// Down 回滚 SQL（注册结构保留字段）。
 	//
-	// ⚠️ 接线状态：**无读取点** —— 唯一读它的 `Migrator.Down` 已按死代码删除
-	//（零调用点，见本文件包说明）。保留该字段只为不破坏既有注册写法与文档示例
+	// ⚠️ 接线状态：**无读取点**。保留该字段只为不破坏既有注册写法与文档示例
 	//（配了不报错、也不参与 SQL 注入面），但**引擎当前不执行任何回滚**。
 	Down string
 }
@@ -130,9 +128,9 @@ func (m *Migrator) AppliedVersions(ctx context.Context) (map[int]bool, error) {
 // splitSQL 按分号拆分为多条语句，忽略纯空白和末尾分号。
 //
 // 完整跟踪引号（单引号 / 双引号 / 反引号，含 ” / "" 与反斜杠转义）与注释
-// （-- 行注释 / # 行注释 / /* */ 块注释）：只盯单引号的旧实现会把双引号、反引号
+// （-- 行注释 / # 行注释 / /* */ 块注释）：只盯单引号会把双引号、反引号
 // 与注释里的分号当作语句边界，含这些字符的迁移 SQL 会被错误拆分执行；
-// 转义判断也不再看「前一字符」（`\\'` 的真转义场景会被误判）。
+// 转义判断不依赖「前一字符」（`\\'` 的真转义场景会被误判）。
 func splitSQL(s string) []string {
 	var out []string
 	var buf strings.Builder
@@ -271,7 +269,4 @@ func (m *Migrator) Up(ctx context.Context) error {
 	return nil
 }
 
-// ⚠️ 已删除：`Migrator.Down(ctx, toVersion)`（回滚到指定版本）。
-// 全仓零调用点（唯一入口 runSQLMigrations 只调 Up），且没有任何注册点给 Migration.Down 赋过值 ——
-// 它是一段「永远走空循环」的死代码。保留它会让读者以为引擎具备回滚能力。
 // 需要回滚时人工执行反向 SQL，并手工删 _schema_versions 里对应 version 行。

@@ -238,7 +238,7 @@ func (a *WalkAction) Tick(bb *btree.Blackboard) pkgbtree.Status {
 	} else if len(a.path) == 0 || a.pathIdx >= len(a.path) {
 		res := FindPath(a.nav, pos, a.target)
 		if len(res.Points) == 0 {
-			// 寻路失败（不可达 / 超出展开上限）必须有留痕：本包此前全程无日志，
+			// 寻路失败（不可达 / 超出展开上限）必须有留痕：本包若无日志，
 			// "怪站着不动"这种问题在线上不可观测。
 			pathFailf("pathfinding: 目标不可达 nav=%T start=%v target=%v iter=%d", a.nav, pos, a.target, res.Iterations)
 			return pkgbtree.StatusFailure

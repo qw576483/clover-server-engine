@@ -231,7 +231,7 @@ type Config struct {
 // DefaultConfig 返回开发基线配置。
 func DefaultConfig() *Config {
 	// data 默认走 TierRedisMySQL（Redis 缓存 + MySQL 持久化），开发期自动建表。
-	// MySQL 的 host / port / user / db_name / parse_time 不再在这里重复硬编码——
+	// MySQL 的 host / port / user / db_name / parse_time 此处不重复硬编码：
 	// data.DefaultConfig() 内部已经用 mysql.DefaultConfig() 给出同一套开发基线值，
 	// 两处各写一遍只会在改默认值时漂移。
 	d := data.DefaultConfig()

@@ -4,7 +4,7 @@
 
 ## 为什么存在
 
-引擎里原本有 4 处各自实现的 A\*，每处都抄了一遍「open/closed 表 + gScore + 回溯 + 二叉堆」：
+四类调用方共用同一份搜索骨架与优先队列，各自只提供两件事：**出边**与**启发值**：
 
 | 位置 | 用途 |
 |------|------|
@@ -12,9 +12,6 @@
 | `pkg/domain/mmo/collide/waypoint.go` | 路点图寻路（`WaypointGraph`） |
 | `pkg/domain/mmo/collide/nav3.go` | 分层三维寻路（`NavGrid3`） |
 | `internal/domain/mmo/spatial/pathfinding/nav.go` | 行为树寻路（`WalkTo` / `RunTo`） |
-
-四份堆、四条搜索循环、四处回溯上限防御 —— 现在搜索骨架与优先队列只有这一份。
-各调用方只提供两件事：**出边**与**启发值**。
 
 ## API
 
@@ -48,6 +45,6 @@ res := graph.SearchAStar[int](myGraph{}, 0, 42, 0) // maxExpand<=0 表示不限
 ## 设计要点
 
 - **节点类型是类型参数** `N comparable`：网格用线性下标 `int`、分层导航用 `nav3Key`、行为树寻路用 `Point{X,Z int32}`，都是 map 键，无需装箱。
-- **降低 key 而非重复入队**：已有条目能用更小的 g 到达时走 `heap.Fix`（`item.index` 由堆维护）。这比旧的「重复 push + closed 跳陈旧条目」少一次出队。
-- **回溯不再需要防御性上限**：`parent` 只在创建条目时赋值，链上每个节点必然可达起点，不可能断链或成环；旧实现用 `len(came)+1` 兜「前驱表损坏」，那一类风险在新结构下不存在。
+- **降低 key 而非重复入队**：已有条目能用更小的 g 到达时走 `heap.Fix`（`item.index` 由堆维护），省掉一次出队。
+- **回溯不需要防御性上限**：`parent` 只在创建条目时赋值，链上每个节点必然可达起点，不可能断链或成环。
 - **`Heuristic` 的 goal 参数是提示**：实现可以忽略它（把目标记在自己的结构体里），只要是同一次搜索的同一目标即可。

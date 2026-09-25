@@ -196,8 +196,6 @@ func (s *Server) release() {
 // readLoop 按 [4B 大端长度][body] 拆帧读取可靠流。
 //
 // QUIC 流是**字节流**：单次 Read 可能只返回半个帧，也可能一次返回多个帧拼接。
-// 原实现把每次 Read 的返回当成「一条完整消息」，帧一被拆/粘就会把半个帧或
-// 两条消息的拼接体交给 handleClient，DecodeClientFrame 要么解码失败、要么读到错误 msgID。
 // 因此这里必须用长度前缀显式切帧（与 quic / ws / tcp 一致），并校验上限防止
 // 对端用一个超大长度前缀把本端内存拖爆。
 func (s *Server) readLoop(c *Conn) {

@@ -141,7 +141,7 @@ type Config struct {
 	// （症状：连上→秒断→所有 Call 超时）。开启 TLS 又是为了浏览器的 wss 与 WebTransport
 	// （WT 的证书哈希必须经已受信任的通道下发）。本开关让两者不再互斥：
 	// TCP 保持明文给原生客户端，WS / QUIC / WebTransport 照常加密。
-	// 零值（false）= 沿用 TLSConfig，行为与加此字段前完全一致。
+	// 零值（false）= 沿用 TLSConfig。
 	TCPTLSDisabled bool
 	// WTCertHash 服务器证书 DER 的 SHA-256（hex）。非空时网关在 WS 端口额外暴露
 	// GET /wt-cert-hash，供浏览器以 serverCertificateHashes 建立 WebTransport。

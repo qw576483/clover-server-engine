@@ -5,11 +5,8 @@ import (
 	"testing"
 )
 
-// 节点换类型重注册时，旧类型的索引必须一并摘掉。
-//
-// 缺陷形态：RegisterNode 只清 byTag，byType 只做 add；而 NodesByType / NodeIDsByType
-// 只校验「节点还在」、不校验类型一致 —— 于是旧类型下会长期挂着一个幽灵节点，
-// 按类型选节点做转发时就会投到一台不干这活儿的机器上。
+// 节点换类型重注册时，旧类型的索引必须一并摘掉：NodeIDsByType / NodesByType
+// 只校验「节点还在」、不校验类型一致。
 func TestRegisterNodeTypeChangeClearsOldTypeIndex(t *testing.T) {
 	st := NewState()
 	ctx := context.Background()

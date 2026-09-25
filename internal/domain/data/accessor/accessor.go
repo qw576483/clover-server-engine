@@ -57,7 +57,7 @@ type Accessor struct {
 }
 
 // maxSnapCacheEntries snapCache / snapGen 的条目上限。
-// 只读快照过的实体此前缓存永不淘汰，随访问过的实体数无上限增长（长跑进程内存只增不减）；
+// 只读快照过的实体若缓存永不淘汰，会随访问过的实体数无上限增长（长跑进程内存只增不减）；
 // 超限时按随机序淘汰单条并推进 snapEpoch（见 trimSnapCacheLocked）。
 const maxSnapCacheEntries = 8192
 

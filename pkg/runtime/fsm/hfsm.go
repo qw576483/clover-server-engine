@@ -277,7 +277,7 @@ func (h *HFSM) IsAncestor(ancestor, s State) bool {
 			return true
 		}
 		if seen[cur] {
-			// 历史遗留的层级环（AddState 现已拒绝新环）：按「不是祖先」处理，避免永不终止。
+			// 已存在的层级环：按「不是祖先」处理，避免永不终止。
 			return false
 		}
 		seen[cur] = true

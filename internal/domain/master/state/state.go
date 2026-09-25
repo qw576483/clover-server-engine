@@ -480,11 +480,7 @@ func (s *State) Len(_ context.Context, board string) (int, error) {
 
 const rankBackupPrefix = "clover:rank:backup:"
 
-// rankBackupAllKey 全量备份 key。
-//
-// 注意与单榜 key 的区别：此前单榜 key = prefix+board、全量 = prefix+"all"，
-// 名恰为 "all" 的榜与全量快照共用同一 Redis key —— Backup("all") 与 BackupAll()、
-// Clear("all", true) 与全量快照互相覆盖/互相删除。单榜 key 改为带 "board:" 段后不再冲突。
+// rankBackupAllKey 全量备份 key；单榜 key（rankBackupKey）带 "board:" 段，两者不重合。
 const rankBackupAllKey = rankBackupPrefix + "all"
 
 func rankBackupKey(board string) string {
@@ -525,7 +521,7 @@ func (s *State) RDB() *redis.Client { return s.rdb() }
 
 // SetRankThresholds 设置段位门槛。
 // 先校验再写入：memrank 内部对非法门槛只以标准库日志告警并拒绝写入，
-// 接口层此前无条件返回 nil（回 OK:true）——配置静默不生效、调用方无从感知。
+// 接口层无条件返回 nil（回 OK:true）时配置静默不生效、调用方无从感知。
 func (s *State) SetRankThresholds(_ context.Context, board string, ts master.Thresholds) error {
 	if err := ts.Validate(); err != nil {
 		logger.Warnf("rank: set thresholds for board %q rejected: %v", board, err)
@@ -786,7 +782,7 @@ func (s *State) RefreshSessionToken(ctx context.Context, playerID, token string)
 }
 
 // CurrentSessionToken 返回当前 token。
-// 后端故障与「无 token」此前不可区分（都返回空串，全量同步会下发空 session_token）；
+// 后端故障与「无 token」若不可区分（都返回空串，全量同步会下发空 session_token）；
 // 当前签名不变，故后端故障时至少留日志。
 func (s *State) CurrentSessionToken(ctx context.Context, playerID string) string {
 	s.mu.RLock()

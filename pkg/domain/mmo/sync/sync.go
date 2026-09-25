@@ -58,7 +58,7 @@ func LerpState(a, b State, t float32) State {
 		VelX: a.VelX + (b.VelX-a.VelX)*t,
 		VelY: a.VelY + (b.VelY-a.VelY)*t,
 		VelZ: a.VelZ + (b.VelZ-a.VelZ)*t,
-		// 加速度必须一并插值：旧实现漏掉这三个字段，插值/外推结果的加速度恒为 0。
+		// 加速度必须一并插值，否则插值/外推结果的加速度恒为 0。
 		AccelX:     a.AccelX + (b.AccelX-a.AccelX)*t,
 		AccelY:     a.AccelY + (b.AccelY-a.AccelY)*t,
 		AccelZ:     a.AccelZ + (b.AccelZ-a.AccelZ)*t,

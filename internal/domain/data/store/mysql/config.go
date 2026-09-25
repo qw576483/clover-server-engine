@@ -36,7 +36,7 @@ type MySQLConfig struct {
 
 // 默认值表：DefaultConfig（开发基线）与 normalize（补零值）都从这里取。
 //
-// 此前两处各写一份（3306 / utf8mb4 / Local / 20 / 10 / 1h / 30m / 5s / 3s / 3s 共十项），
+// 两处各写一份（3306 / utf8mb4 / Local / 20 / 10 / 1h / 30m / 5s / 3s / 3s 共十项）时，
 // 改一处漏一处就会让「显式走 DefaultConfig」与「走 normalize 的 yaml 配置」行为不一致。
 const (
 	defaultPort            = 3306
@@ -99,8 +99,8 @@ func (conf MySQLConfig) rootDSN() (string, error) { return conf.dsn("") }
 
 // dsn 是 DSN / rootDSN 的共体：dbName 为空表示「不选库」。
 //
-// 两个公开方法此前各抄了一份校验与参数拼装，唯一差别是路径段的 "/<db>" 与 "/"；
-// 合并后只剩一处需要维护（如新增连接参数时不会漏改其中一个）。
+// 校验与参数拼装只此一份，DSN / rootDSN 的差别只有路径段的 "/<db>" 与 "/"；
+// 新增连接参数时不会漏改其中一个。
 func (conf MySQLConfig) dsn(dbName string) (string, error) {
 	if strings.TrimSpace(conf.Host) == "" {
 		return "", fmt.Errorf("mysql DSN: host is required")

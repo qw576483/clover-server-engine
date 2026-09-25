@@ -118,7 +118,7 @@ func (c *CooldownManager) Tick(dt float64) {
 }
 
 // Set 技能集。buffDefs / calc 会被 Register / 惰性赋值与 Cast 并发访问，由 mu 统一保护
-// （此前无同步保护：RegisterBuffDef 写、Cast 读、Calculator 惰性赋值并发访问均为 data race）。
+// （无同步保护时 RegisterBuffDef 写、Cast 读、Calculator 惰性赋值并发访问均为 data race）。
 type Set struct {
 	mu       sync.RWMutex
 	cd       *CooldownManager

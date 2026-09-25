@@ -94,7 +94,7 @@ func (m *Module) SceneManager() *SceneManager { return m.sm }
 
 // Stop 停止 MMO 场景管理器并**反注册本模块注册的订阅**，释放资源。
 //
-// 之前只停场景管理器、不退订阅：视野同步（wireEntitySync 订阅了 viewSubject 与
+// 不退订阅的后果：视野同步（wireEntitySync 订阅了 viewSubject 与
 // notify subject）的回调在模块停止后仍会被 NATS 派发，属于「订阅生命周期比持有者长」
 // 的泄漏 —— 模块没了，回调还在改动已释放的状态。
 // 订阅方不支持反注册时（只实现了 Subscriber）降级为一条 Warn。

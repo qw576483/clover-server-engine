@@ -21,10 +21,6 @@ type Subscriber interface {
 // 语义要求（实现方须满足）：
 //   - 幂等：subject 未订阅 / 重复调用时返回 nil；
 //   - 只退该 subject 的订阅，不影响其它订阅。
-//
-// 注：此前 transport/nats.Client 只保存 []*nats.Subscription、不保存句柄与 subject 的
-// 对应关系，上层模块 Stop 时**根本无法**只退自己那几条（订阅生命周期只能止于客户端
-// Close）——本接口即为此补齐的出口。
 type Unsubscriber interface {
 	Unsubscribe(subject string) error
 }

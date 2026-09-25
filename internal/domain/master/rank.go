@@ -270,7 +270,7 @@ func (m *MasterRank) handleRankQuery(ctx context.Context, msgID uint32, data []b
 
 	var req proto.ERankQueryRequest
 	if err := json.Unmarshal(data, &req); err != nil {
-		// 校验失败属非预期分支：回包之外必须留日志（此前只把 err 塞进回包）。
+		// 校验失败属非预期分支：回包之外必须留日志。
 		logger.Warnf("master: rank query decode failed: %v", err)
 		reply := proto.ERankQueryReply{Err: err.Error()}
 		return json.Marshal(reply)

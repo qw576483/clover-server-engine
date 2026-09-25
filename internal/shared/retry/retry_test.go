@@ -19,7 +19,7 @@ func TestNextDelayJitterRespectsCap(t *testing.T) {
 		}
 	}
 
-	// 不设上限 + 抖动：结果必须为正（此前会溢出为负 → 修正为 0 → 忙等）。
+	// 不设上限 + 抖动：结果必须为正（溢出为负会修正为 0 → 忙等）。
 	// attempt 取足够大，让无抖动基值本身已越过 int64 上限。
 	unbounded := Policy{MaxAttempts: 5, BaseDelay: time.Second, Multiplier: 2, Jitter: 1}
 	for _, attempt := range []int{64, 200, 100000} {

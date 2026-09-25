@@ -104,8 +104,7 @@ func bbNowRaw(b pkgbtree.Blackboard) (time.Time, bool) {
 }
 
 // bbNow 读取黑板上的逻辑时刻，并对「缺失 / 类型不符」两种故障各自留一条降频 Warn
-// （历史上这条注入路径没有生产端、又完全静默，表现为「限流窗口永远基于真实时钟」，
-// 却看不出是"没人注入"还是"注入类型不对"）。
+// ——否则限流窗口会静默回落真实时钟，看不出是"没人注入"还是"注入类型不对"。
 // 两者都不在时返回 ok=false —— 由调用方回落墙钟。
 // 注意：正常路径（经 Tree.Tick 驱动）不会有这两种故障；只有**直接 tick 节点**才会走到回落分支。
 func bbNow(b pkgbtree.Blackboard) (time.Time, bool) {
@@ -364,7 +363,7 @@ func NewLimiter(limit int, window time.Duration, child pkgbtree.Node) *Limiter {
 // Tick 实现 Node。
 //
 // ⚠️ 状态在**节点上**（count / windowEnd）：一棵树被多个 Agent 共用时，
-// 限流窗口会跨 Agent 串扰。引擎侧已改为「每怪一棵树」（见 mob.MobManager.Spawn）；
+// 限流窗口会跨 Agent 串扰。引擎侧是「每怪一棵树」（见 mob.MobManager.Spawn）；
 // 业务自建树也必须一 Agent 一棵，或自行保证单 Agent 独占。
 //
 // 时间源：读黑板 KeyNow（逻辑时刻，支持 time.Time / 逻辑秒 float64）—— 由 Tree.Tick
@@ -401,7 +400,7 @@ func NewCooldown(d time.Duration, child pkgbtree.Node) *Cooldown {
 // Tick 实现 Node。
 //
 // ⚠️ 同 Limiter：冷却时刻是**节点上的可变状态**，多 Agent 共用一棵树会互相串扰
-// （A 的冷却会把 B 挡住）；引擎侧已改为每怪一棵树。
+// （A 的冷却会把 B 挡住）；引擎侧每怪一棵树。
 //
 // 时间源同 Limiter：黑板 KeyNow（逻辑时刻）优先，且该键现在由 Tree.Tick 每帧保证存在
 // ⇒ 全树的 Timeout / Limiter / Cooldown 共用同一个逻辑时刻（只有直接 tick 本节点才回落墙钟）。
@@ -435,10 +434,10 @@ func NewTimeout(d time.Duration, child pkgbtree.Node) *Timeout {
 // Tick 实现 Node。
 //
 // 累加口径：只在**本帧的 dt** 上做一次「浮点秒 → Duration」换算，再累加进 Duration 形态的
-// n.elapsed。此前是 `float64(n.elapsed)/1e9 + dt` 再 `time.Duration(sec*1e9)`：每 tick 都把
-// **已累加的 elapsed** 过一次 float64，舍入误差随 tick 数累积（实测 1/30s 步长下 200k tick
+// n.elapsed。若改成 `float64(n.elapsed)/1e9 + dt` 再 `time.Duration(sec*1e9)`，每 tick 都把
+// **已累加的 elapsed** 过一次 float64，舍入误差会随 tick 数累积（1/30s 步长下 200k tick
 // 偏短 14.6µs、1e6 tick 约 25µs）⇒ 超时/节流的时间口径长跑偏短。
-// 现在误差只来自本帧 dt 的这一次换算（常数级，不随已累加时长放大）。
+// 本口径的误差只来自本帧 dt 的这一次换算（常数级，不随已累加时长放大）。
 // 见 btree_logicalclock_test.go 的 TestTimeoutElapsedDoesNotAccumulateRounding。
 func (n *Timeout) Tick(b pkgbtree.Blackboard) pkgbtree.Status {
 	s := n.child.Tick(b)
@@ -524,7 +523,7 @@ func NewTree(root pkgbtree.Node) *Tree { return &Tree{root: root} }
 //     **首帧没有该键 ⇒ 归本树**，此后每帧用**自累加的 dt 逻辑钟**写入
 //     ⇒ Limiter / Cooldown / Timeout 在同一棵树里口径一致。
 //     ⛔ 两者都**不许**用 time.Now()：墙钟在服务器暂停 / 变速时仍前进，
-//     会让限流窗口与冷却与 dt 脱节（这正是历史上三套时间口径的成因）。
+//     会让限流窗口与冷却与 dt 脱节。
 //     只有「直接 tick 节点、不经本方法」时，节点才各自回落墙钟（并留一条降频 Warn）。
 //
 // ⚠️ 归属只判一次（首帧）：想用驱动方的时钟，**必须在首次 Tick 之前**写入 KeyNow，
@@ -532,7 +531,7 @@ func NewTree(root pkgbtree.Node) *Tree { return &Tree{root: root} }
 //
 // ⚠️ 本 Tree 的节点持有可变状态（Selector 续跑位置、Limiter 窗口、Cooldown 时刻、
 // Repeater 计数、Timeout 已耗时，以及上面自累加的 elapsed），因此**一棵树只服务一个 Agent**；
-// 多 Agent 共用会把状态串在一起（引擎侧已改为每怪一棵树）。
+// 多 Agent 共用会把状态串在一起。
 func (t *Tree) Tick(b pkgbtree.Blackboard, dt time.Duration) pkgbtree.Status {
 	b.Set(KeyDT, dt.Seconds())
 	if !t.decided {

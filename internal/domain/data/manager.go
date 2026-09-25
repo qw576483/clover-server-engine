@@ -34,7 +34,7 @@ func NewManager[V any](s *Store) *Manager[V] {
 
 // defaultBatchConcurrency 批量 IO（LoadMany / Flush）的默认并发上限。
 //
-// 为什么必须有上限：此前每个 key 直接 go 一个协程且不设限，上万 key 会同时压在
+// 必须设上限：每个 key 直接 go 一个协程且不设限时，上万 key 会同时压在
 // Redis / MySQL 连接池上 —— 连接池被占满后其余请求全部排队等超时，错误放大成风暴。
 // 批量 IO 是吞吐型任务：并发超过连接池容量不会更快，只会把压力推给下游。
 const defaultBatchConcurrency = 16

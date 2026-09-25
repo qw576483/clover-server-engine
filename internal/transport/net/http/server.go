@@ -128,9 +128,6 @@ const DefaultShutdownTimeout = 5 * time.Second
 // Shutdown 优雅关闭一个 *http.Server：先 Shutdown（停止接受新连接并等待在途请求
 // 处理完毕，避免 Close() 把正在响应的请求切断成半截 body / 连接重置），
 // 超时或失败再强制 Close 兜底，确保端口释放。label 仅用于日志前缀。
-//
-// 本函数把此前**写了两份**的关闭流程收敛为一处：本包的 Server 与 app 的 AdminServer
-// 各自实现过一遍，且各自硬编码了 5s。
 func Shutdown(srv *http.Server, timeout time.Duration, label string) error {
 	if srv == nil {
 		return nil

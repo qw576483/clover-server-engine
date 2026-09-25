@@ -14,7 +14,7 @@ import (
 //
 // 复现口径：用一个**永不被关闭**的 ch 起 StartFrom（模拟「Stop 时上游尚未关 channel」），
 // Stop 之后再投一条数据报 —— 读循环若已退出，handler 不会被再次调用；若仍挂在 range 上，
-// handler 会被调用（旧实现 `for dg := range ch` 即此状态，本用例在旧实现上必然转红）。
+// handler 会被调用。
 func TestReadLoopFromExitsOnStop(t *testing.T) {
 	var got atomic.Int64
 	srv := NewServer(ServerConfig{ListenAddr: "127.0.0.1:0"}, func(c *Conn, data []byte) {

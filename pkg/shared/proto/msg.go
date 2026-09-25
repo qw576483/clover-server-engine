@@ -10,8 +10,8 @@ package proto
 // 引擎唯一的登录入口：游戏服收到后调账号服 /auth/verify 换 owner（见 internal/app 的 iauth.Handler）。
 // 属引擎 C2S 区间（=2）。
 //
-// 号位 1 曾经是 EMsgSignup（注册）：注册已**完全移到账号服 HTTP**（POST {账号服}/auth/signup），
-// 游戏服不再接收注册报文，该号位**作废但保留**——号位是协议契约的一部分，
+// 号位 1 **作废但保留**：注册已**完全移到账号服 HTTP**（POST {账号服}/auth/signup），
+// 游戏服不再接收注册报文。号位是协议契约的一部分，
 // 回收复用会让旧客户端/旧配置发出语义完全不同的报文，且极难排查。
 const EMsgLogin uint32 = 2
 

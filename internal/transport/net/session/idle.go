@@ -7,9 +7,9 @@ const DefaultIdleTimeout = 60 * time.Second
 
 // IdleScanner 周期扫描连接表并回收空闲连接。
 //
-// 为什么抽成泛型：quic、udp、wt 三个传输服务器各写了一份**同构**的清理循环
+// 抽成泛型：quic、udp、wt 三个传输服务器若各写一份**同构**的清理循环
 // （ticker = timeout/2、done 信号退出、关闭标记早退、锁内收集、锁外关闭），
-// 差别只有连接类型与判活字段名（lastActiveTime vs lastReadTime）。
+// 差别只有连接类型与判活字段名（lastActiveTime vs lastReadTime）；
 // 循环节奏与退出语义只在这里定义一次，改一处即三处生效。
 //
 // 约定：

@@ -111,10 +111,6 @@ func (s *Server) StartFrom(ch <-chan *demux.Datagram) error {
 // readLoopFrom 消费共享端口分发来的裸 UDP 数据报，逻辑与 readLoop 一致。
 //
 // 退出条件两条：① 上游关闭 ch（demux.Close 会 close(rawCh)）；② 本服务 Stop 关闭 doneCh。
-// 原实现只有 `for dg := range ch`：ch 由调用方（demux）持有，**本服务 Stop 无从关闭它**，
-// 于是「StartFrom 之后 Stop」并不能收回自己的读循环，只能寄希望于调用方在同一停机路径里
-// 恰好关掉了上游 channel —— 这是隐含约定而非本包的不变量。补 doneCh 分支后，
-// Stop 与 Start / StartFrom 两种启动方式的读循环都能被独立收回（与 quic/wt 的 doneCh 语义一致）。
 // Stop 即停机，剩余数据报不再排空（与 readLoop 的 pc.Close 唤醒后直接 return 同语义）。
 func (s *Server) readLoopFrom(ch <-chan *demux.Datagram) {
 	for {
@@ -146,7 +142,6 @@ func (s *Server) readLoopFrom(ch <-chan *demux.Datagram) {
 func (s *Server) readLoop(pc net.PacketConn) {
 	buf := make([]byte, s.cfg.MaxPacketSize)
 	// 退避曲线统一由 retry.Backoff 提供（1ms → 1s，成功即重置）。
-	// 原先这里、demux 与 quic accept 各写一份同款 `*= 2` 逻辑。
 	bo := retry.NewBackoff(retry.Policy{
 		BaseDelay:  time.Millisecond,
 		MaxDelay:   time.Second,

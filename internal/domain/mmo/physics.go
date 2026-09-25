@@ -53,7 +53,7 @@ func (s *Scene) AddBody(objID uint64, b *Body) {
 	}
 	l.mu.Lock()
 	if max := s.sm.opts.maxBodies; max > 0 && len(l.bodies) >= max {
-		// 上限闸门（WithMaxBodies）：此前该选项写进 options 后无人读取，等于静默无效。
+		// 上限闸门（WithMaxBodies）：该选项写进 options 后必须有人读取，否则等于静默无效。
 		l.mu.Unlock()
 		logger.Warnf("mmo: scene %d instance %d 物理体数量已达上限 %d，拒绝为 obj=%d 挂载",
 			s.id, lid, max, objID)
@@ -71,7 +71,7 @@ func (s *Scene) AddBody(objID uint64, b *Body) {
 
 // RemoveBody 摘掉对象的物理体，是 AddBody 的严格逆操作。
 //
-// ★ 四张表的归属边界（此前因注释缺失导致两侧互相越界删除）：
+// ★ 四张表的归属边界：
 //   - l.bodies / cgrid / cgrid3 → **物理体生命周期**，由 AddBody / RemoveBody 成对维护；
 //   - l.kinds / l.grid（AOI）/ s.instanceOf → **成员生命周期**，由 Enter / Leave 成对维护。
 //
@@ -142,7 +142,7 @@ func (s *Scene) ApplyForce(objID uint64, f Vec3) {
 	// Mass<=0 必须一并跳过：physicsStep 对无质量体直接 continue、不再清零 Force，
 	// 只在这里放行的话 Force 会只增不减（数值无界），最终溢出成 Inf/NaN。
 	if b, ok := l.bodies[objID]; ok && !b.Static && b.Mass > 0 {
-		// 三分量全收：此前只取 X/Z（把高度分量吞掉），飞行/击飞永远施加不上。
+		// 三分量全收：只取 X/Z 会吞掉高度分量，飞行/击飞施加不上。
 		b.Force = b.Force.Add(f)
 	}
 	l.mu.Unlock()
@@ -191,7 +191,7 @@ func (s *Scene) tickInstance(l *Instance, dt time.Duration) {
 //
 // 三点并发约束：
 //  1. 移动列表用局部切片而非 Scene 级共享字段——多个 Instance 并发 tick 时共享切片会竞态；
-//  2. **宽相（cgrid / cgrid3）更新必须在仍持有 l.mu 时完成**（与旧注释相反，那是本缺陷的根源）：
+//  2. **宽相（cgrid / cgrid3）更新必须在仍持有 l.mu 时完成**：
 //     先解锁再 Insert 的话，并发的 Leave / RemoveBody 可能已经把该对象从宽相删掉，
 //     我们随后又把它插回去 → 留下「有 AABB 无 Body」的幽灵碰撞体。cgrid 自带锁、
 //     且 Insert/Remove 不回调任何业务代码，因此 l.mu → 网格锁 的锁序是安全的；

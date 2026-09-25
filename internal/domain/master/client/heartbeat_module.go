@@ -40,7 +40,7 @@ type HeartbeatConfig struct {
 func NewHeartbeatModule(mc *Client, cfg HeartbeatConfig) *HeartbeatModule {
 	if mc == nil || cfg.NodeID == "" || cfg.Interval <= 0 {
 		// 不能静默返回 nil：调用方只看到「没有心跳模块」，节点永远不上报心跳
-		// 而被 master 判 Dead——现象与配置错误无从关联（此前无任何日志）。
+		// 而被 master 判 Dead——现象与配置错误无从关联，必须留日志。
 		logger.Warnf("master/client: heartbeat module not started (mc_nil=%v node_id=%q interval=%s)",
 			mc == nil, cfg.NodeID, cfg.Interval)
 		return nil

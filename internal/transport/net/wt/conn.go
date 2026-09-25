@@ -13,8 +13,7 @@ import (
 
 // Conn WebTransport 连接，实现 session.Session。
 //
-// 关闭状态只有一份：BaseConn 的 closed / closeCh（经 MarkClosed 置位），
-// 不再另设一个 Conn.closed —— 两套标志必然被下一个人当成「可能不一致」来读。
+// 关闭状态只有一份：BaseConn 的 closed / closeCh（经 MarkClosed 置位）。
 type Conn struct {
 	session.BaseConn
 	session   *iwt.Session
@@ -136,8 +135,7 @@ func (c *Conn) Capabilities() session.ConnCapabilities {
 
 // Close 关闭连接（幂等）。
 //
-// 只保留 BaseConn 一套关闭标志：`MarkClosed()` 返回「本次是否首次关闭」，
-// 与原先自维护的 `closed` 语义完全等价 —— 两套标志并存只会让下一个人怀疑它们不一致。
+// 只保留 BaseConn 一套关闭标志：`MarkClosed()` 返回「本次是否首次关闭」。
 func (c *Conn) Close() error {
 	if !c.MarkClosed() {
 		return nil

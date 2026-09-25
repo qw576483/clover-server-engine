@@ -115,7 +115,6 @@ func Dial(cfg ClientConfig) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	// 源地址不再固定 127.0.0.1:0（会强制走回环、多网卡下选错出口）。
 	// 未配置 LocalAddr 时用 ":0" 让 OS 按路由表选择到目标地址的正确出口网卡。
 	localAddr := c.LocalAddr
 	if localAddr == "" {

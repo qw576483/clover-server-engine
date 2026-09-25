@@ -78,8 +78,8 @@ func (b *memorySessionBackend) Refresh(_ context.Context, playerID, token string
 	defer b.mu.Unlock()
 	entry, ok := b.m[playerID]
 	if !ok || b.expired(entry) || entry.Token != token {
-		// 不存在/已过期/token 不符：不续期。留日志（此前完全静默——
-		// 「用已被替换的旧 token 续期」属非预期分支，需要可观测）。
+		// 不存在/已过期/token 不符：不续期。留日志——完全静默会漏掉
+		// 「用已被替换的旧 token 续期」这个非预期分支。
 		logger.Warnf("master/state: session token refresh skipped for %s (exists=%v expired=%v match=%v)",
 			playerID, ok, ok && b.expired(entry), ok && entry.Token == token)
 		return nil
@@ -111,7 +111,7 @@ type redisSessionBackend struct {
 
 func (b *redisSessionBackend) Set(ctx context.Context, playerID, token string) error {
 	if b == nil || b.cli == nil {
-		// UseRedisSessionToken(nil, ...) / 配置错误时，此前首次调用即 nil 解引用 panic。
+		// UseRedisSessionToken(nil, ...) / 配置错误时，不判空会在首次调用即 nil 解引用 panic。
 		return errTokenBackendUnavailable
 	}
 	ttl := b.ttl

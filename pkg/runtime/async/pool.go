@@ -217,7 +217,6 @@ func (p *Pool) Start() error {
 	}
 	p.started = true
 	// 允许 Stop 之后重启：重建全部通道/ctx/在册表并复位 closed。
-	// 旧实现只判 started，Stop 后再 Start 是静默 no-op，重启后无人消费队列。
 	p.closed = false
 	p.poolCtx, p.poolCancel = context.WithCancel(context.Background())
 	p.tasks = make(chan *taskItem, p.queueSize)

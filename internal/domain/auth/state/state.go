@@ -59,7 +59,7 @@ type Config struct {
 }
 
 // dummyPasswordHash 用于「账号不存在」路径的时序对齐：账号存在时走 bcrypt
-// （几十~百毫秒），不存在时此前直接快速返回 —— 耗时可被用来枚举已注册账号。
+// （几十~百毫秒），不存在时若直接快速返回，耗时可被用来枚举已注册账号。
 // 启动时生成一次（失败返回空串，仅意味着该保护退化，记日志可见）。
 var dummyPasswordHash = func() string {
 	h, err := idataaccount.HashPassword("clover-placeholder-password")
@@ -197,7 +197,7 @@ func (s *Service) Login(ctx context.Context, req CredReq) (*TokenResp, *Error) {
 		return s.ChannelLogin(ctx, req.Channel, req.Ticket)
 	}
 	if req.Account == "" || req.Password == "" {
-		// 拒绝路径必须留日志（此前这条是静默 400，排查「客户端漏传字段」时无线索）。
+		// 拒绝路径必须留日志：静默 400 会让排查「客户端漏传字段」时无线索。
 		logger.Warnf("auth: login rejected (empty account or password)")
 		return nil, errf(KindBadParam, "account 与 password 不能为空")
 	}
@@ -252,8 +252,8 @@ func (s *Service) Verify(token string) *VerifyResp {
 	if err != nil {
 		return &VerifyResp{Valid: false, Err: err.Error()}
 	}
-	// 校验签发者：此前完全不比对 iss —— 多环境共用同一密钥时，
-	// 其它环境签发的 token 在本环境同样有效，无法区分签发来源。
+	// 校验签发者：多环境共用同一密钥时，不比对 iss 就无法区分签发来源，
+	// 其它环境签发的 token 在本环境同样有效。
 	if claims.Iss != s.issuer {
 		logger.Warnf("auth: verify rejected token: issuer mismatch (got %q want %q)", claims.Iss, s.issuer)
 		return &VerifyResp{Valid: false, Err: "token issuer mismatch"}
@@ -273,12 +273,12 @@ func (s *Service) ChannelLogin(ctx context.Context, channel, ticket string) (*To
 		return nil, errf(KindBadParam, "channel 过长（最多 32 字符）")
 	}
 	if ticket == "" {
-		// 拒绝路径必须留日志（此前静默 400，无法区分「渠道侧没给票据」与「票据错」）。
+		// 拒绝路径必须留日志：静默 400 无法区分「渠道侧没给票据」与「票据错」。
 		logger.Warnf("auth: channel login %q rejected: missing ticket", channel)
 		return nil, errf(KindBadParam, "缺少 ticket")
 	}
 	if len(ticket) > maxTicketLen {
-		// 票据此前无任何长度校验即透传 verifier：超长输入会直达渠道实现/日志，
+		// 票据不做长度校验即透传 verifier 时，超长输入会直达渠道实现/日志，
 		// 是内存与日志放大的入口。长度上限按「票据是短凭证」的常识取值。
 		logger.Warnf("auth: channel login rejected: ticket too long (%d > %d)", len(ticket), maxTicketLen)
 		return nil, errf(KindBadParam, "ticket 过长")
@@ -395,7 +395,7 @@ func (s *Service) ensureAccountExists(ctx context.Context, account string) error
 
 	pw, err := randomPlaceholderPassword()
 	if err != nil {
-		// 包装上下文：此前裸 error 在调用链上与 DB 错误无从区分。
+		// 包装上下文：裸 error 在调用链上与 DB 错误无从区分。
 		return fmt.Errorf("auth: generate placeholder password for %s: %w", account, err)
 	}
 	if err := s.account.Register(ctx, account, pw); err != nil {
@@ -427,7 +427,7 @@ func channelAccountName(channel, channelAccount string) string {
 	const (
 		maxLen = 64
 		// suffix 恒为 "_" + 16 位 hex（8 字节哈希）= 17 个字符。
-		// 此前用 4 字节哈希（8 位 hex，2^-32 碰撞）：不同渠道账号截断/碰撞到同一账号名时，
+		// 4 字节哈希（8 位 hex，2^-32 碰撞）下，不同渠道账号截断/碰撞到同一账号名时，
 		// 会话会被绑定到他人账号（渠道登录即他人身份）；8 字节把碰撞概率降到 2^-64。
 		suffixLen = 17
 		// 渠道标识部分的字节上限：还要给「末尾下划线 + 渠道账号至少 1 字符 + suffix」留位置。

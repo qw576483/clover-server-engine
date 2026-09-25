@@ -15,8 +15,7 @@ const maxRepresentablePow2 = 1 << 62
 
 // NextPow2 返回 >= n 的最小 2 的幂（n <= 1 时返回 1）。
 //
-// n > 2^62 时不存在可表示的更大 2 的幂：旧实现直接 1<<64/Len 返回负值，
-// 调用方按容量/掩码使用会直接错乱——此处钳到 2^62 并留日志。
+// n > 2^62 时不存在可表示的更大 2 的幂：此处钳到 2^62 并留日志。
 func NextPow2(n int) int {
 	if n <= 1 {
 		return 1
@@ -33,8 +32,8 @@ func NextPow2(n int) int {
 
 // Contains 报告切片 s 是否包含 v。
 //
-// 泛型版本，取代各处手写的 `for ... if x == v` 小循环（此前 []string / []ObjectID /
-// 其它元素类型各写一份同名函数，命名还各不相同：containsStr / containsID / ...）。
+// 泛型版本：各处手写 `for ... if x == v` 小循环时，[]string / []ObjectID /
+// 其它元素类型会各写一份同名函数，命名还各不相同（containsStr / containsID / ...）。
 func Contains[T comparable](s []T, v T) bool {
 	for _, x := range s {
 		if x == v {

@@ -68,11 +68,9 @@ type GameObject struct {
 
 	// syncCtx：自动同步广播（写即推送）的生命周期上下文。
 	//
-	// 为什么需要它：自动同步的回调是"对象活多久就挂多久"的（见 attachRecordNotifier），
-	// 回调里原先是裸 context.Background() —— 既无超时、也无取消，
-	// 持有者（会话 / 房间 / 停机流程）结束后广播照旧在跑。
-	// 现在：本 ctx 由持有者经 SetSyncContext 绑定，取消后广播被丢弃；
-	// 每次广播再叠加单次超时（见 broadcastCtx）。
+	// 自动同步的回调是"对象活多久就挂多久"的（见 attachRecordNotifier），故广播不能挂裸
+	// context.Background()（既无超时、也无取消，持有者结束后照旧在跑）：本 ctx 由持有者经
+	// SetSyncContext 绑定，取消后广播被丢弃；每次广播再叠加单次超时（见 broadcastCtx）。
 	syncCtx context.Context
 
 	// version：乐观并发版本（运行时装配，不持久化；持久化于 "ver" 键）。
@@ -262,7 +260,7 @@ func (g *GameObject) SetNotifier(pub data.Publisher, subject string, propMsg, re
 //
 // 用途：级联加载出的子对象（loadChildren）必须是「和父对象同一套同步能力」的，
 // 否则子对象写变动静默不同步 —— objstore.Repository 的 Create/Load 会给对象接同步，
-// 但 gobject 内部按 id 补建的子对象不经过仓库，就会漏掉这一步（本缺陷的原形）。
+// 但 gobject 内部按 id 补建的子对象不经过仓库，就会漏掉这一步。
 //
 // 语义：
 //   - 本对象没接发布器（sync == nil）时**不动**子对象：保持"仅落库不广播"的默认语义；

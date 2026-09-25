@@ -2,10 +2,8 @@ package nats
 
 import "testing"
 
-// TestResolveMaxReconnect 钉住 MaxReconnect 的三种语义必须**可区分**。
-//
-// 守的是本缺陷：原实现 `if conf.MaxReconnect == 0 { conf.MaxReconnect = -1 }`
-// 把「显式配 0 = 不重连」当成「未设置」，静默改写成无限重连 —— 调用方无法表达「不重连」。
+// TestResolveMaxReconnect 钉住 MaxReconnect 的三种语义必须**可区分**：
+// 显式配 0 = 不重连，不得被当成「未设置」而静默改写成无限重连。
 func TestResolveMaxReconnect(t *testing.T) {
 	cases := []struct {
 		name string

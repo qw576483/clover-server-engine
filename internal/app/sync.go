@@ -38,8 +38,7 @@ type FullSyncer struct {
 }
 
 // Publisher 通知发布接口（NATS 发布器的最小抽象）。
-// 真身在 internal/transport/pubsub，这里只做别名——此前本文件手写了一遍同签名接口，
-// 与 sync.go / mmo.go / remotexfer.go 的别名写法不一致（差一处 alias）。
+// 真身在 internal/transport/pubsub，这里只做别名。
 type Publisher = pubsub.Publisher
 
 // FullSyncOptions FullSyncer 的构造参数。
@@ -71,8 +70,8 @@ func NewFullSyncer(opts FullSyncOptions) *FullSyncer {
 // Push 执行一次全量同步推送。
 // 编排顺序：角色档案 → 账号信息 → 遍历监控表逐 Kind 快照 → 编码后经 NATS 下发。
 func (fs *FullSyncer) Push(playerID, account string) {
-	// notifyPub 必须在最早处一起判空：原先只在最后 publish 前判，
-	// 没有发布器时仍会把画像 + 监控表全部快照一遍再丢弃（白干活）。
+	// notifyPub 必须在最早处一起判空：否则没有发布器时会把画像 + 监控表
+	// 全部快照一遍再丢弃（白干活）。
 	if fs.entityAcc == nil || fs.notifyPub == nil || fs.notifySubject == "" {
 		return
 	}

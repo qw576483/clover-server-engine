@@ -12,7 +12,7 @@ import (
 
 // 榜名总数上限（0 表示不限）。
 //
-// 背景（缺陷）：GetOrCreate 对任意 key 自动建榜，唯一删除点是 Unregister；
+// GetOrCreate 对任意 key 自动建榜，唯一删除点是 Unregister；
 // 榜名由业务/客户端传入（master TCP MsgRankAdd → state.GetOrCreate），
 // 一旦含公会/赛季等动态维度即无界增长。
 var maxBoards atomic.Int64

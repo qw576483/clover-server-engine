@@ -455,7 +455,7 @@ type evictedKV[K comparable, V any] struct {
 
 // flushEvict 在**锁外**触发 onEvict。
 //
-// 背景（缺陷）：分片锁是不可重入的 sync.Mutex，而 onEvict 由业务提供，
+// 分片锁是不可重入的 sync.Mutex，而 onEvict 由业务提供，
 // 一旦回调里回写同一 Cache（Set/Get/Delete 命中同一分片）就会自死锁。
 // 因此所有摘除路径都只负责「锁内改数据结构 + 收集待回调条目」，
 // 真正的回调统一在解锁后由本函数执行（与同仓 fsm/timer/aoi/trace 的做法一致）。

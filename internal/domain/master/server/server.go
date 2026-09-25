@@ -576,7 +576,7 @@ func requireField(msgID uint32, field, value string) error {
 }
 
 // validateRankRange 校验排名区间：stop 允许负数（-1 = 取到末尾，见 memrank），
-// 但非负时不得小于 start —— 倒挂区间此前静默返回空集，调用方无从区分
+// 但非负时不得小于 start —— 否则倒挂区间静默返回空集，调用方无从区分
 // 「区间非法」与「榜是空的」。start 的下界由 memrank 自行钳制（1-based），此处不重复约束。
 func validateRankRange(msgID uint32, start, stop int) error {
 	if stop >= 0 && stop < start {

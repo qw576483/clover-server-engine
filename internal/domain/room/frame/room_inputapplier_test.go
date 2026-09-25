@@ -9,14 +9,9 @@ import (
 // ============================================================================
 // 输入应用器（InputApplier）的并发契约回归
 //
-// 守的历史缺陷：step() 曾在**持房写锁**的状态下调用业务注入的 InputApplier，
-// 于是
-//   - 回调内一旦回读/操作房间（Info / Join / Push…）就自死锁，并把该房 tickLoop
-//     与所有进房/离房一起卡死；
-//   - 回调耗时（读库 / 计算 / 慢日志）直接计入房锁持有时间。
-// 现改为三阶段：锁内推进帧号并出队输入 → **放锁**调回调 → 回锁按玩家逐个合并。
-//
-// 用例对旧实现都有检出能力（见各自注释）：旧实现下表现为**超时/死锁**而非静默通过。
+// 契约：三阶段 —— 锁内推进帧号并出队输入 → **放锁**调回调 → 回锁按玩家逐个合并。
+// 回调在锁外执行，回调内回读/操作房间（Info / Join / Push…）不会卡死 tickLoop
+// 与进房/离房；回调耗时（读库 / 计算 / 慢日志）不计入房锁持有时间。
 // ============================================================================
 
 // waitOrFatal 等一个信号，超时即失败 —— 死锁在测试里必须表现为"快速红"，
@@ -32,7 +27,7 @@ func waitOrFatal(t *testing.T, ch <-chan struct{}, what string) {
 
 // 回调内调用房间公共方法不许死锁。
 //
-// 旧实现：applier 持 r.mu 时调 svc.Info → Info 再取 r.mu.RLock → 永久阻塞。
+// 回调在锁外执行：applier 调 svc.Info → Info 再取 r.mu.RLock 不会永久阻塞。
 // 本用例会在 5s 后判失败而不是挂死整包。
 func TestInputApplierMayCallRoomMethodsWithoutDeadlock(t *testing.T) {
 	rec := &recorder{}
@@ -42,7 +37,7 @@ func TestInputApplierMayCallRoomMethodsWithoutDeadlock(t *testing.T) {
 	svc = NewService(
 		WithBroadcaster(rec.push),
 		WithInputApplier(func(roomID string, frame int64, inputs map[string]Input) map[string]*PlayerState {
-			// 回调内回读房间（旧实现自死锁点）。
+			// 回调内回读房间。
 			if _, err := svc.Info(roomID); err != nil {
 				t.Errorf("回调内 svc.Info 失败: %v", err)
 			}
@@ -80,7 +75,7 @@ func TestInputApplierMayCallRoomMethodsWithoutDeadlock(t *testing.T) {
 // 回调执行期间（房间处于**未加锁**窗口）别的方法必须能正常进出房间；
 // 且回调返回的状态只合并到"仍在房间里的玩家"。
 //
-// 旧实现：Join 会在回调持锁期间阻塞（此处表现为超时失败）。
+// Join 在回调执行期间不得阻塞（否则此处超时失败）。
 // 合并语义：期间新进房的玩家保留其加入时的状态，不被回调返回值覆盖（他本来就没参与本帧）。
 func TestInputApplierResultMergesWithConcurrentJoin(t *testing.T) {
 	rec := &recorder{}
@@ -139,7 +134,7 @@ func TestInputApplierResultMergesWithConcurrentJoin(t *testing.T) {
 	st, ok := r.players["p2"]
 	r.mu.RUnlock()
 	if !ok || st == nil {
-		t.Fatal("期间进房的 p2 被整体替换语义丢掉了（这正是旧实现的症状）")
+		t.Fatal("期间进房的 p2 被整体替换语义丢掉了")
 	}
 	if p1 := r.players["p1"]; p1 == nil || p1.HP != 200 {
 		t.Fatalf("p1 的状态应被回调结果覆盖为 HP=200，实际 %+v", p1)

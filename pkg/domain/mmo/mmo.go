@@ -109,7 +109,6 @@ type (
 	// Mover 运动 / 转向七态体（对应 CGameMotion）。
 	Mover = movpkg.Mover
 	// Zone 多边形触发区（对应 CSceneArea）：Boss 领域 / 减速区 / 持续伤害区。
-	// 注意与「无缝大世界的 zone（空间分片）」无关，后者已删除。
 	Zone = pkgcollide.Zone
 	// SceneBeat 场景多级扫描定时器（对应 SceneBeat）。
 	SceneBeat = im.SceneBeat

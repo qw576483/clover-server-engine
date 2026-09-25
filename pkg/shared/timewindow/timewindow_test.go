@@ -26,7 +26,7 @@ func sumBuckets(tw *TimeWindow) int64 {
 	return total
 }
 
-// TestAlignExpiresAtExactWindowBoundary 回归（旧实现用严格 > 清理）：
+// TestAlignExpiresAtExactWindowBoundary 回归：
 // 桶时间戳与当前时刻恰好相差一整个窗口时，旧计数必须清零，
 // 否则它在同一槽位与新增量叠加，Sum 逐窗虚高。
 func TestAlignExpiresAtExactWindowBoundary(t *testing.T) {
@@ -39,7 +39,7 @@ func TestAlignExpiresAtExactWindowBoundary(t *testing.T) {
 	// 恰好一整个窗口（6×10s）之后。
 	tw.align(base + testBucketCount*testBucketSize)
 	if got := sumBuckets(tw); got != 0 {
-		t.Fatalf("跨整窗口后旧计数未清零：sum=%d（旧实现会给 %d，Sum 逐窗虚高）", got, got)
+		t.Fatalf("跨整窗口后旧计数未清零：sum=%d", got)
 	}
 	if tw.timestamps[tw.head] != base+testBucketCount*testBucketSize {
 		t.Fatalf("head 槽位时间戳 = %d，应为 %d", tw.timestamps[tw.head], base+testBucketCount*testBucketSize)

@@ -181,8 +181,8 @@ func NewGame(cfg *Config, stores *GameStores) *Game {
 	g.Logic.InternalOnMsg(proto.EMsgLogin,
 		g.trackHandler(iauth.Handler(proto.EMsgLogin, g.auth)))
 	// 不挂注册 handler：注册是账号服的职责（POST {账号服}/auth/signup），
-	// 游戏服不该存在可落库的注册入口。原 EMsgSignup=1 号位已作废保留（不再有 handler，
-	// 且不在网关免登录白名单里——客户端发过去会先被登录门禁挡下）。
+	// 游戏服不该存在可落库的注册入口。EMsgSignup=1 号位保留但无 handler，
+	// 且不在网关免登录白名单里——客户端发过去会先被登录门禁挡下。
 	g.Logic.InternalOnMsg(proto.EMsgResumeSession,
 		g.trackHandler(iauth.ResumeSessionHandler(proto.EMsgResumeSession,
 			g.ValidateSessionToken, g.AccountOfPlayer, g.DeleteSessionToken, g.KickConn,
@@ -439,7 +439,7 @@ func (g *Game) SceneSubscriber() pubsub.Subscriber { return g.sceneSub }
 
 // AddLog 写入一条业务日志（必填字段 + option 选填），攒积后批量上报 log 服。
 // log 服实例由服务发现轮询选择（多实例分发）；发送失败计入 logbuf.Stats 并告警。
-// 缓冲器未装配时丢弃并**告警一次**（不再静默），以免业务日志无声消失。
+// 缓冲器未装配时丢弃并**告警一次**，以免业务日志无声消失。
 func (g *Game) AddLog(ownerType, ownerID, typ, info string, opts ...logbuf.Option) {
 	if g.logBuf == nil {
 		g.logBufWarnOnce.Do(func() {

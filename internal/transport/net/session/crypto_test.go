@@ -57,10 +57,10 @@ func TestEncryptDecryptRoundTrip(t *testing.T) {
 }
 
 // TestLimitsAlignWithFrameLimit 守住「加密上限 = 帧上限」这条口径：
-// 会话加密的密文上限必须与 MaxFrameSize（服务端帧上限唯一来源）同值，不再各写一个数；
+// 会话加密的密文上限必须与 MaxFrameSize（服务端帧上限唯一来源）同值；
 // 明文上限 = 密文上限 - nonce - tag（密文 = 明文 + nonce + tag，见 crypto.go 常量注释），
-// 且**帧上限内的明文必须真的能加密并解回** —— 旧值 1<<20 会让 >1MiB 的合法帧「发不出/
-// 被按篡改断连」，而这对两侧（Encrypt 护栏 / Decrypt 校验）是同一把尺子。
+// 且**帧上限内的明文必须真的能加密并解回** —— 这对两侧（Encrypt 护栏 / Decrypt 校验）
+// 是同一把尺子。
 func TestLimitsAlignWithFrameLimit(t *testing.T) {
 	if maxDecryptSize != MaxFrameSize {
 		t.Fatalf("maxDecryptSize=%d，期望与 MaxFrameSize=%d 同值（单一来源）", maxDecryptSize, MaxFrameSize)

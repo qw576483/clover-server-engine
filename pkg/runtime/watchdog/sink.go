@@ -45,7 +45,7 @@ func (f SinkFunc) Notify(a Alert) { f(a) }
 
 // noopSink 默认出口：什么都不做。
 //
-// 为什么默认出口是空实现而不是"把日志再打一遍"：告警的日志留痕由 Watcher.logAlert 统一保证
+// 默认出口是空实现而不是"把日志再打一遍"：告警的日志留痕由 Watcher.logAlert 统一保证
 // （即使 Sink 全坏，日志里也有），默认出口再写一次只会产生重复日志。
 // 它存在的意义是让 Options.Sink 永远不为 nil，业务替换它即可接上真实通道。
 type noopSink struct{}

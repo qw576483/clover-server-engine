@@ -84,8 +84,7 @@ func (s *MemSequencer) Reserve(t uint16, n uint64) (uint64, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if n == 0 {
-		// 空号段也统一「返回起始号」语义（起始 = 已发最大号 + 1）：
-		// 旧实现返回 s.Last（已发出的号），调用方按起始号使用会拿到已占用号。
+		// 空号段也统一「返回起始号」语义（起始 = 已发最大号 + 1）。
 		if s.lasts[t] == ^uint64(0) {
 			return 0, ErrSeqOverflow
 		}

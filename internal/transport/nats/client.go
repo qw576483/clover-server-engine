@@ -32,7 +32,7 @@ type Client struct {
 	conn atomic.Pointer[nats.Conn]
 	js   nats.JetStreamContext
 	mu   sync.Mutex
-	// subs 按**登记键**保存订阅句柄，使订阅可以被单独反注册（不再只能靠 Close 一刀切）。
+	// subs 按**登记键**保存订阅句柄，使订阅可以被单独反注册。
 	// 登记键与 subTopics 同一套：
 	//   - 普通订阅      → subject 本身
 	//   - 队列订阅      → "queue:<group>:<subject>"
@@ -66,7 +66,7 @@ func NewClient(conf NatsConfig) (*Client, error) {
 	if conf.Addr == "" {
 		conf.Addr = "nats://127.0.0.1:4222"
 	}
-	// 未设置（nil）才按默认无限重连；显式 0 是「不重连」，不再被改写成 -1。
+	// 未设置（nil）才按默认无限重连；显式 0 是「不重连」。
 	maxReconnect := resolveMaxReconnect(conf.MaxReconnect)
 	opts := []nats.Option{
 		nats.Name(conf.ClientName),
@@ -182,11 +182,6 @@ func (c *Client) track(key string, sub *nats.Subscription) {
 
 // Unsubscribe 取消某个 subject 的**普通订阅**（与 Subscribe 成对）。
 //
-// 需要它是因为订阅必须能对称反注册：此前 Client 只保存 []*nats.Subscription、
-// 不保存「句柄↔subject」的对应关系，上层（mmo/entitysync 等）模块 Stop 时
-// 无法只退自己那几条订阅，只能等到整个客户端 Close —— 长跑进程里「模块已停、
-// 回调仍在跑」就是这么来的。
-//
 // 语义：
 //   - 幂等：该 subject 未订阅（含重复调用 / Stop 被调两次）时返回 nil，不算错误；
 //   - 只移除**普通**订阅；队列订阅的登记键带 "queue:" 前缀，不会误伤。
@@ -249,8 +244,8 @@ func (c *Client) injectHeaders(m *nats.Msg) {
 
 // buildTLSConfig 根据 TLSConfig 构建 crypto/tls.Config。
 //
-// 构建逻辑在 internal/shared/tlsutil（与 etcd 共用一份）——此前两边各写一遍，
-// 校验细节与错误文案已经漂移。本函数只做「本包 TLSConfig 字段 → 三个路径」的适配。
+// 构建逻辑在 internal/shared/tlsutil（与 etcd 共用一份）。
+// 本函数只做「本包 TLSConfig 字段 → 三个路径」的适配。
 func buildTLSConfig(cfg *TLSConfig) (*tls.Config, error) {
 	return tlsutil.Build(cfg.CertFile, cfg.KeyFile, cfg.CAFile)
 }

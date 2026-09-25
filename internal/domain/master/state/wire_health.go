@@ -16,8 +16,7 @@ const DefaultHeartbeatInterval = 3 * time.Second
 // 位于 session 之后、config center（80..85）之前。
 const (
 	// MsgHeartbeat 节点 → master 周期性心跳上报。
-	// 注：原与 MsgSessionRefresh 同号冲突（74），后改用 75；78 曾用于 leader 查询，
-	// 随高可用（leader 选举）移除而释放，当前未复用。
+	// 注：74 归 MsgSessionRefresh；78 当前未复用。
 	MsgHeartbeat uint32 = 75
 	// MsgNodeHealth 运维 → master 查询全部节点健康视图。
 	MsgNodeHealth uint32 = 79

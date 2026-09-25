@@ -77,7 +77,7 @@ func (ps *PredictionStrategy) reconcile(serverState State) {
 	// 在服务端权威状态基础上重放未确认的输入
 	ps.predictedState = serverState
 	// ★ 时间基线必须与 inp.Time 同量纲（毫秒）。
-	// 此前用 int64(serverState.ServerTick)（tick **序号**）当基线，
+	// 用 int64(serverState.ServerTick)（tick **序号**）当基线时，
 	// 与毫秒时间戳相减得到的 dt 是一个天文数字，重放位移完全错误。
 	prevTime := serverState.Time
 	if prevTime <= 0 && len(ps.pendingInputs) > 0 {

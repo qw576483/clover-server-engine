@@ -201,8 +201,8 @@ func (b *EtcdBackend) BatchPut(ctx context.Context, kv map[string]string) error 
 // Watch 监听 prefix 下的键变更，把事件按发生顺序交给 cb；ctx 取消即停止。
 //
 // 重连骨架复用 etcd 客户端的**唯一**实现（WatchPrefixLoop：lastRev 续看 / 压缩重置 /
-// 指数退避 / 回调 panic 回收）。此前本后端自写了一套，退避策略（固定 1s vs 指数 2s→30s）
-// 与压缩判定方式（CompactRevision 字段 vs 错误文案匹配）已经与客户端那套漂移。
+// 指数退避 / 回调 panic 回收）。自写一套会让退避策略（固定 1s vs 指数 2s→30s）
+// 与压缩判定方式（CompactRevision 字段 vs 错误文案匹配）与客户端那套漂移。
 //
 // 本方法只负责两件事：事件类型映射（clientv3 事件类型 → 本包 Event）与 goroutine 归属
 // ——挂到 b.wg 上，使 Close 能等到 watch 真正退出（连接生命周期仍由 etcd.Client 管理）。

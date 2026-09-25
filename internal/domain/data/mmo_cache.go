@@ -43,8 +43,7 @@ func (s *Store) memSet(ctx context.Context, key Key, data []byte) {
 		sh.mu.Unlock()
 		return // 已有键已提到队首，容量未变，无需 evict
 	}
-	// initShards 已为所有分片预建 LRU 链表（sh.lru 恒非 nil），无需再分支；
-	// 原 else 分支（新建不入链表的裸 list.Element）不可达，已删除。
+	// initShards 已为所有分片预建 LRU 链表（sh.lru 恒非 nil），无需再分支。
 	el := sh.lru.PushFront(&memEntry{key: key, data: append([]byte(nil), data...)})
 	sh.mem[rk] = el
 	// 在锁内判定容量，仅超限时才触发淘汰，减小窗口。

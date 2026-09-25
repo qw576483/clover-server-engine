@@ -113,7 +113,7 @@ func New() *Calculator {
 }
 
 // SetFormula 替换默认公式（可插拔）；传 nil 回落到内置默认公式。
-// 此前不做 nil 校验也不回落：传入 nil 后 Compute/Apply 调用 c.formula 直接 panic，
+// 不做 nil 校验也不回落时：传入 nil 后 Compute/Apply 调用 c.formula 直接 panic，
 // 与 SetCritStrategy(nil) 回落默认实现的口径也不一致。
 // 注意：若自定义公式内部使用随机数，Compute/Apply 的一致性由业务自行保证。
 func (c *Calculator) SetFormula(f pkgcombat.Formula) {
@@ -190,8 +190,8 @@ func (c *Calculator) Apply(src, dst *object.AttrSet, base float64) pkgcombat.Res
 		formula = defaultFormula // 零值 Calculator{}
 	}
 	if crit == nil {
-		// crit 此前只在 New() 中赋值：零值 Calculator{} 直接调用会 panic
-		//（同处 variance/hit 都有判空，唯独 crit 没有）。零值回落默认暴击策略。
+		// crit 必须在 New() 中赋值：零值 Calculator{} 直接调用会 panic。
+		// 零值回落默认暴击策略。
 		crit = DefaultCrit
 	}
 	dmg := formula(src, dst, base)

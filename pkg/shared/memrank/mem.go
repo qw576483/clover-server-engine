@@ -12,7 +12,7 @@ import (
 
 // 单个榜单的成员数上限（0 表示不限）。
 //
-// 背景（缺陷）：scores/extras/order 对任意新 member 直接插入，只有 Remove/Clear 会删；
+// scores/extras/order 对任意新 member 直接插入，只有 Remove/Clear 会删；
 // 与 Manager.GetOrCreate 叠加后形成「榜 × 成员」双层无界增长，榜名或成员名一旦
 // 带公会/赛季等动态维度就会被外部输入撑爆。默认取 1e6：单榜 1e6 成员已是数十 MB 量级，
 // 超过这个规模应改用 Redis 后端而不是继续吃进程内存。
@@ -243,8 +243,7 @@ func (s *MemSortedSet) Len() int {
 func (s *MemSortedSet) Top(n int) []master.RankMember {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	// n<=0 表示「不要任何成员」→ 空集。旧实现把它改成整榜长度，
-	// Top(0)/Top(-1) 会返回全量成员，上层据此分页/截断时会被放大成全表返回。
+	// n<=0 表示「不要任何成员」→ 空集。
 	if n <= 0 {
 		return nil
 	}

@@ -6,12 +6,8 @@ import (
 	"testing"
 )
 
-// MaxConns 的额度必须把「正在 Upgrade 的连接」也算进去。
-//
-// 缺陷形态：检查 len(conns) 之后解锁，再 Upgrade + AcceptStream（网络往返，最坏秒级），
-// 最后才登记 —— 并发升级的连接会一起通过检查、一起登记，MaxConns 直接失效（TOCTOU）。
-//
-// 修复后：检查与占位在同一把锁内完成（reserve），登记时把预占额度转成活跃连接。
+// MaxConns 的额度必须把「正在 Upgrade 的连接」也算进去：
+// 检查与占位在同一把锁内完成（reserve），登记时把预占额度转成活跃连接。
 func TestServerReserveRespectsMaxConns(t *testing.T) {
 	s := NewServer(ServerConfig{MaxConns: 2}, nil)
 

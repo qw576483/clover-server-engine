@@ -2,11 +2,8 @@ package room
 
 import "testing"
 
-// Register 不允许覆盖已有 owner。
-//
-// 缺陷形态：原实现无条件 `r.rooms[roomID] = nodeAddr`。多节点并发创建同一房间时，
-// 后到的会把 owner 改写成自己，两个节点都认为自己持有该房间 —— 客户端随机落到其中一个，
-// 房间状态从此分裂（且没有任何一方会发现）。
+// Register 不允许覆盖已有 owner：多节点并发创建同一房间时，覆盖会让两个节点
+// 都认为自己持有该房间 —— 客户端随机落到其中一个，房间状态从此分裂。
 func TestRegisterDoesNotStealOwner(t *testing.T) {
 	r := NewMasterRegistry()
 

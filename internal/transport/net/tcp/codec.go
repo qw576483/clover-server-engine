@@ -18,16 +18,12 @@ const (
 	frameTypeData byte = 0
 	frameTypePing byte = 1
 	frameTypePong byte = 2
-	// （原 frameTypeMigrate = 3「连接迁移令牌帧」已删除：迁移能力入口
-	// session.MigrationManager 全仓零调用、gwcore 也从未传 Migration 配置，收到该帧只会
-	// Close()、客户端也从不发送 —— 整条链路不可达。类型 3 现落到 readLoop 的 default 分支
-	// 按「未知帧类型」降频留痕。）
 )
 
 // writeTypedFrame 写入带类型的帧（控制帧用，如 ping/pong 的空 payload）。
 func writeTypedFrame(w io.Writer, typ byte, payload []byte) error {
 	// 写侧与读侧对称护栏：超过 hardMaxMsgSize 的帧对端必然判「frame too large」并断连，
-	// 本地直接失败，避免「本地写成功、对端必拒」的静默黑洞（10MB 以上帧此前会被正常写出）。
+	// 本地直接失败，避免「本地写成功、对端必拒」的静默黑洞。
 	if len(payload) > hardMaxMsgSize {
 		return fmt.Errorf("tcp: payload %d exceeds hard max %d", len(payload), hardMaxMsgSize)
 	}

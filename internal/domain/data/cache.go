@@ -75,7 +75,7 @@ func (s *Store) persistDirty(ctx context.Context, k Key, readValue func() ([]byt
 		return fmt.Errorf("data: mysql not initialized, cannot persist dirty key %s", s.redisKey(k))
 	}
 	// 空数据（nil 或零长）统一落库为空 BLOB：列定义是 data LONGBLOB NOT NULL，
-	// 写 NULL 会报 1048；此前对 nil 重标脏并返回错误，会让空值脏键在每次 Flush 都失败重试。
+	// 写 NULL 会报 1048；对 nil 重标脏并返回错误会让空值脏键在每次 Flush 都失败重试。
 	if b == nil {
 		b = []byte{}
 	}
@@ -88,8 +88,8 @@ func (s *Store) persistDirty(ctx context.Context, k Key, readValue func() ([]byt
 
 // Flush 将当前所有脏数据批量落库到 MySQL。无 MySQL 后端时为空操作。
 func (s *Store) Flush(ctx context.Context) error {
-	// 门控只看本 Store 是否具备 MySQL 后端：此前叠加全局 pdata.TierHasPersistent()，
-	// 在「Schema 未注册持久 Tier 但实际存在脏数据」时直接空操作，脏数据永不落库。
+	// 门控只看本 Store 是否具备 MySQL 后端：叠加全局 pdata.TierHasPersistent() 时，
+	// 会在「Schema 未注册持久 Tier 但实际存在脏数据」时直接空操作，脏数据永不落库。
 	if s.mysql == nil {
 		return nil
 	}

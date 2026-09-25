@@ -1,14 +1,14 @@
 // Package graph 提供图搜索的通用内核。
 //
-// 全引擎**只有这一份 A\*** 实现。此前 AOI 网格寻路（`collide.NavGrid`）、路点图（`collide.WaypointGraph`）、
-// 分层网格（`collide.NavGrid3`）、行为树寻路（`internal/domain/mmo/spatial/pathfinding`）各自抄了一遍
-// 「open/closed 表 + gScore + 回溯 + 二叉堆」，四份堆、四条搜索循环、四处回溯上限防御。
-// 现在搜索骨架收敛到这里，各调用方只提供两件事：
+// 全引擎**只有这一份 A\*** 实现。AOI 网格寻路（`collide.NavGrid`）、路点图（`collide.WaypointGraph`）、
+// 分层网格（`collide.NavGrid3`）、行为树寻路（`internal/domain/mmo/spatial/pathfinding`）各自抄一遍会得到
+// 四份「open/closed 表 + gScore + 回溯 + 二叉堆」、四份堆、四条搜索循环、四处回溯上限防御。
+// 搜索骨架收敛到这里，各调用方只提供两件事：
 //
 //   - `Edges(n)`：n 的出边（邻居 + 边代价）
 //   - `Heuristic(n, goal)`：n 到目标的**估计**代价（admissible，不得高估，否则 A* 不再最优）
 //
-// 于是优先队列也只有一份泛型堆（取代了此前 2D / 3D 各一份）。
+// 于是优先队列也只有一份泛型堆。
 package graph
 
 import "container/heap"
@@ -106,7 +106,6 @@ func SearchAStar[N comparable](g Graph[N], start, goal N, maxExpand int) Result[
 
 // trace 从终点沿 parent 链回溯出正序路径。
 //
-// 与旧实现「用 len(came)+1 当回溯上限、前驱缺失就放弃」的防御相比，这里更简单也更安全：
 // parent 只在创建条目时赋值，链上每个节点都必然可达起点，不可能出现环或断链；
 // 长度先数一遍再一次性分配，避免 append 反复扩容。
 func trace[N comparable](goal *item[N]) []N {

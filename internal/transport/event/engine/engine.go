@@ -34,9 +34,7 @@ const (
 	PlayerSessionResumed  Type = "player.session_resumed"  // 玩家重连恢复会话
 )
 
-// 事件载荷坐标统一用 geom.Vec3（不再自定义同构类型）：
-// 仓库里已有 geom.Vec3 这一套三维原语，此处再声明一个字段完全相同的 Vec3 只会多出一种
-// 坐标类型，让「aoi.Position / geom.Vec3 / 载荷坐标」之间需要来回转换。
+// 事件载荷坐标统一用 geom.Vec3。
 //
 // 为什么载荷必须是三维：mover 判定位移变化时**含 Y**（起跳、落地这类纯垂直位移同样要 emit
 // object.move），订阅方若只拿到 (X,Z)，就无法还原高度——视野同步、客户端插值、跨节点转发

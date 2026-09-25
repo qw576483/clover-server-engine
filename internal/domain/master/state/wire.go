@@ -104,7 +104,7 @@ type PlayerRegisterReq struct {
 type PlayerRemoveReq struct {
 	UID string `json:"uid"`
 	// 可选：仅当 uid 映射与 nodeID 一致时才删除。
-	// tag 必须是 node_id（snake_case，与同文件其它字段一致）：此前写作 nodeID，
+	// tag 必须是 node_id（snake_case，与同文件其它字段一致）：写作 nodeID 时，
 	// 按协议文档构造报文（node_id）的外部端解不到该字段 → NodeID 为空 → 条件删除
 	// 退化为无条件删除（误删他人记录）。
 	NodeID string `json:"node_id,omitempty"`

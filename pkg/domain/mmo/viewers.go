@@ -3,10 +3,9 @@ package mmo
 import "github.com/qw576483/clover-server-engine/internal/domain/mmo"
 
 // 本文件提供「先算观看者、再推送」这套 AOI 推送纪律的**唯一入口**。
-// 为什么必须有（每个 AOI 项目都要写一遍，且写错是静默的）：
 //   - 引擎只在**实体进出视野**时产事件（WireEntitySync 负责下发 enter/leave）；
-//     移动 / 属性变化这类"高频、需要按视野路由"的消息，引擎此前只有
-//     Scene.Broadcast（全员）与 Scene.SendTo（单点）两个端点 —— 业务只能自己遍历。
+//     移动 / 属性变化这类"高频、需要按视野路由"的消息，引擎只有
+//     Scene.Broadcast（全员）与 Scene.SendTo（单点）两个端点，需按视野自行遍历。
 //   - 而遍历时必须**只推给真实玩家**：`Scene.Around` 返回的是视野内的**所有对象**，
 //     里面包含没有连接的 NPC / 怪物 / 假人。把它们的 id 当推送目标**不会报错**，
 //     却会被引擎照原样投递出去 —— 实测客户端因此**同一条事件收到 4 份**

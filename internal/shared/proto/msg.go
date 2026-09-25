@@ -20,7 +20,6 @@ package proto
 //   - Token：**登录唯一凭证**（账号服下发的 JWT）。
 //
 // 账号密码**不在此结构中**：它们只发给账号服 /auth/login，永不进入游戏长连接。
-// （原 account/password 字段已删除——服务端从不读取，留着只会诱导客户端把明文密码发进游戏服。）
 type ELoginRequest struct {
 	Token string `json:"token"` // 登录唯一凭证（账号服下发的 JWT）
 

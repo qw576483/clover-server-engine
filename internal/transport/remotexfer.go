@@ -57,10 +57,8 @@ var ErrSceneNodeUnknown = errors.New("cluster: scene node value not an integer")
 // Body 为可选的物理体快照：带上它，跨机迁移才与同机迁移（Scene.TransferTo 会整份
 // 拷贝 Body 并 AddBody）语义一致。
 //
-// 此前本载荷**不含 Body**，跨机只重建「成员」（AOI / instance 归属 / 三维落点），
-// 导致 Mass / Radius / Velocity / Force / Static 全部丢失 —— 现象是"跨图后手感变了、
-// 击退不再生效"。现补齐为**可选字段**（omitempty）：没挂物理体的对象不增加任何字节；
-// 旧版本节点读到该字段会被 JSON 解码忽略（不会报错），只是仍然不重建 Body。
+// **可选字段**（omitempty）：没挂物理体的对象不增加任何字节；
+// 不支持该字段的对端读到它会被 JSON 解码忽略（不会报错），只是仍然不重建 Body。
 type RemoteTransfer struct {
 	DstScene  uint64         `json:"dst_scene"`
 	ObjID     uint64         `json:"obj_id"`
@@ -174,9 +172,8 @@ func DecodeRemoteTransfer(b []byte) (RemoteTransfer, error) {
 // 仅当发布器不支持 JetStream 时才回退到普通 Publish（如测试替身）。
 // 同时校验 DstNode/DstScene/ObjID/Instance 合法性，避免无效路由。
 //
-// ctx：JetStream 发布（含重试/退避）的取消与超时依据。此前固定用
-// context.Background() —— 调用方已取消/超时后仍会继续重试发布，且没有任何时间上界。
-// 传 nil 时退化为 context.Background()（保持旧行为）。
+// ctx：JetStream 发布（含重试/退避）的取消与超时依据。
+// 传 nil 时退化为 context.Background()。
 func PublishRemoteTransfer(ctx context.Context, pub Publisher, dstNode uint64, rt RemoteTransfer) error {
 	if ctx == nil {
 		ctx = context.Background()

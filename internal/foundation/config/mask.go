@@ -377,11 +377,6 @@ func maskMap(v reflect.Value, sensitive bool, visited map[visitKey]bool) reflect
 	return out
 }
 
-// 说明：原本这里还有 Loader.SafeDump / SafeSettings / SafeString / SafeEtcdInfo 一组
-// 「吐出整份脱敏配置」的出口。它们全仓零调用点（启动日志走 app/config.go 自己的脱敏打印
-// 路径，/debug/config 端点从未实现），已按「死代码删净」删除；`Loader.v.AllSettings()` +
-// 本文件的 `Mask` / `MaskString*` 仍可随时重建该能力，不需要预留空壳。
-
 // maskList 逐元素脱敏切片/数组，out 由调用方按类型预建。
 func maskList(v reflect.Value, sensitive bool, visited map[visitKey]bool, out reflect.Value) reflect.Value {
 	for i := 0; i < v.Len(); i++ {

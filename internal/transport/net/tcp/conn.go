@@ -220,7 +220,6 @@ const sendTimeout = session.DefaultSendTimeout
 // Send 向对端发送业务数据（线程安全）。
 //
 // 两段式：先无阻塞试写（成功路径不申请定时器），队列满才走带超时的慢路径并显式 Stop。
-// 原实现无条件 `time.After`，每次发送都造一个 runtime timer。
 func (c *Conn) Send(data []byte) error {
 	if c.IsClosed() {
 		return session.ErrClosed

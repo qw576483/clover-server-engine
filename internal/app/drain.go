@@ -319,8 +319,6 @@ func (d *Drainer) run() {
 	logger.Infof("drain: grace expired, kicking %d conn(s) in batches", d.remaining())
 
 	hard := time.After(cur.HardTimeout)
-	// KickInterval 的计时器在循环外创建：原实现每轮迭代都 time.After 一个新 Timer，
-	// 被 cancel / hard 抢先返回时当轮 Timer 无人 Stop，要残留到 KickInterval 到期。
 	kick := time.NewTicker(cur.KickInterval)
 	defer kick.Stop()
 	for {
@@ -385,8 +383,8 @@ func (d *Drainer) finish(stop bool) {
 	logger.Infof("drain: finished (migrated=%d kicked=%d remaining=%d)", mig, kick, left)
 	if !stop {
 		// 非停机收尾（stop_after=false）：节点继续接客，必须恢复心跳与节点注册——
-		// 否则停在「Draining() 已放行新请求、但 master / 跨节点看不见本节点」的半死态
-		//（原实现只在 CancelDrain 里恢复）。与 Drain / CancelDrain 共用 flowMu 串行；
+		// 否则停在「Draining() 已放行新请求、但 master / 跨节点看不见本节点」的半死态。
+		// 与 Drain / CancelDrain 共用 flowMu 串行；
 		// 若解锁窗口内已开启新一轮 Drain，则交给新一轮的摘除逻辑管理，不恢复。
 		d.flowMu.Lock()
 		d.mu.Lock()

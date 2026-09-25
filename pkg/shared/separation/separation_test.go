@@ -5,9 +5,7 @@ import (
 	"testing"
 )
 
-// 本文件是「群体分离」的三类判据，全部提炼自来源工程
-// `clover-project-cr/server/game/core/separation_limit_test.go`（把该工程的专有夹具换成
-// 本包自己的定点整数夹具，判据一字不改）：
+// 本文件是「群体分离」的三类判据（夹具为本包自己的定点整数）：
 //
 //	A. 逐 tick 位移有界 —— 不许出现"一帧冲刺"（峰值速度 = 一帧的位移 / 一帧的时间）。
 //	B. 限速之后不许退化成"来回顶牛"（limit cycle）—— 这是 A 的必经配套：只做 A 会把
@@ -18,7 +16,7 @@ import (
 // 判据判的是**过程**（每 tick 的位移上界 / 方向反转次数），不是"最后看起来分开了"——
 // 后者一条"把实体直接瞬移开"的实现也能满足。
 
-// 夹具常量（本包自定；来源工程对应值是它自己单位制下的 500 半径 / 3 容差 / 1 质量）。
+// 夹具常量（本包自定：半径 500 / 容差 3 / 质量 1，均为本包定点单位下的取样值）。
 const (
 	fixRadius int64 = 500
 	fixTol    int64 = 3
@@ -39,9 +37,8 @@ func dist(a, b *Body) float64 {
 
 // TestResolveMovesAtMostOneStep 钉住"一个 tick 的分离位移 ≤ 该刚体自己的额度"。
 //
-// 这是源事故（"人物抖得厉害 / 抽搐"）的根因修法：旧实现把重叠量在一个 tick 内全部分完，
-// 实机实测单格位移是前后两格的 3.8 倍且方向相反，客户端 10Hz 快照 + 线性插值把它原样播成
-// 一帧冲刺。判据的出处：一个刚体"被推开的速率"不应超过它**自己走路**的速率。
+// 判据的出处：一个刚体"被推开的速率"不应超过它**自己走路**的速率 ——
+// 否则单格位移会被客户端 10Hz 快照 + 线性插值原样播成一帧冲刺。
 func TestResolveMovesAtMostOneStep(t *testing.T) {
 	a, b := newPair(9000, 1000) // 完全同点（多单位同牌 + 召唤半径为 0 时服务端确实会产生）
 	s := New(Config{TouchTolerance: fixTol})
@@ -105,8 +102,6 @@ func TestSmallOverlapResolvesInOneTick(t *testing.T) {
 //
 // 界是**推导**出来的，不是试出来的：一个 tick 内一个刚体能走的距离 = 自己走一步（≤ walk）
 // + 分离位移（≤ MaxStep，按整条向量模长收缩一次）⇒ 由三角不等式 ≤ walk + MaxStep。
-// 旧实现（逐对立即施加 + 每对推力各裁一次额度）实测单只一 tick 被推 5 次、峰值达名义步长的
-// 12 倍 ⇒ 这条会红。
 func TestCrowdDisplacementIsBounded(t *testing.T) {
 	const n = 6
 	bodies := make([]*Body, 0, n)
@@ -165,12 +160,8 @@ func TestCrowdDisplacementIsBounded(t *testing.T) {
 
 // TestSeparationDoesNotOscillate 是判据 B：上面的限速不能把"一帧冲刺"换成"永久来回顶牛"。
 //
-// 受控复现（源事故"抽搐"的第二个面）：六只半径 500 的刚体放在**间距仅 70** 的一条竖线上，
-// **不施加任何行走**、只跑解算。
-//
-//	· 旧写法（逐对立即施加 + 每对推力各裁一次额度）：单只在 y 上每 tick 来回 15，
-//	  跑满 300 tick 仍在振（反转 ≈ 290/300）；
-//	· 现写法（向量累加 + 取同伴平均）：越过起点松弛瞬态后反向 0 次，单调散开。
+// 受控复现：六只半径 500 的刚体放在**间距仅 70** 的一条竖线上，
+// **不施加任何行走**、只跑解算：越过起点松弛瞬态后反向 0 次，单调散开。
 //
 // 起始瞬态单独说明（⛔ 不是隐藏证据）：前若干 tick 是"最深重叠"的松弛起步，个别刚体会有一两次
 // 方向修正。只跳过**起点**、不跳过过程中的任何一帧（本测试把 0/8/16/32/64 各档的反转次数
@@ -240,7 +231,7 @@ func TestSeparationDoesNotOscillate(t *testing.T) {
 	}
 }
 
-// TestLayerIsolation 钉住分层语义：不同 Layer 的刚体互不分离（来源工程用它把空中层与地面层
+// TestLayerIsolation 钉住分层语义：不同 Layer 的刚体互不分离（调用方用它把空中层与地面层
 // 分开 —— 两层的实体在同一点上时不该互相推）。
 func TestLayerIsolation(t *testing.T) {
 	a, b := newPair(0, 0)
@@ -320,7 +311,7 @@ func TestResolveIsDeterministic(t *testing.T) {
 
 // TestSqueezedBodyMovesByMeanOfItsPairs 直接钉住"落地时取**同伴数平均**"这条语义。
 //
-// 为什么需要它（实测发现的判据缺口）：在 TestSeparationDoesNotOscillate 那个**带每 tick 额度**
+// 判据缺口：在 TestSeparationDoesNotOscillate 那个**带每 tick 额度**
 // 的动态夹具里，把"取平均"去掉换成"直接落地累加向量"，仍然会收敛 —— 额度把迭代增益封顶了
 // （额度 ≪ 重叠量时，修正量一律被裁到额度，增益不再由 n 决定）。⇒ 那条动态判据**判不到**
 // "取平均"这一层（负控会打空）。本测试用**不限额**（MaxStep = 0）的受控夹具把额度这一层排除，
@@ -355,7 +346,7 @@ func TestSqueezedBodyMovesByMeanOfItsPairs(t *testing.T) {
 
 // TestSqueezedCenterConvergesWithoutBudget 是"取平均"的动态形态：**不限额**（MaxStep = 0）
 // 时原始修正量不再被额度封顶 ⇒ 迭代增益完全由同伴数 n 决定（不取平均 ⇒ 增益 1−n/2，
-// n ≥ 4 时 |增益| ≥ 1 即不收敛 —— 这就是来源工程记的那个 limit cycle）。
+// n ≥ 4 时 |增益| ≥ 1 即不收敛 —— 这就是那个 limit cycle）。
 //
 // 夹具：一只刚体被四只**不可推动**的邻居围在一个**不对称**的口袋里（左右各远 / 上下各近
 // 一对，重叠 20 与 100），只跑分离、不施加任何行走。对称夹具（四邻等距）会让净推力恒为 0、
@@ -407,7 +398,7 @@ func TestSqueezedCenterConvergesWithoutBudget(t *testing.T) {
 	}
 }
 
-// TestWalkStep pins the step-budget helper's口径（来源工程 separationStepLimitMilli 的取值法）。
+// TestWalkStep pins the step-budget helper's口径（每 tick 分离额度的推荐取值法）。
 func TestWalkStep(t *testing.T) {
 	cases := []struct {
 		speed, ticks, want int64

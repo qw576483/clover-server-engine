@@ -213,7 +213,7 @@ func (m *RoomTakeoverManager) importPending(roomID string) error {
 		return nil
 	}
 	if m.deps.Pusher == nil {
-		// Pusher 未配置：恢复包无法下发（此前会在此处直接 nil 调用 panic）。
+		// Pusher 未配置：恢复包无法下发。
 		logger.Warnf("room: takeover recovery room=%s skipped: pusher not configured (recovery dropped)", roomID)
 		return nil
 	}

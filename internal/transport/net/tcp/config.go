@@ -13,11 +13,9 @@ const (
 	// defaultMaxMsgSize 默认单帧 payload 上限 10MiB。
 	//
 	// 值取自 `session.MaxFrameSize`（**服务端帧上限的唯一来源**，含 TCP/WS/QUIC 与网关
-	// 配置默认值；旧写法是本文件各写一份字面量，值会漂移）。
+	// 配置默认值）。
 	// **与客户端一致**：客户端 `Runtime/Network/Connection.cs:111` 的 `ClientFrame.MaxBodySize`
 	// 与 `:190/:195` 的 `MaxFramePayload` / `HardMaxFramePayload` 同为 `10 << 20`。
-	// 此前这里是 1<<18（256KiB）而网关又未把 `MaxFrameSize` 下传到本配置：客户端按
-	// 上限构造的帧会被本层判超限并直接断连（表现为「连得上→秒断」，网关日志里看不到）。
 	defaultMaxMsgSize     = session.MaxFrameSize // 10MiB，与客户端一致
 	defaultSendBufferSize = 256
 	defaultDialTimeout    = 5 * time.Second

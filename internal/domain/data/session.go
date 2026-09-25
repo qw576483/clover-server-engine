@@ -55,8 +55,8 @@ type PendingEdit struct {
 // CommitResult 提交后产出的单条结果，供上层推送。
 //
 // JSON 是提交期已序列化好的**全量 JSON**，供落库 / 字段级 diff 推送 / 跨服镜像复用。
-// 这三处此前各自 Marshal(Val) 一遍，同一份数据在一次请求里被序列化三次；
-// 现由 Commit 统一序列化一次后向下传递（序列化失败时为 nil，调用方需自行兜底）。
+// 统一由 Commit 序列化一次后向下传递，避免同一份数据在一次请求里被多处重复序列化
+// （序列化失败时为 nil，调用方需自行兜底）。
 // Val 仍保留：推送侧可优先用它的 CommitDiff()（见 transport/event 的 buildSyncBody）。
 type CommitResult struct {
 	Key      Key
@@ -234,7 +234,7 @@ func (s *Session) Commit(ctx context.Context) (saved []CommitResult, failed int)
 // saveOne 单条落库（含快照比对与一次重试）。
 //
 // 返回值 cur 是本次提交序列化好的**全量 JSON**：落库、字段级 diff 推送、跨服镜像
-// 三处要用的是同一份字节，所以提交期只序列化这一次（此前落库与推送各序列化一遍）。
+// 三处要用的是同一份字节，所以提交期只序列化这一次（否则落库与推送各序列化一遍）。
 // 序列化失败时 cur 为 nil 且 ok=false —— 序列化不出来就没有任何字节可落库，
 // 与「保存失败」同类，按失败计数比先记日志再走一次必然失败的保存更诚实。
 func (s *Session) saveOne(ctx context.Context, pe PendingEdit) (cur []byte, ok bool) {

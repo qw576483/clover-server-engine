@@ -10,7 +10,7 @@
   这部分与「用什么同步」无关，两种内核共用。
 - **内核（`Kernel`）**：房间内部到底怎么同步。可插拔：
   - **引擎内置帧同步内核**：`Config` 传 `FrameCfg` / `FrameSvc` / `FrameSvcOpts`
-  - **引擎内置状态同步内核（参考实现）**：`Config.Kernel = room.NewStateSyncKernel(...)`，见下方
+  - **引擎内置状态同步内核**：`Config.Kernel = room.NewStateSyncKernel(...)`，见下方
     「状态同步内核（StateSyncKernel）」一节
   - **业务自写内核**：实现 `Kernel` 接口后经 `Config.Kernel` 传入
 
@@ -176,7 +176,7 @@ list, _ := k.Watch(playerID)
 k.FlushWatchers()
 ```
 
-### 三条语义（提炼自进程内状态同步房间，三条都保留）
+### 三条语义
 
 | # | 语义 | 落在哪 |
 |---|------|--------|

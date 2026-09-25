@@ -126,12 +126,11 @@ if now == 0 {
 - **总长度**：`"req_" + 24` = **28 字符**。
 - **碰撞概率**：96 位随机，实际可视为不会碰撞。
 - **失败兜底**：`rand.Read` 失败时返回 `prefix + "_fallback" + time.Now().Format("20060102150405")`，例如 `req_fallback20260803120000`（**长度不同，且秒级精度会重复**）。
-- `GenTraceID` 走 `pkg/shared/traceid` 的 `NewTraceID()`，输出为 `"trc_" + 32 位小写十六进制`（16 字节，与 W3C trace-id 位宽一致），其随机源与兜底策略见 `pkg/foundation/trace`（已去掉「两侧长度不一致」的旧分歧）。
+- `GenTraceID` 走 `pkg/shared/traceid` 的 `NewTraceID()`，输出为 `"trc_" + 32 位小写十六进制`（16 字节，与 W3C trace-id 位宽一致），其随机源与兜底策略见 `pkg/foundation/trace`。
 
 ### 十六进制编码
 
-历史上的手写 `hexEncode` 编码表已删除，统一改用标准库 `encoding/hex` 的
-`hex.EncodeToString`（小写输出，`RandomHex` 内）。
+十六进制编码统一用标准库 `encoding/hex` 的 `hex.EncodeToString`（小写输出，`RandomHex` 内）。
 
 ## 对外 API
 
@@ -190,6 +189,6 @@ logger.Info("请求开始", logger.WithTrace(traceID))
 ## 依赖关系
 
 - **标准库依赖**：`crypto/rand`（强随机源）、`encoding/hex`（十六进制编码）、`sync/atomic`（无锁计数器）、`time`（毫秒/纳秒时间戳）。
-- **引擎内部依赖**：`pkg/shared/timeutil`（`NowMS` / `NowTime`）、`pkg/shared/traceid`（`NewTraceID`）——不再是零引擎依赖的叶子包。
+- **引擎内部依赖**：`pkg/shared/timeutil`（`NowMS` / `NowTime`）、`pkg/shared/traceid`（`NewTraceID`）。
 - 零第三方依赖。
 - **相关包**：`pkg/shared/traceid`（trace ID 的上下文传递）。

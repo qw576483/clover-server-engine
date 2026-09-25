@@ -137,7 +137,7 @@ func (s *MySQLState) WriteBatch(source string, entries []LogEntry) (int, error) 
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.cli == nil {
-		// Close 已把 cli 置 nil：关闭流程中的在途 WriteBatch 此前会空指针 panic。
+		// Close 已把 cli 置 nil：关闭流程中的在途 WriteBatch 会空指针 panic。
 		return 0, fmt.Errorf("logsvc/mysql: state is closed")
 	}
 

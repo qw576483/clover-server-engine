@@ -79,7 +79,7 @@ func WithObjectManager(m *object.Manager) Option {
 }
 
 // WithTickRate 配置场景 tick 间隔：主循环应以此为驱动周期（Scene.Tick(dt) 的 dt 基准）。
-// 此前该值写进 options 后全包无任何读取点（选项静默无效），现由 SceneManager.TickRate 暴露。
+// 该值写进 options 后若全包无读取点即选项静默无效，故由 SceneManager.TickRate 暴露。
 func WithTickRate(d time.Duration) Option { return func(o *options) { o.tickRate = d } }
 func WithCellSize(cell float64) Option    { return func(o *options) { o.cellSize = cell } }
 func WithViewSubject(subject string) Option {

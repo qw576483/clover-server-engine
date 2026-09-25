@@ -23,7 +23,7 @@ func newMySQLBackend(cfg imysql.MySQLConfig) (persistentStore, error) {
 func (s *Store) getMySQL(ctx context.Context, key Key) ([]byte, error) {
 	if s.mysql == nil {
 		// 与 CreateTable:43 / persistDirty:70 的防御保持一致：缺 MySQL 后端的 Store
-		// （memory 配置 + 声明了持久 Tier 的 Schema）此前会在首次 Load 直接 nil panic。
+		// （memory 配置 + 声明了持久 Tier 的 Schema）会在首次 Load 直接 nil panic。
 		return nil, fmt.Errorf("data: mysql not initialized for key %s", s.redisKey(key))
 	}
 	var row struct {
@@ -41,7 +41,7 @@ func (s *Store) getMySQL(ctx context.Context, key Key) ([]byte, error) {
 
 // CreateTable 执行 CREATE TABLE IF NOT EXISTS（表结构与 Key 对应）。
 func (s *Store) CreateTable(ctx context.Context) error {
-	// 门控只看本 Store 是否具备 MySQL 后端：此前叠加全局 pdata.TierHasPersistent()
+	// 门控只看本 Store 是否具备 MySQL 后端：叠加全局 pdata.TierHasPersistent()
 	// 早退，AutoCreateTable=true 但 Schema 未声明持久化 Tier 时表不会创建，
 	// 随后任何 upsert 都会报 1146（表不存在）。
 	if s.mysql == nil {
@@ -70,13 +70,6 @@ func (s *Store) selectSQL() string {
 func (s *Store) selectAllForOwnerSQL(types int) string {
 	return fmt.Sprintf("SELECT type, data, data_version FROM %s WHERE owner_type = ? AND owner_id = ? AND type IN (%s)", s.table, placeholders(types))
 }
-
-// 说明：原本这里还有一个 `upsertWithVersionSQL()` —— 已**删除**，不是预留。
-// 它生成的 SQL 里 `VALUES(data_version)` 恒为 1（INSERT 端把 data_version 写死为 1），
-// 条件退化为 `data_version = 1`：从第二次更新起，凡是 data_version != 1 的行都会被 IF
-// 判为不匹配而**静默不写**（丢更新且无任何错误）。它全仓零调用点，留着一个「禁用占位」
-// 只会让人误以为乐观锁更新已实现。真要做带版本的 upsert，必须让函数接收 expectedVersion
-// 并以占位符参与 IF 条件（同时更新调用方），并注意 VALUES() 在 IF 语义下的取值。
 
 // placeholders 返回 n 个 "?"。
 // n<=0 时返回空串：生成的 SQL 会语法错误（如 `IN ()`），显式暴露调用方 bug，

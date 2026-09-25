@@ -213,8 +213,8 @@ func (m *Mob) tryForgetAggro(now time.Time) bool {
 
 // MobManager 管理一组怪物及其刷新/心跳。
 //
-// ★ 行为树不再由管理器持有：每只怪在 Spawn 时构建**自己的** brain（见 Mob.brain）。
-// 原实现把单个 *btree.Tree 挂在管理器上供所有怪共用，节点上的可变状态
+// ★ 行为树由每只怪在 Spawn 时构建**自己的** brain（见 Mob.brain），不由管理器持有：
+// 管理器共用单个 *btree.Tree 时，节点上的可变状态
 // （Selector 续跑位置 / Limiter 窗口 / Cooldown 时刻）会跨怪串扰。
 type MobManager struct {
 	scene    pkgmob.MobScene
@@ -277,7 +277,7 @@ func (mgr *MobManager) onAttackOf() func(attacker, target uint64) {
 func (mgr *MobManager) Register(m pkgmob.Mob) {
 	im, ok := m.(*Mob)
 	if !ok || im == nil {
-		// 直接 m.(*Mob) 断言：传入非 *Mob 的 Mob 实现即 panic，改为留痕并拒绝。
+		// 传入非 *Mob 的 Mob 实现时留痕并忽略（直接 m.(*Mob) 断言会 panic）。
 		mobFailf("mob: Register 收到非 *Mob 实现 (%T)，已忽略", m)
 		return
 	}
@@ -386,7 +386,7 @@ func (mgr *MobManager) Update(dt time.Duration) {
 func (mgr *MobManager) OnDamaged(m pkgmob.Mob, dmg float64) {
 	im, ok := m.(*Mob)
 	if !ok || im == nil {
-		// 直接 m.(*Mob) 断言：传入非 *Mob 的 Mob 实现即 panic，改为留痕并拒绝。
+		// 传入非 *Mob 的 Mob 实现时留痕并忽略（直接 m.(*Mob) 断言会 panic）。
 		mobFailf("mob: OnDamaged 收到非 *Mob 实现 (%T)，已忽略", m)
 		return
 	}

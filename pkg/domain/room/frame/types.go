@@ -38,7 +38,7 @@ type Config struct {
 	CloseMessageID            uint32 `json:"close_message_id"`            // 房间关闭广播消息号
 	AutoStart                 bool   `json:"auto_start"`                  // 首名玩家加入后自动启动主循环
 	AutoDestroyEmpty          bool   `json:"auto_destroy_empty"`          // 所有玩家离开后自动销毁房间
-	// MaxPlayers 房间人数上限；<=0 表示不限（默认，与历史行为一致）。
+	// MaxPlayers 房间人数上限；<=0 表示不限（默认）。
 	// 校验点在 Room.Join：满员时新玩家被拒（ErrRoomFull），
 	// 但**已在房内的玩家（断线重连）不受限** —— 否则满员时掉线的人再也回不来。
 	MaxPlayers int `json:"max_players"`

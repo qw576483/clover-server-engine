@@ -13,9 +13,8 @@ import (
 
 // 每只怪必须有**自己的**行为树实例。
 //
-// 守的是本缺陷：MobManager 曾只构建一棵 *btree.Tree 供所有怪共用，
-// 而 Selector/Limiter/Cooldown 的续跑位置、限流窗口、冷却时刻都挂在节点上
-// —— 状态跨怪串扰。
+// 共用一棵 *btree.Tree 时，Selector/Limiter/Cooldown 的续跑位置、限流窗口、
+// 冷却时刻都挂在节点上 —— 状态跨怪串扰。
 //
 // 这条是结构性断言（确定性，不依赖遍历顺序）：共用一棵树时两者相等，必红。
 func TestMobBrainIsPerMob(t *testing.T) {

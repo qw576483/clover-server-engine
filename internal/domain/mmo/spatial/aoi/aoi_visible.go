@@ -147,7 +147,6 @@ func (vs *VisualSystem) SetVisual(id object.ObjectID, radius float64) {
 	pos, ok := vs.g.Position(id)
 	if !ok {
 		// 对象不在网格（未 Enter 或并发 Leave）：没有位置可做「受影响观察者」重算。
-		// 之前 mustPos 会静默回退零坐标，导致以世界原点为圆心刷新错区域且无留痕。
 		aoiFailf("aoi: SetVisual obj=%d 不在网格，跳过受影响观察者重算", id)
 		return
 	}
@@ -175,7 +174,6 @@ func (vs *VisualSystem) ClearVisual(id object.ObjectID) {
 	pos, ok := vs.g.Position(id)
 	if !ok {
 		// 对象不在网格（未 Enter 或并发 Leave）：没有位置可做「受影响观察者」重算。
-		// 之前 mustPos 会静默回退零坐标，导致以世界原点为圆心刷新错区域且无留痕。
 		aoiFailf("aoi: ClearVisual obj=%d 不在网格，跳过受影响观察者重算", id)
 		return
 	}

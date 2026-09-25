@@ -58,7 +58,7 @@ const defaultCellsPerShard = 32
 //
 // 它是 geom.Vec3 的**别名**，不再自定义同构结构体：于是 `geom.Vec3` / `mmo.Vec3` /
 // `engine.Vec3` / `aoi.Position` 在类型系统里是同一个类型 —— 业务可以把 `mmo.Vec3`
-// 直接传给 AOI 接口，全程零转换（此前需要逐字段 copy）。
+// 直接传给 AOI 接口，全程零转换（无需逐字段 copy）。
 type Position = geom.Vec3
 
 // Event 视野事件类型。
@@ -321,9 +321,9 @@ func (g *Grid) Stop() {
 
 // cleanupEmptyShards 清理空 cell 与不再包含任何对象的分片残留，释放内存。
 //
-// 并发约束（历史缺陷点）：
+// 并发约束：
 //   - 分片内部结构（cells/pos/cellOf/watchers）的读取与清理必须持 sh.mu——
-//     此前在只持 shardsMu 时裸读 len(sh.*)，与 Enter/Move 的分片写锁路径构成 data race；
+//     只持 shardsMu 时裸读 len(sh.*)，与 Enter/Move 的分片写锁路径构成 data race；
 //   - 分片**不**从 g.shards 摘除：lockShardsBox 会先把分片指针交给调用方、之后调用方
 //     才加 sh.mu 写入，删除条目会与这个「已发指针、未加锁」的窗口竞态，把对象写进一个
 //     已脱离索引表的分片而永久不可见（无引用跟踪可消除该窗口）。分片壳本身体积很小
@@ -1095,8 +1095,8 @@ func (g *Grid) EndBatch() {
 func (g *Grid) lockDirtyShards(dirty map[oidKey]struct{}) ([]*shard, func()) {
 	coords := make(map[shardCoord]struct{})
 	// 读取 dirty 观察者的数据时各有各的锁，不能裸读（与并发 Enter/Move/Leave 数据竞争）：
-	//   - g.cellOf 由 muIndex 保护（此前只持 shardsMu 就读，是 data race）；
-	//   - 分片内的 watchers / pos / radius 由 sh.mu 保护（此前尚未加锁就读）。
+	//   - g.cellOf 由 muIndex 保护；
+	//   - 分片内的 watchers / pos / radius 由 sh.mu 保护。
 	// 锁序统一为 shardsMu → muIndex / sh.mu，与本包其它路径一致（不存在反向持锁路径）。
 	g.shardsMu.Lock()
 	for key := range dirty {

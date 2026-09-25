@@ -14,7 +14,7 @@ import "math"
 // Vec3 是三维向量。
 //
 // JSON 约定：序列化为**小写** x/y/z。客户端（Unity `WorldSync`）与前端工具按小写取值，
-// 且它们的字典查找是**区分大小写**的（`dict.TryGetValue("x")`）——此前无 tag 会输出
+// 且它们的字典查找是**区分大小写**的（`dict.TryGetValue("x")`）——无 tag 时会输出
 // "X"/"Y"/"Z"，把坐标直接 marshal 给客户端会让位置被静默丢弃（解析返回 false，不报错）。
 // 反方向不受影响：Go 的 json 解码在 tag 不精确匹配时会退化为大小写不敏感匹配，仍能读入 "X"。
 type Vec3 struct {

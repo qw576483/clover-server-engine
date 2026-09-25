@@ -76,8 +76,8 @@ func (conf RedisConfig) resolveMode() string {
 	case ModeSentinel:
 		return ModeSentinel
 	case "single":
-		// 显式声明的单实例：不再自动推断（此前 single 与空值同分支，导致
-		// 配了 master_name / 多 addrs 时被静默当成 standalone 连 addrs[0]，
+		// 显式声明的单实例：不再自动推断（single 与空值同分支时，配了
+		// master_name / 多 addrs 会被静默当成 standalone 连 addrs[0]，
 		// 用户以为在走 cluster/sentinel）。配置互相矛盾时告警。
 		if conf.MasterName != "" || len(conf.resolveAddrs()) > 1 {
 			logger.Warnf("redis: mode=single but master_name=%q addrs=%v indicate cluster/sentinel; connecting standalone",

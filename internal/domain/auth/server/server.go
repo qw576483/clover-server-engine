@@ -90,7 +90,7 @@ func statusOf(kind state.Kind) int {
 		return http.StatusNotImplemented
 	case state.KindChannelUnavailable:
 		// 渠道存储/依赖不可用属「服务端暂时故障（可重试）」：语义应为 503。
-		// 此前无显式 case，静默走 default 映射为 500。
+		// 必须显式给 case，不能静默走 default 映射为 500。
 		return http.StatusServiceUnavailable
 	default:
 		return http.StatusInternalServerError
@@ -189,7 +189,7 @@ func requirePost(w http.ResponseWriter, r *http.Request) bool {
 func decodeCred(w http.ResponseWriter, r *http.Request) (state.CredReq, bool) {
 	var req state.CredReq
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, state.MaxBodyBytes)).Decode(&req); err != nil {
-		// 注册/登录入口的坏报文必须留日志（此前直接回 400，无任何记录）。
+		// 注册/登录入口的坏报文必须留日志：直接回 400 会无任何记录。
 		logger.Warnf("auth: %s decode request failed (remote=%s): %v", r.URL.Path, r.RemoteAddr, err)
 		ophttp.JSON(w, http.StatusBadRequest, state.TokenResp{Err: "invalid json body"})
 		return req, false

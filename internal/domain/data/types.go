@@ -72,7 +72,7 @@ type Config struct {
 
 // ListTypes 列出已注册的 ownerType 下全部数据类型。
 func (s *Store) ListTypes(ctx context.Context, ownerType OwnerType) ([]string, error) {
-	// 此前 `_ = ctx` 完全忽略取消：调用方带着已取消的 ctx 也会得到「成功」。
+	// 忽略 ctx 会让调用方带着已取消的 ctx 也得到「成功」，必须显式检查取消。
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}

@@ -54,8 +54,7 @@ func InternalCooldownManagerFacade(c pkskill.CooldownManager) (*CooldownManager,
 
 // NewSkillSetFacade 以冷却管理器构造技能集；cd 不是引擎实现（或为 nil）时返回 nil。
 //
-// 非引擎实现会被内部 `NewSkillSet(*CooldownManager)` 解引用 panic，此处显式拦下，
-// 与 `pkg/domain/mmo` 原有门面行为逐字一致（曾返回 nil 而非半成品）。
+// 非引擎实现会被内部 `NewSkillSet(*CooldownManager)` 解引用 panic，此处显式拦下并返回 nil。
 func NewSkillSetFacade(cd pkskill.CooldownManager) pkskill.Set {
 	ic, ok := cd.(*CooldownManager)
 	if !ok || ic == nil {

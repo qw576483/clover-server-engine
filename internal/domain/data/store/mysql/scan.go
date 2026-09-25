@@ -99,7 +99,7 @@ func scanRow(rows *sql.Rows, dest any) error {
 
 // structFields 收集结构体的可导出字段，键为小写列名（优先取 db tag）。
 //
-// 匿名字段（嵌入结构体）会递归展平到字段级：此前把嵌入结构体按类型名整体入 map，
+// 匿名字段（嵌入结构体）会递归展平到字段级：若把嵌入结构体按类型名整体入 map，
 // scanRow 会把 driver 值 Scan 进整个结构体（报 unsupported Scan）。
 // 不同字段映射到同一列名（重复 tag）会直接报错，避免后者静默覆盖前者。
 func structFields(v reflect.Value) (map[string]reflect.Value, error) {

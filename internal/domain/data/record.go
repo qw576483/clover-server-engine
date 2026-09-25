@@ -489,7 +489,7 @@ func (s *Record) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON 从紧凑格式载入（覆盖 schema 与数据）。
 //
 // 全部解析先在临时变量中完成，成功后才一次性替换内部状态：
-// 此前先替换 s.cols/s.colType 再逐列解析，中途失败会留下「新 cols + 旧 rows」
+// 先替换 s.cols/s.colType 再逐列解析时，中途失败会留下「新 cols + 旧 rows」
 // 的半更新态（对象残缺，且调用方已经拿到 error 无从修复）。
 func (s *Record) UnmarshalJSON(data []byte) error {
 	var w recordWire
@@ -544,5 +544,5 @@ func (s *Record) resetDirtyLocked() {
 }
 
 // ————————————————————————————————————————————————
-// RecordSchema 已迁移到 pkg/domain/data/types.go，通过 types.go 别名引用。
+// RecordSchema 真身在 pkg/domain/data/types.go，通过别名引用。
 // ————————————————————————————————————————————————

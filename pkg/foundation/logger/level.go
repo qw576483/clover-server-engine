@@ -224,9 +224,8 @@ func KVLevelWatcher(kv KVGetWatcher, key string) LevelWatcher {
 		}
 		// 带缓冲，避免 etcd 回调 goroutine 在消费者忙时被阻塞。
 		out := make(chan string, 8)
-		// outMu 串行化「发送」与「关闭」，并记住是否已关闭。
-		//
-		// 背景（缺陷）：closer 协程在 ctx 结束后 close(out)，而 emit 的 select 里
+		// outMu 串行化「发送」与「关闭」，并记住是否已关闭：二者不互斥时，
+		// closer 协程在 ctx 结束后 close(out)，而 emit 的 select 里
 		// `case out <- v` 与 `case <-ctx.Done()` / `default` 可能同时就绪，
 		// 关闭 channel 上的 send 分支同样算就绪 → 运行时可随机选中它，
 		// 直接 panic「send on closed channel」（发生在 etcd watch 回调协程里，recover 兜不住）。

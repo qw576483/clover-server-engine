@@ -18,7 +18,7 @@ trace_id / span_id 生成、context 传播、跨进程注入/提取。不感知�
 > key ⇒ 两包双向可读（任一方 set、另一方都能 get），同一条 trace 不再断在包边界上。
 > traceid 保留的只是「带 tags / End 钩子的请求段对象」。
 >
-> ★ 两个包的 `NewTraceID` 长度**已统一为 32 hex**：`traceid.NewTraceID` 直接转发本包实现
+> ★ 两个包的 `NewTraceID` 长度均为 32 hex：`traceid.NewTraceID` 直接转发本包实现
 > （对外 `shared/id.GenTraceID` 的随机熵也来自本包），ID 生成只保留这一处真身。
 
 ## 典型用法

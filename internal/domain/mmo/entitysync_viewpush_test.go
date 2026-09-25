@@ -9,13 +9,12 @@ import (
 	"github.com/qw576483/clover-server-engine/internal/shared/proto"
 )
 
-// 本文件是「视野进出事件不下发客户端」这一真实缺陷的复现用例。
+// 本文件守「视野进出事件必须下发客户端」：
+// Scene 的 AOI 在实体进出视野时把 viewPush（含 Event enter/leave）发到 viewSubject，
+// 其唯一消费者 EntitySync.onViewChange 必须同时维护反向索引并**向客户端推送**，
+// 否则客户端 Game.Sync.OnEntityEnter/OnEntityLeave 永远不触发。
 //
-// 缺陷：Scene 的 AOI 在实体进出视野时把 viewPush（含 Event enter/leave）发到 viewSubject，
-// 但 viewSubject 的唯一消费者 EntitySync.onViewChange 只维护反向索引、**不向客户端推送**，
-// 导致客户端 Game.Sync.OnEntityEnter/OnEntityLeave 永远不触发。
-//
-// 修复后本用例应通过：enter/leave 必须各产生一条 EPushDataSync(4003) 推给 watcher，
+// 判据：enter/leave 必须各产生一条 EPushDataSync(4003) 推给 watcher，
 // body 外层 key 为事件名（客户端 WorldSync 只认这个形状），内层带 entity_id。
 
 // fakePub 捕获发布到各 subject 的原始载荷，实现 idata.Publisher。

@@ -425,8 +425,8 @@ func (s *Scheduler) fire(e *entry) {
 
 // unregisterRegLocked 回收 (scope,name) 在 taskReg/cronSpec 中的注册项。
 //
-// 背景（缺陷）：这两个表只在 StopScope/StopAll/Close 里清理，而 stop(id)/StopNamed 不清，
-// 于是「注册→取消」往返后仍残留一个 Task 闭包，业务用「每玩家唯一名」注册时永久泄漏。
+// 这两个表若只在 StopScope/StopAll/Close 里清理、而 stop(id)/StopNamed 不清，
+// 「注册→取消」往返后会残留一个 Task 闭包，业务用「每玩家唯一名」注册时永久泄漏。
 //
 // 只有该键确由 id 注册时才删除：同名任务被「重启」时（旧 id 未取消、新 id 已写入 taskReg），
 // 旧任务的 stop 不得把新任务的注册项删掉。调用方须持锁。

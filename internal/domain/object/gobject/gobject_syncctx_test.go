@@ -12,14 +12,10 @@ import (
 // ============================================================================
 // 自动同步广播的生命周期上下文回归
 //
-// 守的历史缺陷：写即推送（attachRecordNotifier / attachPropsNotifier）的回调里用的是
-// 裸 context.Background() —— 既无超时、也无取消，且下游 data.SyncEntity 的
-// broadcast* 把 ctx 参数**直接忽略**（形参名是 `_`）。
-// 结果：对象持有者（会话 / 房间 / 停机流程）结束后广播照旧下发；
-// 下游不可用时写路径也没有任何时间上界。
-//
-// 现在：持有者经 SetSyncContext 绑定 ctx（取消即停止广播）+ 单次超时；
-// data 侧真正尊重 ctx.Err()。
+// 契约：写即推送（attachRecordNotifier / attachPropsNotifier）的回调必须用持有者绑定的 ctx
+// —— 持有者经 SetSyncContext 绑定（取消即停止广播）并带单次超时，data 侧尊重 ctx.Err()：
+//   - 对象持有者（会话 / 房间 / 停机流程）结束后广播必须停止下发；
+//   - 下游不可用时写路径必须有时间上界。
 // ============================================================================
 
 // countPub 只统计发布次数。
@@ -60,7 +56,7 @@ func TestAutoSyncBroadcastStopsAfterSyncContextCanceled(t *testing.T) {
 		t.Fatalf("持有者 ctx 未取消时应继续广播，实际 %d", got)
 	}
 
-	// 持有者结束：之后的写不该再广播（原先用 Background ⇒ 照旧下发）。
+	// 持有者结束：之后的写不该再广播。
 	cancel()
 	g.Props().SetInt("gold", 3)
 	if got := pub.count(); got != 2 {
@@ -75,7 +71,7 @@ func TestAutoSyncBroadcastStopsAfterSyncContextCanceled(t *testing.T) {
 	}
 }
 
-// 自动同步广播用的 ctx 必须带超时（原先的裸 Background 既无超时也无取消）。
+// 自动同步广播用的 ctx 必须带超时。
 func TestAutoSyncBroadcastContextHasDeadline(t *testing.T) {
 	g := New(nil, object.NewObjectID(object.TypePlayer, 2))
 	ctx, cancel := g.broadcastCtx()

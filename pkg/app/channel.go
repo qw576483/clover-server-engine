@@ -1,10 +1,8 @@
 // 本文件是渠道登录（微信 / QQ / Steam / Apple / 自建账号中心）的**业务注册入口**。
 //
-// 为什么注册函数必须在这里：扩展点得放在业务**能导入**的位置。
-// 引擎曾提供 `pkg/transport/auth` + `app.RegisterAuthenticator`，但注册函数定义在
-// `internal/app`，业务模块（独立 Go module）受 Go internal 规则限制根本调不到——
-// 那是「只能实现、无法挂载」的半成品，已删除。这里放在 `pkg/app`（公开门面，
-// 业务可导入），内部转发到 `internal/domain/auth`（账号域）。
+// 注册入口必须放在业务**能导入**的位置：注册函数若定义在 `internal/app`，
+// 业务模块（独立 Go module）受 Go internal 规则限制调不到。本包在 `pkg/app`
+// （公开门面，业务可导入），内部转发到 `internal/domain/auth`（账号域）。
 //
 // 本包是**门面包**（见 `结构规则.md` §5.1）：这里只有类型别名 + 声明转发，真身在 internal。
 //

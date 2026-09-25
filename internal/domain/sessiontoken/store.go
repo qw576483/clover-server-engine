@@ -167,7 +167,7 @@ func (s *Store) Refresh(ctx context.Context, playerID string) error {
 	if time.Since(entry.CreatedAt) < s.refreshInterval {
 		return nil
 	}
-	// 先远程续期、成功后再滑动本地 TTL：此前先本地滑动——远端续期失败时本地 TTL
+	// 先远程续期、成功后再滑动本地 TTL：先本地滑动时，远端续期失败会让本地 TTL
 	// 已被延长，叠加「远程失败回退本地比对」语义，会让远端已失效的 token
 	// 在本地继续被接受最长一个 ttl。
 	if s.sc != nil {

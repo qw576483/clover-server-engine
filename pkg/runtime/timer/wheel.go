@@ -135,7 +135,6 @@ func (tw *timeWheel) tick() []func() {
 	slot.Init()
 
 	// 残余任务（仅顶层钳制的超长延时任务会走这里）：按剩余 delay 在本层重排。
-	// 不再直接丢给无锁的 overflow（旧实现里 add 会在 tick 持锁时二次加锁自死锁）。
 	for _, task := range remaining {
 		tw.addLocked(task)
 	}

@@ -136,8 +136,7 @@ func parseRange(token string, min, max int) (lo, hi, step int, err error) {
 // Next 计算 >= after 的下一个匹配时间（分钟粒度）。找不到返回零值。
 //
 // 起点取 after 所在的整分钟本身：若该分钟已晚于 after 不可能（截断只可能 <= after），
-// 因此只有「after 恰好落在整分钟」时才直接返回该分钟，满足文档承诺的 `>= after` 语义
-// （旧实现无条件 +1 分钟，会把恰好匹配的 after 跳过，使「下次运行时间」整体偏后一个周期）。
+// 因此只有「after 恰好落在整分钟」时才直接返回该分钟，满足文档承诺的 `>= after` 语义。
 func (c *cronSchedule) Next(after time.Time) time.Time {
 	loc := after.Location()
 	t := after.Truncate(time.Minute)

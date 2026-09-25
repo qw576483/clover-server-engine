@@ -87,7 +87,7 @@ func (d *PacketConn) dispatchLoop() {
 	defer d.wg.Done()
 	buf := make([]byte, 65535)
 	// 退避曲线统一由 retry.Backoff 提供（1ms → 1s，成功即重置）；
-	// 与 udp readLoop / quic acceptLoop 同一条策略，此前三处各写一份。
+	// 与 udp readLoop / quic acceptLoop 同一条策略。
 	bo := retry.NewBackoff(retry.Policy{
 		BaseDelay:  time.Millisecond,
 		MaxDelay:   time.Second,

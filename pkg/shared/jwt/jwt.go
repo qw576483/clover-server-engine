@@ -67,8 +67,7 @@ type Claims struct {
 	Iss string `json:"iss,omitempty"`
 	// Aud 受众标识（可选）。Verify 不校验；VerifyAudience 强制校验。
 	Aud string `json:"aud,omitempty"`
-	// Nbf 生效时间（Unix 秒）。0 表示不限制；非 0 时 Verify 在该时刻之前一律拒绝
-	// （旧实现无此字段，携带 "nbf":<未来时刻> 的 token 会被提前接受）。
+	// Nbf 生效时间（Unix 秒）。0 表示不限制；非 0 时 Verify 在该时刻之前一律拒绝。
 	Nbf int64 `json:"nbf,omitempty"`
 	// Iat 签发时间（Unix 秒）。Verify 拒绝超出允许时钟偏移的未来值。
 	Iat int64 `json:"iat"`
@@ -152,7 +151,7 @@ func Verify(token string, secret []byte) (*Claims, error) {
 	if c.Exp == 0 || now >= c.Exp {
 		return nil, ErrExpired
 	}
-	// nbf：载荷可自带生效时间，未到点必须拒绝（旧实现无该字段，提前生效无法拦截）。
+	// nbf：载荷可自带生效时间，未到点必须拒绝。
 	if c.Nbf > 0 && now < c.Nbf {
 		return nil, ErrNotYetValid
 	}

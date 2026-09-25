@@ -14,13 +14,9 @@ import (
 // ============================================================================
 // 订阅反注册（生命周期对称性）回归
 //
-// 守的历史缺陷：WireEntitySync 订阅了 viewSubject 与 accessor 的 notify subject，
-// 而两条订阅**没有对称的反注册出口** ——
-//   - transport/nats.Client 只保存 []*nats.Subscription，不保存「句柄 ↔ subject」的对应
-//     关系，上层根本无法只退自己那几条；
-//   - mmo.Module.Stop 只停 SceneManager，订阅照旧被派发 ⇒ 模块已停、回调还在跑。
-// 现在：Client 按 subject 记句柄并暴露 Unsubscribe；pubsub.Unsubscriber 是可选能力；
-// EntitySync.Close 逐条退订且幂等。
+// 契约：WireEntitySync 订阅了 viewSubject 与 accessor 的 notify subject，两条订阅必须有
+// 对称的反注册出口 —— Client 按 subject 记句柄并暴露 Unsubscribe；pubsub.Unsubscriber
+// 是可选能力；EntitySync.Close 逐条退订且幂等。
 // ============================================================================
 
 // unsubCapableSub 既能订阅、也实现了 pubsub.Unsubscriber（记录退订过的 subject）。

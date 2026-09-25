@@ -33,7 +33,7 @@ func TestIsLoopbackAddr(t *testing.T) {
 	}
 }
 
-// TestAdminConfigNormalizeRejectsNonLoopbackWithoutToken 是本次安全加固的核心断言：
+// TestAdminConfigNormalizeRejectsNonLoopbackWithoutToken 是 admin 安全边界的核心断言：
 // 未配 token + 非回环必须**报错拒绝**，且**不得**把地址静默改写成回环
 // ——静默改写会让运维以为配置已生效，实际根本没绑到内网（用一次假成功换一次真事故）。
 func TestAdminConfigNormalizeRejectsNonLoopbackWithoutToken(t *testing.T) {

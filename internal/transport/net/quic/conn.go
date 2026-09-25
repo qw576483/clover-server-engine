@@ -321,7 +321,6 @@ func (c *Client) Receive() ([]byte, error) {
 // Close 关闭客户端（幂等）。
 //
 // 返回首个关闭错误：关闭失败不等于「连接还能用」，调用方需要能看见它。
-// 此前声明了 err 却把所有错误都赋给 `_`，等于永远返回 nil —— 关闭异常被静默吞掉。
 func (c *Client) Close() error {
 	var err error
 	c.once.Do(func() {

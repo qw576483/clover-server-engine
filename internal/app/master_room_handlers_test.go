@@ -12,26 +12,17 @@ import (
 	pevent "github.com/qw576483/clover-server-engine/pkg/transport/event"
 )
 
-// TestMasterRoomHandlersRegisterInternalIDs 复现缺陷 S2（引擎内建房间消息号被业务号守卫拒绝）。
+// TestMasterRoomHandlersRegisterInternalIDs 覆盖 master 侧房间协议 4 条**引擎内建**消息号
+//（EMasterRoomRegister/Unregister/Find/TakeoverClaim = 6001..6004，见 pkg/shared/proto/msg.go）
+// 经业务注册门面（MasterGameFacade.OnMsg → tcpMsgBridge.OnMsg）注册的路径，
+// 而该门面有一道「msgID 必须 > InternalMsgMax(10000)」的守卫。
 //
-// 复现什么缺陷：master 侧房间协议的 4 条消息号（EMasterRoomRegister/Unregister/Find/TakeoverClaim
-// = 6001..6004）是**引擎内建**的（见 pkg/shared/proto/msg.go），但 room.NewMasterHandlers(mg).Register()
-// 原先经业务注册门面（MasterGameFacade.OnMsg → tcpMsgBridge.OnMsg）注册，而那里有一道
-// 「msgID 必须 > InternalMsgMax(10000)」的守卫 —— 引擎自己的号撞上了自己给业务的约束。
-//
-// 修复前什么现象：注册即 panic，master 侧永远没有房间 handler：
-//
-//	app: business message id must be > 10000; got 6001
-//
-// （后果：game 侧 CallMaster(6001) 同步等回包，master 回 "unknown msgID=6001" 或连接被掐，
-// 建房 handler 卡住不回包 —— 业务侧只能把 room.Config.MasterCaller 传 nil 绕开，跨节点接管失效。）
-//
-// 修复后什么断言：4 条内建号全部注册成功 —— 既进 Logic 派发表（能被派发），
+// 断言：4 条内建号全部注册成功 —— 既进 Logic 派发表（能被派发），
 // 也登记了 TCP handler（TCP 帧到达才有入口），两者缺一都是「注册了但不工作」。
 func TestMasterRoomHandlersRegisterInternalIDs(t *testing.T) {
 	mg := newMasterGame(&Config{}, nil)
 
-	proom.NewMasterHandlers(&MasterGameFacade{mg}).Register() // 修复前：此处 panic
+	proom.NewMasterHandlers(&MasterGameFacade{mg}).Register()
 
 	ids := []uint32{
 		proto.EMasterRoomRegister,
@@ -91,7 +82,7 @@ func TestMasterRoomHandlerRoundTripOverTCP(t *testing.T) {
 	const roomID, nodeAddr = "room-rt-1", "node-a"
 	var resp irroom.OwnerResp
 	if err := cli.Call(proto.EMasterRoomRegister, &irroom.OwnerRegisterReq{RoomID: roomID, NodeAddr: nodeAddr}, &resp); err != nil {
-		t.Fatalf("CallMaster(6001) 往返失败: %v（修复前这里回 unknown msgID=6001）", err)
+		t.Fatalf("CallMaster(6001) 往返失败: %v", err)
 	}
 	if !resp.OK {
 		t.Fatalf("注册回包 OK=false: %+v", resp)

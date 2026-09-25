@@ -248,10 +248,7 @@ func runMaster(cfg *Config) (func(), error) {
 
 	// 所有 handler 注册完毕，开始监听；监听失败即视作启动失败，交给上层中止流程。
 	//
-	// 未配置地址 = **不启用**这条通道（默认拒绝姿态）。此前把空地址直接交给
-	// net.Listen("tcp", "")：TCP 语义里那是「绑定所有网卡 + 随机端口」——既不可达
-	//（端口是随机的，game 无从发现），又把 master 内部 RPC 暴露在所有网卡上，
-	// 是「看起来没开、实际全开」的最坏形态。需要跨机时显式配地址（并配 master_token）。
+	// 未配置地址 = **不启用**这条通道（默认拒绝姿态）；需要跨机时显式配地址（并配 master_token）。
 	if listenAddr == "" {
 		logger.Warnf("master: master_listen_addr 未配置 —— 内部 RPC 端口**不启用**（需要跨机访问请显式配置地址；" +
 			"配置成非回环地址时还必须同时配置 master_token）")
@@ -312,7 +309,7 @@ func runMaster(cfg *Config) (func(), error) {
 // 为什么 master 内部 RPC 必须按同一口径管：这条通道上的
 // MsgSessionNew / MsgSessionValidate / MsgPlayerRegister / MsgRank* 等接口
 // **没有调用方身份校验**（见 domain/master/server 的说明），能连到该地址者即可
-// 伪造他人登录态、篡改玩家定位与排行榜。admin 控制面此前也踩过同一个坑，故统一：
+// 伪造他人登录态、篡改玩家定位与排行榜。统一口径：
 // 默认只绑回环；要绑非回环就必须配 master_token（则连接首帧必须完成 MsgAuth 握手）。
 func validateMasterListen(addr, token string) error {
 	// 空地址 = 不启用（调用方不会监听），无需校验。

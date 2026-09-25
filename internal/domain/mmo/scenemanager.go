@@ -21,8 +21,8 @@ type SceneManager struct {
 	objScene map[uint64]*Scene // objID→scene 索引，避免 O(n*m) 遍历
 
 	// 跨机迁移的幂等 / 乱序校验：objID → 本节点已应用的**最大**迁移版本号。
-	// 没有它，重投 / 乱序到达的迁移指令会被重复执行（RemoteTransfer.Version 此前
-	// 既没被赋值也没被校验，文档承诺的幂等语义完全落空）。
+	// 没有它，重投 / 乱序到达的迁移指令会被重复执行（RemoteTransfer.Version 必须
+	// 赋值并校验，否则文档承诺的幂等语义完全落空）。
 	//
 	// 生命周期：对象从本节点任何场景 Leave / 实例被移除 / 场景被销毁时同步删除
 	// （见 forgetXferVersionLocked），并额外带 xferVerTTL 兜底——
@@ -179,8 +179,8 @@ func (sm *SceneManager) TransferRemote(dstSceneID, objID uint64, pos Vec3) error
 		Z:         pos.Z,
 		OwnerType: src.ownerTypeOf(objID),
 		Instance:  src.instanceOfObj(objID),
-		// Version 此前从未赋值，接收端也无从校验 → 重投/乱序的迁移指令会被重复执行。
-		// 这里打上本节点单调递增的序号，接收端只接受比已应用版本更大的指令。
+		// 必须打上本节点单调递增的序号：接收端只接受比已应用版本更大的指令，
+		// 否则重投 / 乱序的迁移指令会被重复执行。
 		Version: sm.nextXferVersion(),
 		SrcNode: conv.FormatUint(sm.opts.nodeID),
 	}
@@ -261,7 +261,7 @@ func (sm *SceneManager) acceptXferVersion(objID, version uint64) bool {
 
 // purgeXferVersionLocked 惰性清扫过期的迁移版本记录（调用方须持 sm.mu）。
 //
-// 为什么必须清扫：本表原本只在 rollback 时按对象删除，正常应用过的条目永不释放，
+// 必须清扫：正常应用过的条目不会随对象删除而释放，
 // 长跑节点上「每个迁入过的对象」都留一条 —— 无上限增长。
 // 摊还策略与 state/loginGuard 的 purgeIdleLocked 同款：每 xferPurgeEvery 次登记扫一遍。
 func (sm *SceneManager) purgeXferVersionLocked(now time.Time) {
@@ -291,7 +291,7 @@ func (sm *SceneManager) forgetXferVersionLocked(objID uint64) {
 
 // rollbackXferVersion 在迁移**应用失败**时回滚已登记的版本号。
 //
-// 背景（缺陷）：acceptXferVersion 在「接收时」就记账，而其后 CreateInstanceIfNotExist /
+// acceptXferVersion 在「接收时」就记账，而其后 CreateInstanceIfNotExist /
 // EnterOwnerTypeInstance 仍可能失败。若失败后不回滚，底层「至少一次」的同一版本补投
 // 会被判为「重复/乱序」丢弃 —— 对象既没进新场景、源端又已 Leave，重试通道被幂等保护掐死。
 func (sm *SceneManager) rollbackXferVersion(objID, version uint64) {

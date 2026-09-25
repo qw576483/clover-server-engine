@@ -23,7 +23,7 @@ import (
 // roomStop 把「关闭信号通道 + 只关一次」封装为一个整体对象。
 //
 // ImportState 会在锁内整体替换它；各销毁路径必须先在锁内取快照、再在锁外按快照关闭。
-// 若像以前那样分开读写 stopCh / stopOnce 两个字段，替换瞬间可能读到
+// 分开读写 stopCh / stopOnce 两个字段时，替换瞬间可能读到
 // 「新通道 + 旧 once」的不一致组合，导致关错通道（新的被误关 / 旧的不关）。
 type roomStop struct {
 	ch   chan struct{}
@@ -515,8 +515,8 @@ func (r *Room) step() {
 
 	// ── 阶段二：回调在**锁外**执行 ──
 	//
-	// ⚠️ 契约（与旧版相反，旧版要求实现方"禁止回调本房间任何方法"）：
-	//   - 本回调**不再持房锁** ⇒ 可以安全调用 Join / Leave / Input / Info / Push 等方法；
+	// ⚠️ 契约：
+	//   - 本回调**不持房锁** ⇒ 可以安全调用 Join / Leave / Input / Info / Push 等方法；
 	//   - 但因此**不再与那些方法串行**：期间可能有玩家进出房间、也可能发生
 	//     ImportState（节点接管）/ 房间销毁。实现方若需要一遍一致的房间视图，
 	//     应在自己的业务状态里取，而不是"假定期间没人动房间"。
@@ -538,7 +538,7 @@ func (r *Room) step() {
 		return
 	}
 	if newStates != nil {
-		// **按玩家逐个合并**，不做整体替换（旧实现是 r.players = newStates）：
+		// **按玩家逐个合并**，不做整体替换：
 		//   - 回调期间离场的玩家已不在 r.players，逐个合并天然不会把 TA "复活"；
 		//   - 回调期间新进房的玩家不在 newStates 里，保留其刚加入时的状态
 		//     （他本来就没参与本帧的 wait-for-all，本帧没有他的输入）；
@@ -568,7 +568,7 @@ func (r *Room) step() {
 			p.LastSeenFrame = next
 		}
 		// 回填 PlayerState.LastFrame：供追帧恢复/快照比对使用；
-		// 输入超时兜底已改用 inputWaitTicks（step 次数），不再依赖该字段。
+		// 输入超时兜底走 inputWaitTicks（step 次数），与本字段无关。
 		if ps, ok := r.players[pid]; ok {
 			ps.LastFrame = next
 		}

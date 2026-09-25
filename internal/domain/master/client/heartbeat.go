@@ -126,7 +126,7 @@ func (r *HeartbeatReporter) Start(ctx context.Context) {
 	})
 }
 
-// Stop 停止上报并等待循环退出。未 Start 过的实例立即返回（此前固定阻塞 2 秒：
+// Stop 停止上报并等待循环退出。未 Start 过的实例立即返回（若固定阻塞 2 秒，
 // doneCh 永不关闭，只能靠超时分支兜底）。
 func (r *HeartbeatReporter) Stop() {
 	if r == nil {

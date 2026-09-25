@@ -113,7 +113,7 @@ func (q *BackpressureQueue) Push(v interface{}) bool {
 
 	case BackpressureDegrade:
 		// 在锁内取出回调再于锁外执行：直接读 q.degradeFn 并放进 GoSafe 闭包，
-		// 会与 SetBackpressure 的加锁写构成 data race（旧实现即如此）。
+		// 会与 SetBackpressure 的加锁写构成 data race。
 		fn := q.degradeFn
 		q.discardCount++ // degrade 语义上等同丢弃（元素不入队）
 		if fn != nil {

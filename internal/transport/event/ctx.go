@@ -26,7 +26,6 @@ import (
 //	game.LoadStruct(c, schema, id, &v, data.ReadOnly())
 
 // 自动落库/增量同步由 Logic.commitEdits 在 handler 返回后统一执行。
-// // LoadMode / LoadOption / ReadOnly：数据加载选项（internal-only，不再通过 pkg 暴露）。
 type LoadMode = data.LoadMode
 
 const (

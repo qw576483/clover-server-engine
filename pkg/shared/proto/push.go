@@ -77,12 +77,11 @@ const EPushSceneInfo uint32 = 4005
 type ESceneInfoNotify struct {
 	// SceneID 逻辑地图 id（服务端 Scene.ID()）。
 	//
-	// ⚠️ 符号性约束：两端已**统一为无符号 64 位** —— 服务端 uint64 ↔ 客户端 ulong
+	// ⚠️ 符号性约束：两端**统一为无符号 64 位** —— 服务端 uint64 ↔ 客户端 ulong
 	//（clover-client-unity-engine/Runtime/Network/Protocol.cs 的 ESceneInfoNotify.scene_id，
-	// 其消费方 ICloverScene.SceneID / IMapData.SceneId 同为 ulong）。
-	// 此前客户端按**有符号** long 解析，2^63 以上的 id 会被读成负值、CloverScene 映射错配；
-	// 现已按无符号对齐（客户端 Tests/Editor/ProtocolTests.cs 有 2^63 / 2^63+1 的往返用例守住），
-	// 因此高位 id（雪花 id 等）不再需要回避 —— 0 仍是「无有效场景」哨兵值，不要用它当真实 id。
+	// 其消费方 ICloverScene.SceneID / IMapData.SceneId 同为 ulong；
+	// 客户端 Tests/Editor/ProtocolTests.cs 有 2^63 / 2^63+1 的往返用例守住）。
+	// 高位 id（雪花 id 等）无需回避 —— 0 仍是「无有效场景」哨兵值，不要用它当真实 id。
 	SceneID    uint64 `json:"scene_id"`
 	InstanceID uint32 `json:"instance_id"`    // 地图内分线 id（服务端 Instance id）
 	Name       string `json:"name,omitempty"` // 场景名（服务端 Scene.Name()）

@@ -54,14 +54,11 @@ func (s *stubScene) Members() []uint64                  { return nil }
 // 检出能力（如实说明，勿夸大）：
 //   - 拆掉 map 类字段（hate 等）的锁：读侧与写侧对同一 map 的并发读-写会触发
 //     runtime 的 "concurrent map read and map write"（无需 -race 也可检出）。
-//     此前用例里 AddHate/Hate 都在同一 goroutine 顺序调用，拆锁也无人能察觉；
-//     读侧 goroutine 是为此补上的（拆掉 AddHate 的锁后本用例必红）。
+//     读侧 goroutine 专为检出拆锁而设（拆掉 AddHate 的锁后本用例必红）。
 //   - 数值字段（respawnRetry / respawnAt / patrolIdx）的竞争在无 -race 环境不可从
 //     行为层观测（对齐访存不会撕裂、也无 panic），需 `go test -race` 检出——
 //     无 cgo 环境请在带 -race 的 CI 上跑本用例。
 //   - 持怪锁走慢路径（如持 m.mu 调 scene）造成的锁序问题会以死锁 / 超时暴露。
-//   - 历史缺陷形态（现已修复）：respawn 曾无锁写 respawnRetry / respawnAt，
-//     actPatrol 曾无锁读 patrolIdx，与 Update / Revive 的加锁访问构成数据竞争。
 //
 // 结尾还有一组终态断言：并发压力之后，状态机必须仍能正确打死 / 复活 / 重生
 // （锁协议被拆掉或状态串坏时，这里会失败而不是静默漂移）。

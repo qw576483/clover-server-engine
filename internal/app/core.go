@@ -186,8 +186,7 @@ func (co *Core) AlertToAll(a *push.EAlertNotify) error {
 // 回包
 //
 // Reply / ReplyRaw 只此一份：Game / MasterGame / LogGame / AuthGame 都嵌入 *Core，
-// 由提升获得同一实现。此前四个角色各写一份，行为已经漂移（只有 log / auth 记录
-// marshal 失败，game / master 静默丢弃），此处统一为「失败必记日志」。
+// 由提升获得同一实现；marshal 失败必记日志。
 //
 // Reply 以结构体 JSON 编码回包给客户端。同一 Ctx 仅首次生效；
 // 回包按 requestID 配对，不携带业务消息号（帧中 msgID=0）。

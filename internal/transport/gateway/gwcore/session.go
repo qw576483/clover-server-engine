@@ -196,8 +196,6 @@ func newUDPBindToken() string {
 	var b [16]byte
 	if _, err := rand.Read(b[:]); err != nil {
 		// 极端异常（系统熵源不可用）：降级为「纳秒时间 + 进程内单调序号」填满全部 16 字节。
-		// 此前用 %024x 拼接再 copy：24 字符串只前 16 字符进 b，前 8 字节恒为 '0' 的 ASCII（0x30），
-		// 实际熵仅 ~32bit 且随时间可预测，与「仍不可猜测」的注释不符。
 		// 降级值只保证进程内唯一/不可枚举性下降，如实记录并明确「非密码学随机」。
 		logger.Errorf("gwcore: crypto/rand failed for udp bind token, fallback to time+seq seed (NOT cryptographically random): %v", err)
 		binary.BigEndian.PutUint64(b[:8], uint64(time.Now().UnixNano()))
